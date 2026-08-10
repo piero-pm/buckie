@@ -6,8 +6,8 @@
 | Status | In progress |
 | Active project | penny-saver |
 | Request class | New project |
-| Current stage | Lead review (Slice 1) |
-| Next owner | Lead Developer |
+| Current stage | Slice 1 integrated to trunk; Slice 2 prep |
+| Next owner | Business Analyst (passphrase-setup ticket) |
 | Updated | 2026-08-10 |
 
 ## 1. Request and Route
@@ -54,7 +54,7 @@ reduced - apply UX inline, no semantic-interface rendering.
 | Business Analyst | Passed | Approved epic scope | PRD + 15 tickets approved | Lead sets technical direction |
 | UX Designer | Excluded | n/a | Waived: UX applied inline, no rendering | n/a |
 | Lead Developer | Passed | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-001/002/003 approved (Opus 4.8) | Dev builds Slice 1 |
-| Developer | Passed | Approved brief + TICKET-001/002 | Slice 1 built (Sonnet 4.6); gates green; committed local, not pushed | Lead review before trunk push |
+| Developer | Passed | Approved brief + TICKET-001/002 | Slice 1 built (Sonnet 4.6); gates green; Lead-approved; pushed to trunk | Slice 2 after passphrase-setup ticket |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -65,10 +65,17 @@ and trunk-based integration evidence.
 
 Slice 1 gate run (2026-08-10, local): backend go build/vet green, gofmt -l empty,
 go test ./... ok (internal/auth). Frontend npm ci ok, lint clean, prettier clean,
-vitest 5/5 pass, vite build ok. Committed local (4 commits ahead of origin/main),
-not pushed. Open flags for Lead: npm dev-tool advisory chain (esbuild/vite/vitest,
-GHSA-67mh-4wv8-2f99, dev-server only, fix = breaking vite@8); add .gitattributes to
-pin LF line endings. Push held until Lead review passes.
+vitest 5/5 pass, vite build ok. Lead review (Opus 4.8) 2026-08-10: "Approve with
+follow-ups" - no blocking findings, EX-LOGIN-1..4 + attempt-cap + uniform unknown-
+email + BR-CONF-1 isolation all test-covered; security posture meets brief S5.
+Integrated: pushed to origin/main at ea92b3b (.gitattributes LF fix applied).
+
+Lead follow-ups (non-blocking backlog, route to BA to ticket):
+1. npm dev-tool advisory chain (esbuild/vite/vitest, GHSA-67mh-4wv8-2f99, dev-server
+   only); revisit at next low-risk frontend upgrade (breaking vite@8).
+2. verify-code timing side-channel (unknown vs known email) - revisit if ever public.
+3. rate-limiter map unbounded - add expired-window eviction in a later slice.
+4. optional: extract verifyCode switch helper (~31 lines); frontend 429 handling.
 
 ## 5. Blocker and Restart
 
