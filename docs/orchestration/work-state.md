@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-001 |
-| Status | Awaiting approval |
+| Status | In progress |
 | Active project | penny-saver |
 | Request class | New project |
-| Current stage | Lead Developer |
-| Next owner | Human |
+| Current stage | Lead review (Slice 1) |
+| Next owner | Lead Developer |
 | Updated | 2026-08-10 |
 
 ## 1. Request and Route
@@ -40,6 +40,8 @@ without later human approval.
 | PRD: analysis brief, 4 delivery specs, traceability, 15 tickets | Human | Approved | "Start implementation", 2026-08-10 |
 | Rule defaults: categories (Flight into Transport), GBP, 10-min code/5 tries/30-day session, amount<=1e6 and date<=2yr and duplicate-warn, projection from average monthly savings | Human | Approved | "Start implementation" adopts recommended defaults, 2026-08-10 |
 | Privacy: client-side passphrase-derived encryption (host-blind); dashboards client-side; email-OTP auth retained; encryption method revisited later | Human | Approved | User message, 2026-08-10 |
+| Lead brief v0.2 + ADR-001 (SQLite), ADR-002 (host-blind, passphrase-loss=data-loss, >=12 chars), ADR-003 (Argon2id + AES-256-GCM + WASM) | Human | Approved | "build slice 1", 2026-08-10 |
+| Code host linked: GitHub trunk main pushed to piero-pm/penny-saver | Human | Done | git push, 2026-08-10 |
 
 Stage waivers (human-approved 2026-08-10): QA waived - human verifies manually; UX
 reduced - apply UX inline, no semantic-interface rendering.
@@ -51,15 +53,22 @@ reduced - apply UX inline, no semantic-interface rendering.
 | Product Owner | Passed | User intake, constitution | Strategy, roadmap, epic-scope approved | BA elaborates PRD/tickets |
 | Business Analyst | Passed | Approved epic scope | PRD + 15 tickets approved | Lead sets technical direction |
 | UX Designer | Excluded | n/a | Waived: UX applied inline, no rendering | n/a |
-| Lead Developer | Awaiting approval | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-002 (revised) + ADR-003 (Opus 4.8); host-blind client-side encryption | Human approves revised brief -> Dev builds Slice 1 |
-| Developer | Awaiting approval | Approved ticket and delivery brief | Pending (Sonnet 4.6) | Implementation evidence |
+| Lead Developer | Passed | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-001/002/003 approved (Opus 4.8) | Dev builds Slice 1 |
+| Developer | Passed | Approved brief + TICKET-001/002 | Slice 1 built (Sonnet 4.6); gates green; committed local, not pushed | Lead review before trunk push |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
 
 Required: focused deterministic checks, independent QA verdict, Lead review when its
 canonical triggers apply, accurate documentation, tested recovery where applicable,
-and trunk-based integration evidence. Results are pending.
+and trunk-based integration evidence.
+
+Slice 1 gate run (2026-08-10, local): backend go build/vet green, gofmt -l empty,
+go test ./... ok (internal/auth). Frontend npm ci ok, lint clean, prettier clean,
+vitest 5/5 pass, vite build ok. Committed local (4 commits ahead of origin/main),
+not pushed. Open flags for Lead: npm dev-tool advisory chain (esbuild/vite/vitest,
+GHSA-67mh-4wv8-2f99, dev-server only, fix = breaking vite@8); add .gitattributes to
+pin LF line endings. Push held until Lead review passes.
 
 ## 5. Blocker and Restart
 
