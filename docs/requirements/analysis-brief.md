@@ -55,15 +55,15 @@ approved dependency order. Interfaces are responsive for iPhone and desktop brow
 | BR-DQ-4 | Category required; empty category is rejected | BA proposal | Human | Proposed |
 | BR-DQ-5 | Likely duplicate (same amount+category+date) warns but does not block | BA proposal | Human | Proposed |
 | BR-CONF-1 | A user accesses only their own financial data; a multi-user host cannot read another user's money data | Epic scope | Human | Proposed |
+| BR-PASS-1 | A >= 12-character alphanumeric encryption passphrase is required before any financial data is stored; it derives the client-side data key and the server never receives it (mechanism per ADR-002/003) | ADR-002/003 | Human | Proposed |
+| BR-PASS-2 | No server-side passphrase recovery; a lost passphrase makes stored data permanently unreadable | ADR-002/003 | Human | Proposed |
 | BR-REC-1 | A recurring monthly expense appears once in every month until ended | BA proposal | Human | Proposed |
 
-Mechanism of confidentiality (per-user encryption) is a Lead Developer concern,
-not decided here; BR-CONF-1 states the business/privacy outcome only.
+BR-PASS-1/2 state the business behavior of the host-blind ADR-002/003 mechanism (a Lead Developer concern), not crypto detail.
 
 ## 5. Recommended Category Taxonomy (pending human approval)
 
-Starting set from the human (bills, food, various/misc, gift, flight, rent),
-recommended as a fixed dropdown list:
+Starting set from the human (bills, food, various/misc, gift, flight, rent), recommended as a fixed dropdown list:
 
 Rent · Bills · Food · Transport & Travel · Gift · Health · Shopping · Miscellaneous
 
@@ -79,14 +79,12 @@ Trace: Goal → owner → (logs in privately | records spend fast | registers fi
 costs | reviews monthly) → login | capture | recurring | dashboard behaviors.
 Dependencies: capture depends on login; recurring depends on capture; dashboard
 depends on capture + recurring. Risks: capture friction breaks the habit;
-privacy failure breaks trust; wrong taxonomy reduces data quality. Assumption:
-one currency and one user represent Phase 1.
+privacy failure breaks trust; wrong taxonomy reduces data quality.
 
 ## 7. Decisions and Questions
 
 Open decisions for the human: (1) category taxonomy final list; (2) Phase 1
 display currency; (3) session lifetime and code expiry window; (4) sane maximum
-amount and oldest allowed expense date; (5) savings-projection method and whether
-it needs an income/target input. Nothing here is approved; every rule above is a
-recommendation awaiting explicit human approval. No rule was invented to close a
-gap without being flagged.
+amount and oldest allowed expense date; (5) savings-projection method and inputs.
+Every rule above is a recommendation awaiting explicit human approval; no rule was
+invented to close a gap without being flagged.

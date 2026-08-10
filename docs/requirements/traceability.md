@@ -29,6 +29,7 @@ Status: recommendation; human approval pending
 | 1 Access + storage | REQ-1 Passwordless email-code login | BA-DS-001 | EX-LOGIN-1..4 | TICKET-001, 002 |
 | 1 Access + storage | REQ-2 Session lifetime + sign out | BA-DS-001 | EX-LOGIN-1,4 | TICKET-003 |
 | 1 Access + storage | REQ-3 Per-user confidentiality | BA-DS-001 / BR-CONF-1 | EX-LOGIN-5 | TICKET-004 |
+| 1 Access + storage | REQ-16 Encryption-passphrase setup | BA-DS-001 / BR-PASS-1,2 | EX-PASS-1..5 | TICKET-016 |
 | 2 Capture | REQ-4 Record expense (amount+category+date) | BA-DS-002 | EX-CAP-1,2 | TICKET-005 |
 | 2 Capture | REQ-5 Category taxonomy | BA-DS-002 / BR-CAT-1 | EX-CAP-1 | TICKET-006 |
 | 2 Capture | REQ-6 Data-quality validation | BA-DS-002 / BR-DQ-1..4 | EX-CAP-3,4,6 | TICKET-007 |
@@ -51,6 +52,7 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | --- | --- | --- | --- | --- |
 | 2026-08-10 | BA-AN-001..BA-DS-004 | Initial elaboration of Epic A | Human | Pending |
 | 2026-08-10 | BR-CAT-1 | Proposed category taxonomy | Human | Pending |
+| 2026-08-10 | REQ-16 / BR-PASS-1,2 / TICKET-016 | Added encryption-passphrase setup (Slice 2, before capture) per ADR-002/003 | Human | Pending |
 
 ## 4. Link Integrity
 
