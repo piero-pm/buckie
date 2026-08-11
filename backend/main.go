@@ -7,6 +7,7 @@ import (
 
 	"penny-saver/internal/auth"
 	"penny-saver/internal/db"
+	"penny-saver/internal/vault"
 )
 
 func main() {
@@ -16,8 +17,11 @@ func main() {
 	}
 	defer store.Close()
 
-	sender := auth.NewSender()
-	mux := auth.NewMux(store, sender)
+	// One top-level mux composes the auth and vault route groups, then serves
+	// the built SPA for everything else.
+	mux := http.NewServeMux()
+	mux.Handle("/api/auth/", auth.NewMux(store, auth.NewSender()))
+	mux.Handle("/api/vault", vault.NewMux(store))
 
 	staticDir := envOr("STATIC_DIR", "frontend/dist")
 	mux.Handle("/", http.FileServer(http.Dir(staticDir)))

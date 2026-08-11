@@ -29,6 +29,17 @@ CREATE TABLE IF NOT EXISTS sessions (
 	expires_at DATETIME NOT NULL,
 	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Host-blind vault: the server stores only non-secret KDF material and a
+-- ciphertext verifier per user. The passphrase and derived key never arrive
+-- (ADR-002/003). One row per user (PRIMARY KEY user_id) => at most one setup.
+CREATE TABLE IF NOT EXISTS user_vaults (
+	user_id     INTEGER  PRIMARY KEY REFERENCES users(id),
+	kdf_salt    BLOB     NOT NULL,
+	kdf_params  TEXT     NOT NULL,
+	verifier    BLOB     NOT NULL,
+	created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 `
 
 // Open returns a configured SQLite database with schema applied.

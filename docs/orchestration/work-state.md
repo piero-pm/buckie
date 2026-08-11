@@ -54,7 +54,7 @@ reduced - apply UX inline, no semantic-interface rendering.
 | Business Analyst | Passed | Approved epic scope | PRD + 15 tickets approved | Lead sets technical direction |
 | UX Designer | Excluded | n/a | Waived: UX applied inline, no rendering | n/a |
 | Lead Developer | Passed | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-001/002/003 approved (Opus 4.8) | Dev builds Slice 1 |
-| Developer | Running | TICKET-003/004/016 + client crypto | Slice 1 integrated (ea92b3b); Slice 2 in progress (Sonnet 4.6) | Gates green + Lead review before push |
+| Developer | Built | TICKET-003/004/016 + client crypto | Slice 1 integrated (ea92b3b); Slice 2 built (GLM-5.2 on ZCode host), gates green, awaiting Lead review | Lead review before push |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -69,6 +69,16 @@ vitest 5/5 pass, vite build ok. Lead review (Opus 4.8) 2026-08-10: "Approve with
 follow-ups" - no blocking findings, EX-LOGIN-1..4 + attempt-cap + uniform unknown-
 email + BR-CONF-1 isolation all test-covered; security posture meets brief S5.
 Integrated: pushed to origin/main at ea92b3b (.gitattributes LF fix applied).
+
+Slice 2 gate run (2026-08-11, local, ZCode/GLM-5.2): backend go build/vet green,
+gofmt -l empty, go test ./... ok (internal/auth + internal/vault). Frontend npm ci
+ok, lint clean, prettier clean, vitest 13/13 pass (8 crypto: derive/encrypt/decrypt/
+wrong-passphrase/tamper/keystore; 5 App routing incl. EX-PASS-3 cached-key-to-home),
+vite build ok (165 kB / 54 kB gzip, 48 modules). All new source files <=200 lines,
+all Go functions <=30 lines (clean-artifacts). ADR-003 library note: hash-wasm
+rejected (no Argon2 export in published 2.6.0); @noble/hashes argon2id adopted —
+deviation from the ADR's "WASM" wording flagged for Lead review. NOT yet integrated:
+awaiting Lead review (Slice 2 touches crypto + a security ADR, a review trigger).
 
 Lead follow-ups (non-blocking backlog, route to BA to ticket):
 1. npm dev-tool advisory chain (esbuild/vite/vitest, GHSA-67mh-4wv8-2f99, dev-server

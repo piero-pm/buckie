@@ -1,5 +1,6 @@
-﻿import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import 'fake-indexeddb/auto'
 import App from './App'
 
 const mockFetch = vi.fn()
@@ -16,8 +17,15 @@ const badCode = {
   ok: false,
   json: async () => ({ error: 'invalid or expired code' }),
 }
+const vaultNone = { ok: true, json: async () => ({ hasPassphrase: false }) }
 
-describe('Login flow', () => {
+// Helper: queue the fetch responses for the post-verify routing sequence:
+//   /api/auth/me -> meOk, /api/vault -> vaultNone (no passphrase set).
+function queuePostVerifyToSetup() {
+  mockFetch.mockResolvedValueOnce(meOk).mockResolvedValueOnce(vaultNone)
+}
+
+describe('Login + vault routing', () => {
   beforeEach(() => {
     mockFetch.mockReset()
   })
@@ -30,8 +38,13 @@ describe('Login flow', () => {
     })
   })
 
-  it('shows private home when already authenticated', async () => {
-    mockFetch.mockResolvedValueOnce(meOk)
+  it('routes authed users with a cached key straight to home', async () => {
+    // me ok -> vault has passphrase -> IndexedDB empty => unlock page, NOT home.
+    // To prove same-device no-re-entry (EX-PASS-3) we seed a cached key first.
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+    await seedCachedKey(1)
     render(<App />)
     await waitFor(() => {
       expect(screen.getByRole('main')).toBeDefined()
@@ -51,11 +64,12 @@ describe('Login flow', () => {
     })
   })
 
-  it('reaches private home after correct code', async () => {
+  it('routes to passphrase setup after first correct code (no vault yet)', async () => {
     mockFetch
-      .mockResolvedValueOnce(me401)
-      .mockResolvedValueOnce(codeSent)
-      .mockResolvedValueOnce(signedIn)
+      .mockResolvedValueOnce(me401) // initial me
+      .mockResolvedValueOnce(codeSent) // request-code
+      .mockResolvedValueOnce(signedIn) // verify-code
+    queuePostVerifyToSetup() // me + vault after verify
     render(<App />)
     await waitFor(() => screen.getByLabelText(/email/i))
     fireEvent.change(screen.getByLabelText(/email/i), {
@@ -68,7 +82,9 @@ describe('Login flow', () => {
     })
     fireEvent.submit(screen.getByRole('form', { name: /enter code/i }))
     await waitFor(() => {
-      expect(screen.getByRole('main')).toBeDefined()
+      expect(
+        screen.getByRole('form', { name: /set up passphrase/i })
+      ).toBeDefined()
     })
   })
 
@@ -94,3 +110,38 @@ describe('Login flow', () => {
     expect(screen.queryByRole('main')).toBeNull()
   })
 })
+
+const vaultWithPassphrase = {
+  ok: true,
+  json: async () => ({
+    hasPassphrase: true,
+    salt: 'c2FsdA==',
+    params: '{"m":1024,"t":1,"p":1,"dkLen":32}',
+    verifier: 'dmVyaWZpZXI=',
+  }),
+}
+
+// Seed a non-extractable key into IndexedDB for user 1 so routeAfterAuth's
+// loadCachedKey finds it and routes to home (EX-PASS-3 same-device).
+async function seedCachedKey(userId: number) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    crypto.getRandomValues(new Uint8Array(32)),
+    'AES-GCM',
+    false,
+    ['encrypt', 'decrypt']
+  )
+  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+    const req = indexedDB.open('penny-saver', 1)
+    req.onupgradeneeded = () => req.result.createObjectStore('keys')
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction('keys', 'readwrite')
+    tx.objectStore('keys').put(key, userId)
+    tx.oncomplete = () => resolve()
+    tx.onerror = () => reject(tx.error)
+  })
+  db.close()
+}
