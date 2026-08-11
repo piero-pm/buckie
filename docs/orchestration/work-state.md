@@ -6,8 +6,8 @@
 | Status | In progress |
 | Active project | penny-saver |
 | Request class | New project |
-| Current stage | Slice 1 integrated to trunk; Slice 2 prep |
-| Next owner | Business Analyst (passphrase-setup ticket) |
+| Current stage | Developer (Slice 2) |
+| Next owner | Developer |
 | Updated | 2026-08-10 |
 
 ## 1. Request and Route
@@ -54,7 +54,7 @@ reduced - apply UX inline, no semantic-interface rendering.
 | Business Analyst | Passed | Approved epic scope | PRD + 15 tickets approved | Lead sets technical direction |
 | UX Designer | Excluded | n/a | Waived: UX applied inline, no rendering | n/a |
 | Lead Developer | Passed | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-001/002/003 approved (Opus 4.8) | Dev builds Slice 1 |
-| Developer | Passed | Approved brief + TICKET-001/002 | Slice 1 built (Sonnet 4.6); gates green; Lead-approved; pushed to trunk | Slice 2 after passphrase-setup ticket |
+| Developer | Running | TICKET-003/004/016 + client crypto | Slice 1 integrated (ea92b3b); Slice 2 in progress (Sonnet 4.6) | Gates green + Lead review before push |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates

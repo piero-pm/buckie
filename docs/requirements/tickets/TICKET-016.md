@@ -1,6 +1,6 @@
 # TICKET-016: Set up an encryption passphrase
 
-Status: recommendation; human approval pending
+Status: approved 2026-08-10 (work-state §2); status reconciled 2026-08-11
 
 | Field | Value |
 | --- | --- |
@@ -59,4 +59,4 @@ unreadable, and the user acknowledges this before finishing.
 KDF choice, cipher, library, key-caching, and salt handling are Lead Developer
 concerns fixed in ADR-002/ADR-003 and are deliberately excluded here. This ticket
 states the business behavior only. Must precede expense capture (TICKET-005) so no
-plaintext is ever persisted. Recommendation awaiting human approval.
+plaintext is ever persisted. Approved 2026-08-10; status reconciled 2026-08-11.
