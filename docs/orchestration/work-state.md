@@ -38,7 +38,7 @@ without later human approval.
 | Login method: passwordless email code (no SMS) | Human | Approved | User message, 2026-08-10 |
 | Expected Phase 1 user count: about 5 | Human | Noted | User message, 2026-08-10 |
 | PRD: analysis brief, 4 delivery specs, traceability, 15 tickets | Human | Approved | "Start implementation", 2026-08-10 |
-| Rule defaults: categories (Flight into Transport), GBP, 10-min code/5 tries/30-day session, amount<=1e6 and date<=2yr and duplicate-warn, projection from average monthly savings | Human | Approved | "Start implementation" adopts recommended defaults, 2026-08-10 |
+| Rule defaults: categories (Flight into Transport), ~~GBP~~ EUR (updated 2026-08-11), 10-min code/5 tries/30-day session, amount<=1e6 and date<=2yr and duplicate-warn, projection from average monthly savings | Human | Approved | "Start implementation" adopts recommended defaults, 2026-08-10; currency changed to EUR 2026-08-11 |
 | Privacy: client-side passphrase-derived encryption (host-blind); dashboards client-side; email-OTP auth retained; encryption method revisited later | Human | Approved | User message, 2026-08-10 |
 | Lead brief v0.2 + ADR-001 (SQLite), ADR-002 (host-blind, passphrase-loss=data-loss, >=12 chars), ADR-003 (Argon2id + AES-256-GCM + WASM) | Human | Approved | "build slice 1", 2026-08-10 |
 | Code host linked: GitHub trunk main pushed to piero-pm/penny-saver | Human | Done | git push, 2026-08-10 |
@@ -54,7 +54,7 @@ reduced - apply UX inline, no semantic-interface rendering.
 | Business Analyst | Passed | Approved epic scope | PRD + 15 tickets approved | Lead sets technical direction |
 | UX Designer | Excluded | n/a | Waived: UX applied inline, no rendering | n/a |
 | Lead Developer | Passed | Approved PRD + tickets; passphrase privacy decision | Brief v0.2 + ADR-001/002/003 approved (Opus 4.8) | Dev builds Slice 1 |
-| Developer | Built | TICKET-003/004/016 + client crypto | Slice 1 integrated (ea92b3b); Slice 2 built (GLM-5.2 on ZCode host), gates green, awaiting Lead review | Lead review before push |
+| Developer | Built | TICKET-003..016 + client crypto | Slice 1+2 integrated (ea92b3b, e404961); Slices 3-6 + SMTP built, gates green (36 frontend + 16 backend tests), awaiting Lead review | Lead review before push |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -79,6 +79,20 @@ all Go functions <=30 lines (clean-artifacts). ADR-003 library note: hash-wasm
 rejected (no Argon2 export in published 2.6.0); @noble/hashes argon2id adopted —
 deviation from the ADR's "WASM" wording flagged for Lead review. NOT yet integrated:
 awaiting Lead review (Slice 2 touches crypto + a security ADR, a review trigger).
+
+Slice 2 integrated 2026-08-11: Lead approved; pushed to origin/main (42f8c35..e404961).
+
+Slices 3-6 + SMTP gate run (2026-08-11): backend go build/vet green, gofmt -l empty,
+go test ./... ok (auth + records + vault; SMTP sender via net/smtp, env-configured,
+DEV_MODE still logs). Frontend lint clean, prettier clean, vitest 36/36 pass
+(5 routing, 8 crypto, 23 domain: validation BR-DQ-1..4, duplicate detection,
+recurring expansion incl. EX-REC-2 day-31 clamping, monthly totals, category
+breakdown, savings projection), vite build ok (178 kB / 58 kB gzip, 57 modules).
+Tickets delivered: 005 capture, 006 taxonomy, 007 validation, 008 duplicate warn,
+009 edit/delete, 010 recurring register, 011 monthly expansion, 012 end recurring,
+013 month totals, 014 category breakdown, 015 projection. Currency = EUR
+(updated from GBP per human, 2026-08-11). Domain logic all client-side over
+decrypted records; server stores only ciphertext (delivery-brief §3 / ADR-002).
 
 Lead follow-ups (non-blocking backlog, route to BA to ticket):
 1. npm dev-tool advisory chain (esbuild/vite/vitest, GHSA-67mh-4wv8-2f99, dev-server

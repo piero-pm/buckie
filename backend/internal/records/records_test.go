@@ -1,0 +1,139 @@
+package records
+
+import (
+	"encoding/json"
+	"net/http"
+	"testing"
+)
+
+// PUT then GET returns the record.
+func TestPutThenList(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	resp := do(t, http.MethodPut, srv.URL+"/api/records/rec-1", dto("rec-1"), cookie)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusNoContent {
+		t.Fatalf("put: got %d, want 204", resp.StatusCode)
+	}
+
+	got := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, cookie)
+	defer got.Body.Close()
+	if got.StatusCode != http.StatusOK {
+		t.Fatalf("list: got %d", got.StatusCode)
+	}
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	if err := json.NewDecoder(got.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body.Records) != 1 || body.Records[0].ID != "rec-1" {
+		t.Errorf("expected 1 record rec-1, got %+v", body.Records)
+	}
+}
+
+// PUT with the same id upserts (replaces ciphertext), not duplicates.
+func TestPutUpsert(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	first := dto("rec-1")
+	do(t, http.MethodPut, srv.URL+"/api/records/rec-1", first, cookie).Body.Close()
+	updated := recordDTO{ID: "rec-1", Kind: KindExpense, Ciphertext: "dXBkYXRlZA=="}
+	do(t, http.MethodPut, srv.URL+"/api/records/rec-1", updated, cookie).Body.Close()
+
+	got := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, cookie)
+	defer got.Body.Close()
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(got.Body).Decode(&body)
+	if len(body.Records) != 1 {
+		t.Fatalf("upsert should keep 1 row, got %d", len(body.Records))
+	}
+	if body.Records[0].Ciphertext != "dXBkYXRlZA==" {
+		t.Error("upsert did not replace ciphertext")
+	}
+}
+
+// DELETE removes the record; subsequent list is empty.
+func TestDelete(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	do(t, http.MethodPut, srv.URL+"/api/records/rec-1", dto("rec-1"), cookie).Body.Close()
+	del := do(t, http.MethodDelete, srv.URL+"/api/records/rec-1", nil, cookie)
+	del.Body.Close()
+	if del.StatusCode != http.StatusNoContent {
+		t.Fatalf("delete: got %d", del.StatusCode)
+	}
+
+	got := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, cookie)
+	defer got.Body.Close()
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(got.Body).Decode(&body)
+	if len(body.Records) != 0 {
+		t.Errorf("after delete expected 0 records, got %d", len(body.Records))
+	}
+}
+
+// BR-CONF-1 isolation: a user cannot read or delete another user's records.
+func TestPerUserIsolation(t *testing.T) {
+	srv, sender := newTestServer(t)
+	alice := signIn(t, srv, sender, "alice@example.com")
+	bob := signIn(t, srv, sender, "bob@example.com")
+
+	// Alice stores a record; Bob must not see it.
+	do(t, http.MethodPut, srv.URL+"/api/records/a-secret", dto("a-secret"), alice).Body.Close()
+
+	bobList := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, bob)
+	defer bobList.Body.Close()
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(bobList.Body).Decode(&body)
+	if len(body.Records) != 0 {
+		t.Error("Bob must not see Alice's records (isolation)")
+	}
+
+	// Bob cannot delete Alice's record either.
+	do(t, http.MethodDelete, srv.URL+"/api/records/a-secret", nil, bob).Body.Close()
+	aliceList := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, alice)
+	defer aliceList.Body.Close()
+	var aliceBody struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(aliceList.Body).Decode(&aliceBody)
+	if len(aliceBody.Records) != 1 {
+		t.Error("Bob's delete must not affect Alice's record (isolation)")
+	}
+}
+
+// Unauthenticated requests are refused 401.
+func TestUnauthenticatedRefused(t *testing.T) {
+	srv, _ := newTestServer(t)
+
+	resp, err := http.Get(srv.URL + "/api/records?kind=expense")
+	if err != nil {
+		t.Fatalf("GET: %v", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Errorf("GET no-auth: got %d, want 401", resp.StatusCode)
+	}
+}
+
+// Invalid kind is rejected.
+func TestInvalidKind(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	resp := do(t, http.MethodGet, srv.URL+"/api/records?kind=bogus", nil, cookie)
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("invalid kind: got %d, want 400", resp.StatusCode)
+	}
+}

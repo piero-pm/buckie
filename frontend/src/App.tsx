@@ -33,9 +33,10 @@ export default function App() {
       .catch(() => undefined)
   }, [])
 
-  if (page === 'home') {
+  if (page === 'home' && userId) {
     return (
       <HomePage
+        userId={userId}
         onSignOut={async () => {
           await signOutApi()
           setUserId(null)

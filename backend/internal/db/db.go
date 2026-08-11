@@ -40,6 +40,20 @@ CREATE TABLE IF NOT EXISTS user_vaults (
 	verifier    BLOB     NOT NULL,
 	created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Generic per-user encrypted-record store (delivery-brief §3). Each row is an
+-- opaque ciphertext blob the server cannot read; the kind column separates
+-- record types (expense vs recurring template). All domain logic runs client-side;
+-- this table only persists what the user's client encrypted.
+CREATE TABLE IF NOT EXISTS records (
+	id         TEXT     PRIMARY KEY,
+	user_id    INTEGER  NOT NULL REFERENCES users(id),
+	kind       TEXT     NOT NULL,
+	ciphertext BLOB     NOT NULL,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS records_user_kind ON records (user_id, kind);
 `
 
 // Open returns a configured SQLite database with schema applied.
