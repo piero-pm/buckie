@@ -1,5 +1,22 @@
 import { useEffect, useState } from 'react'
 import {
+  ActionIcon,
+  Box,
+  Container,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  Button as MButton,
+} from '@mantine/core'
+import {
+  IconPlus,
+  IconList,
+  IconRepeat,
+  IconChartBar,
+  IconLogout,
+} from '@tabler/icons-react'
+import {
   expenses as expenseApi,
   recurring as recurringApi,
 } from '../api/records'
@@ -114,27 +131,123 @@ export default function HomePage({ userId, onSignOut }: Props) {
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .slice(0, 5)
   return (
-    <main aria-label="home">
-      <h1>Penny Saver</h1>
-      {loadError && <p role="alert">{loadError}</p>}
-      <nav>
-        <button onClick={() => setView('capture')}>Record a spend</button>
-        <button onClick={() => setView('expenses')}>Recent expenses</button>
-        <button onClick={() => setView('recurring')}>Recurring</button>
-        <button onClick={() => setView('dashboard')}>Dashboard</button>
-      </nav>
-      <h2>Recent</h2>
-      <ul>
-        {recent.map((e) => (
-          <li key={e.id}>
-            {formatEUR(e.amount)} — {e.category} — {e.date}
-          </li>
-        ))}
-        {recent.length === 0 && (
-          <li>No expenses yet. Record your first spend.</li>
-        )}
-      </ul>
-      <button onClick={handleSignOut}>Sign out</button>
-    </main>
+    <Box component="main" aria-label="home">
+      <Container size={520} px="md" py="xl">
+        <Stack gap="lg">
+          <Group justify="space-between" align="flex-start">
+            <Stack gap={0}>
+              <Text fw={600} size="xl" c="gray.9">
+                Penny Saver
+              </Text>
+              <Text size="xs" c="gray.5">
+                Your private spending workspace
+              </Text>
+            </Stack>
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="lg"
+              onClick={handleSignOut}
+              aria-label="sign out"
+              title="Sign out"
+            >
+              <IconLogout size={18} />
+            </ActionIcon>
+          </Group>
+
+          {loadError && (
+            <Text role="alert" c="red.7" size="sm">
+              {loadError}
+            </Text>
+          )}
+
+          <SimpleGrid cols={2} spacing="sm">
+            <NavButton
+              icon={<IconPlus size={20} />}
+              label="Record a spend"
+              onClick={() => setView('capture')}
+            />
+            <NavButton
+              icon={<IconList size={20} />}
+              label="Recent expenses"
+              onClick={() => setView('expenses')}
+            />
+            <NavButton
+              icon={<IconRepeat size={20} />}
+              label="Recurring"
+              onClick={() => setView('recurring')}
+            />
+            <NavButton
+              icon={<IconChartBar size={20} />}
+              label="Dashboard"
+              onClick={() => setView('dashboard')}
+            />
+          </SimpleGrid>
+
+          <Stack gap="xs" mt="xs">
+            <Text size="sm" fw={600} c="gray.7">
+              Recent
+            </Text>
+            {recent.length === 0 ? (
+              <Text size="sm" c="gray.5">
+                No expenses yet. Record your first spend.
+              </Text>
+            ) : (
+              <Stack gap={0}>
+                {recent.map((e) => (
+                  <Group
+                    key={e.id}
+                    justify="space-between"
+                    py="xs"
+                    styles={{ root: { borderBottom: '1px solid #e9ecef' } }}
+                  >
+                    <Stack gap={2}>
+                      <Text size="sm" fw={500} c="gray.9">
+                        {e.category}
+                        {e.note ? (
+                          <Text component="span" size="xs" c="gray.5">
+                            {' '}
+                            · {e.note}
+                          </Text>
+                        ) : null}
+                      </Text>
+                      <Text size="xs" c="gray.5">
+                        {e.date}
+                      </Text>
+                    </Stack>
+                    <Text size="sm" fw={600} c="gray.9">
+                      {formatEUR(e.amount)}
+                    </Text>
+                  </Group>
+                ))}
+              </Stack>
+            )}
+          </Stack>
+        </Stack>
+      </Container>
+    </Box>
+  )
+}
+
+function NavButton({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: React.ReactNode
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <MButton
+      variant="light"
+      color="indigo"
+      fullWidth
+      leftSection={icon}
+      onClick={onClick}
+      styles={{ root: { height: 56, justifyContent: 'flex-start' } }}
+    >
+      {label}
+    </MButton>
   )
 }

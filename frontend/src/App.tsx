@@ -58,7 +58,15 @@ export default function App() {
       />
     )
   }
-  if (page === 'checking') return <p aria-label="loading">Loading…</p>
+  if (page === 'checking') {
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}
+      >
+        <span aria-label="loading">Loading…</span>
+      </div>
+    )
+  }
   if (page === 'code') {
     return (
       <CodePage

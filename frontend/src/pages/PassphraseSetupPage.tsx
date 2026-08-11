@@ -1,6 +1,8 @@
 import { useState, FormEvent } from 'react'
+import { Button, Checkbox, Stack, Text, PasswordInput } from '@mantine/core'
 import { setupVault } from '../api/vault'
 import { setupVault as deriveVault } from '../crypto'
+import PageShell from '../components/PageShell'
 
 interface Props {
   userId: number
@@ -54,45 +56,46 @@ export default function PassphraseSetupPage({ userId, onUnlocked }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="set up passphrase">
-      <h1>Set up your private workspace</h1>
-      <p>
-        Choose an encryption passphrase. It protects your financial data so that
-        only you can read it — not even the host.
-      </p>
-      <label htmlFor="passphrase">
-        Passphrase (at least {MIN} letters/numbers)
-      </label>
-      <input
-        id="passphrase"
-        type="password"
-        value={passphrase}
-        onChange={(e) => setPassphrase(e.target.value)}
-        autoComplete="new-password"
-        required
-      />
-      <label htmlFor="confirm">Confirm passphrase</label>
-      <input
-        id="confirm"
-        type="password"
-        value={confirm}
-        onChange={(e) => setConfirm(e.target.value)}
-        autoComplete="new-password"
-        required
-      />
-      <label>
-        <input
-          type="checkbox"
-          checked={acknowledged}
-          onChange={(e) => setAcknowledged(e.target.checked)}
-        />{' '}
-        I understand that if I lose this passphrase, my stored data becomes
-        permanently unreadable. There is no recovery.
-      </label>
-      <button type="submit" disabled={busy}>
-        {busy ? 'Setting up…' : 'Create passphrase'}
-      </button>
-      {error && <p role="alert">{error}</p>}
-    </form>
+    <PageShell
+      title="Set up your private workspace"
+      subtitle="Choose an encryption passphrase. It protects your data so only you can read it — not even the host."
+      card
+    >
+      <form onSubmit={handleSubmit} aria-label="set up passphrase">
+        <Stack gap="md">
+          <PasswordInput
+            label={`Passphrase (at least ${MIN} letters/numbers)`}
+            id="passphrase"
+            placeholder="At least 12 characters"
+            value={passphrase}
+            onChange={(e) => setPassphrase(e.target.value)}
+            autoComplete="new-password"
+            required
+          />
+          <PasswordInput
+            label="Confirm passphrase"
+            id="confirm"
+            placeholder="Re-enter to confirm"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            autoComplete="new-password"
+            required
+          />
+          <Checkbox
+            label="I understand that if I lose this passphrase, my stored data becomes permanently unreadable. There is no recovery."
+            checked={acknowledged}
+            onChange={(e) => setAcknowledged(e.currentTarget.checked)}
+          />
+          <Button type="submit" fullWidth loading={busy}>
+            Create passphrase
+          </Button>
+          {error && (
+            <Text role="alert" c="red.7" size="sm">
+              {error}
+            </Text>
+          )}
+        </Stack>
+      </form>
+    </PageShell>
   )
 }

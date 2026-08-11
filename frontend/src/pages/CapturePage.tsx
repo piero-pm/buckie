@@ -1,7 +1,11 @@
 import { useState, FormEvent } from 'react'
+import { Button, Group, Select, Stack, Text, TextInput } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import { IconArrowLeft } from '@tabler/icons-react'
 import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
 import { validateExpense, type Expense } from '../domain/expense'
 import { newId } from '../domain/ids'
+import PageShell from '../components/PageShell'
 
 interface Props {
   existing: Expense[]
@@ -46,7 +50,7 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
         x.date === candidate.date
     )
     if (match && !dup) {
-      setDup(match) // ask once; user can confirm to keep the repeat
+      setDup(match)
       return
     }
     setBusy(true)
@@ -61,6 +65,11 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
       })
       reset()
       setDup(null)
+      notifications.show({
+        message: 'Expense saved',
+        color: 'green',
+        autoClose: 2000,
+      })
     } catch {
       setError('Could not save. Try again.')
     } finally {
@@ -69,62 +78,79 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="record expense">
-      <h1>Record a spend</h1>
-      <label htmlFor="amount">Amount (€)</label>
-      <input
-        id="amount"
-        type="number"
-        step="0.01"
-        min="0"
-        inputMode="decimal"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        required
-      />
-      <label htmlFor="category">Category</label>
-      <select
-        id="category"
-        value={category}
-        onChange={(e) => setCategory(e.target.value as Category)}
-        required
-      >
-        <option value="">Choose…</option>
-        {CATEGORIES.map((c) => (
-          <option key={c} value={c}>
-            {c}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="date">Date</label>
-      <input
-        id="date"
-        type="date"
-        value={date}
-        max={today()}
-        onChange={(e) => setDate(e.target.value)}
-        required
-      />
-      <label htmlFor="note">Note (optional)</label>
-      <input
-        id="note"
-        type="text"
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-      {dup && (
-        <p role="alert">
-          You already have a {formatEUR(dup.amount)} {dup.category} on{' '}
-          {dup.date}. Save again to keep both.
-        </p>
-      )}
-      <button type="submit" disabled={busy}>
-        {busy ? 'Saving…' : 'Save'}
-      </button>
-      <button type="button" onClick={onBack}>
-        Back
-      </button>
-      {error && <p role="alert">{error}</p>}
-    </form>
+    <PageShell
+      title="Record a spend"
+      subtitle="Capture a spend in the moment."
+      card
+    >
+      <form onSubmit={handleSubmit} aria-label="record expense">
+        <Stack gap="md">
+          <TextInput
+            label="Amount"
+            id="amount"
+            type="number"
+            step="0.01"
+            min="0"
+            inputMode="decimal"
+            placeholder="0.00"
+            leftSection={<span style={{ fontWeight: 600 }}>€</span>}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+          />
+          <Select
+            label="Category"
+            id="category"
+            placeholder="Choose…"
+            data={CATEGORIES as readonly string[]}
+            value={category}
+            onChange={(v) => setCategory((v as Category) ?? '')}
+            searchable
+            required
+          />
+          <TextInput
+            label="Date"
+            id="date"
+            type="date"
+            value={date}
+            max={today()}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+          <TextInput
+            label="Note (optional)"
+            id="note"
+            type="text"
+            placeholder="e.g. lunch with team"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+          {dup && (
+            <Text role="alert" c="orange.7" size="sm">
+              You already have a {formatEUR(dup.amount)} {dup.category} on{' '}
+              {dup.date}. Save again to keep both.
+            </Text>
+          )}
+          <Button type="submit" fullWidth loading={busy}>
+            Save
+          </Button>
+          <Group justify="center">
+            <Button
+              variant="subtle"
+              color="gray"
+              leftSection={<IconArrowLeft size={16} />}
+              onClick={onBack}
+            >
+              Back
+            </Button>
+          </Group>
+          {error && (
+            <Text role="alert" c="red.7" size="sm">
+              {error}
+            </Text>
+          )}
+        </Stack>
+      </form>
+    </PageShell>
   )
 }

@@ -11,3 +11,19 @@ if (globalThis.crypto && !globalThis.crypto.subtle) {
     configurable: true,
   })
 }
+
+// jsdom does not implement matchMedia, which Mantine uses for responsive
+// utilities. Stub it so component tests don't throw.
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => false,
+  }),
+})

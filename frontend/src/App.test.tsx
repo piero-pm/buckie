@@ -1,7 +1,19 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import 'fake-indexeddb/auto'
 import App from './App'
+import { theme } from './theme'
+
+function renderWithMantine(ui: React.ReactElement) {
+  return render(
+    <MantineProvider theme={theme} defaultColorScheme="light">
+      <Notifications />
+      {ui}
+    </MantineProvider>
+  )
+}
 
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
@@ -32,7 +44,7 @@ describe('Login + vault routing', () => {
 
   it('renders login form when not authenticated', async () => {
     mockFetch.mockResolvedValueOnce(me401)
-    render(<App />)
+    renderWithMantine(<App />)
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeDefined()
     })
@@ -45,7 +57,7 @@ describe('Login + vault routing', () => {
       .mockResolvedValueOnce(meOk)
       .mockResolvedValueOnce(vaultWithPassphrase)
     await seedCachedKey(1)
-    render(<App />)
+    renderWithMantine(<App />)
     await waitFor(() => {
       expect(screen.getByRole('main')).toBeDefined()
     })
@@ -53,7 +65,7 @@ describe('Login + vault routing', () => {
 
   it('advances to code entry after email submission', async () => {
     mockFetch.mockResolvedValueOnce(me401).mockResolvedValueOnce(codeSent)
-    render(<App />)
+    renderWithMantine(<App />)
     await waitFor(() => screen.getByLabelText(/email/i))
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
@@ -70,7 +82,7 @@ describe('Login + vault routing', () => {
       .mockResolvedValueOnce(codeSent) // request-code
       .mockResolvedValueOnce(signedIn) // verify-code
     queuePostVerifyToSetup() // me + vault after verify
-    render(<App />)
+    renderWithMantine(<App />)
     await waitFor(() => screen.getByLabelText(/email/i))
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
@@ -93,7 +105,7 @@ describe('Login + vault routing', () => {
       .mockResolvedValueOnce(me401)
       .mockResolvedValueOnce(codeSent)
       .mockResolvedValueOnce(badCode)
-    render(<App />)
+    renderWithMantine(<App />)
     await waitFor(() => screen.getByLabelText(/email/i))
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },

@@ -39,7 +39,9 @@ describe('expense validation (BR-DQ-1..4)', () => {
   it('rejects a future date (EX-CAP-6)', () => {
     const future = new Date()
     future.setDate(future.getDate() + 1)
-    const iso = future.toISOString().slice(0, 10)
+    // Build the ISO date from LOCAL components; toISOString() uses UTC and can
+    // yield today's date in positive-offset timezones late in the day.
+    const iso = `${future.getFullYear()}-${String(future.getMonth() + 1).padStart(2, '0')}-${String(future.getDate()).padStart(2, '0')}`
     expect(validateExpense({ ...valid, date: iso }).ok).toBe(false)
   })
 

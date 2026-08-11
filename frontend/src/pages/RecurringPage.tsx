@@ -1,7 +1,20 @@
 import { useState, FormEvent } from 'react'
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  Button,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core'
+import { IconArrowLeft, IconTrash } from '@tabler/icons-react'
 import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
 import { validateRecurring, type Recurring } from '../domain/expense'
 import { newId } from '../domain/ids'
+import PageShell from '../components/PageShell'
 
 interface Props {
   items: Recurring[]
@@ -56,68 +69,119 @@ export default function RecurringPage({
   }
 
   return (
-    <main aria-label="recurring expenses">
-      <h1>Recurring monthly expenses</h1>
-      <ul>
-        {items.map((r) => (
-          <li key={r.id}>
-            {formatEUR(r.amount)} — {r.category} — day {r.dayOfMonth}
-            {!r.active && ' (ended)'}
-            <button
-              onClick={async () => {
-                if (r.active) await onSave({ ...r, active: false })
-                else await onDelete(r.id)
-              }}
+    <PageShell
+      title="Recurring monthly"
+      subtitle="Fixed costs that repeat every month."
+      card={false}
+    >
+      <Box component="main" aria-label="recurring expenses">
+        {items.length === 0 && (
+          <Text size="sm" c="gray.5">
+            No recurring expenses yet.
+          </Text>
+        )}
+        <Stack gap={0} mb="lg">
+          {items.map((r) => (
+            <Group
+              key={r.id}
+              justify="space-between"
+              py="sm"
+              styles={{ root: { borderBottom: '1px solid #e9ecef' } }}
             >
-              {r.active ? 'End' : 'Remove'}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <form onSubmit={handleAdd} aria-label="add recurring">
-        <h2>Add recurring</h2>
-        <label htmlFor="amount">Amount (€)</label>
-        <input
-          id="amount"
-          type="number"
-          step="0.01"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
-        <label htmlFor="category">Category</label>
-        <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value as Category)}
-          required
-        >
-          <option value="">Choose…</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
+              <Stack gap={2}>
+                <Group gap="xs">
+                  <Text size="sm" fw={600} c="gray.9">
+                    {formatEUR(r.amount)}
+                  </Text>
+                  <Text size="sm" c="gray.7">
+                    {r.category}
+                  </Text>
+                  {!r.active && (
+                    <Badge size="xs" color="gray" variant="light">
+                      ended
+                    </Badge>
+                  )}
+                </Group>
+                <Text size="xs" c="gray.5">
+                  day {r.dayOfMonth} of each month
+                </Text>
+              </Stack>
+              <ActionIcon
+                variant="subtle"
+                color={r.active ? 'gray' : 'red'}
+                onClick={async () => {
+                  if (r.active) await onSave({ ...r, active: false })
+                  else await onDelete(r.id)
+                }}
+                aria-label={r.active ? 'end' : 'remove'}
+              >
+                {r.active ? (
+                  <Text size="xs">End</Text>
+                ) : (
+                  <IconTrash size={16} />
+                )}
+              </ActionIcon>
+            </Group>
           ))}
-        </select>
-        <label htmlFor="day">Day of month</label>
-        <input
-          id="day"
-          type="number"
-          min="1"
-          max="31"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={busy}>
-          {busy ? 'Saving…' : 'Add'}
-        </button>
-        <button type="button" onClick={onBack}>
-          Back
-        </button>
-        {error && <p role="alert">{error}</p>}
-      </form>
-    </main>
+        </Stack>
+
+        <form onSubmit={handleAdd} aria-label="add recurring">
+          <Stack gap="md">
+            <Text size="sm" fw={600} c="gray.7">
+              Add recurring
+            </Text>
+            <TextInput
+              label="Amount"
+              id="amount"
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              leftSection={<span style={{ fontWeight: 600 }}>€</span>}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              required
+            />
+            <Select
+              label="Category"
+              id="category"
+              placeholder="Choose…"
+              data={CATEGORIES as readonly string[]}
+              value={category}
+              onChange={(v) => setCategory((v as Category) ?? '')}
+              searchable
+              required
+            />
+            <TextInput
+              label="Day of month"
+              id="day"
+              type="number"
+              min="1"
+              max="31"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+              required
+            />
+            <Button type="submit" fullWidth loading={busy}>
+              Add
+            </Button>
+            <Group justify="center">
+              <Button
+                variant="subtle"
+                color="gray"
+                leftSection={<IconArrowLeft size={16} />}
+                onClick={onBack}
+              >
+                Back
+              </Button>
+            </Group>
+            {error && (
+              <Text role="alert" c="red.7" size="sm">
+                {error}
+              </Text>
+            )}
+          </Stack>
+        </form>
+      </Box>
+    </PageShell>
   )
 }

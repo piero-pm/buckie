@@ -1,6 +1,8 @@
 import { useState, FormEvent } from 'react'
+import { Button, PasswordInput, Stack, Text } from '@mantine/core'
 import { getVault } from '../api/vault'
-import { unlockVault, type VaultEnvelope } from '../crypto'
+import { unlockVault } from '../crypto'
+import PageShell from '../components/PageShell'
 
 interface Props {
   userId: number
@@ -28,7 +30,7 @@ export default function PassphraseUnlockPage({ userId, onUnlocked }: Props) {
         setError('No passphrase is set. Set one up first.')
         return
       }
-      await tryUnlock(userId, passphrase, status.envelope)
+      await unlockVault(userId, passphrase, status.envelope)
       onUnlocked()
     } catch {
       setError('Wrong passphrase, or setup is incomplete.')
@@ -38,32 +40,32 @@ export default function PassphraseUnlockPage({ userId, onUnlocked }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="unlock workspace">
-      <h1>Unlock your workspace</h1>
-      <p>
-        Enter your encryption passphrase to unlock your data on this device.
-      </p>
-      <label htmlFor="passphrase">Passphrase</label>
-      <input
-        id="passphrase"
-        type="password"
-        value={passphrase}
-        onChange={(e) => setPassphrase(e.target.value)}
-        autoComplete="current-password"
-        required
-      />
-      <button type="submit" disabled={busy}>
-        {busy ? 'Unlocking…' : 'Unlock'}
-      </button>
-      {error && <p role="alert">{error}</p>}
-    </form>
+    <PageShell
+      title="Unlock your workspace"
+      subtitle="Enter your encryption passphrase to unlock your data on this device."
+      card
+    >
+      <form onSubmit={handleSubmit} aria-label="unlock workspace">
+        <Stack gap="md">
+          <PasswordInput
+            label="Passphrase"
+            id="passphrase"
+            placeholder="Your encryption passphrase"
+            value={passphrase}
+            onChange={(e) => setPassphrase(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          <Button type="submit" fullWidth loading={busy}>
+            Unlock
+          </Button>
+          {error && (
+            <Text role="alert" c="red.7" size="sm">
+              {error}
+            </Text>
+          )}
+        </Stack>
+      </form>
+    </PageShell>
   )
-}
-
-async function tryUnlock(
-  userId: number,
-  passphrase: string,
-  envelope: VaultEnvelope
-): Promise<void> {
-  await unlockVault(userId, passphrase, envelope)
 }

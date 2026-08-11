@@ -1,0 +1,20 @@
+/* Minimal global styles on top of Mantine. Light theme only (interface-system.md). */
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: #f5f6fa;
+  color: #1a1b23;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Respect reduced-motion preference (WCAG 2.2 AA). */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
