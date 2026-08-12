@@ -7,7 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  backend:
+  # Single gate job so deploy.yml can depend on it by name. Runs all backend +
+  # frontend checks; any failure blocks both merge (branch protection) and deploy.
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,45 +17,39 @@ jobs:
         with:
           go-version: '1.22'
           cache-dependency-path: backend/go.sum
-      - name: Build
-        working-directory: backend
-        run: go build ./...
-      - name: Vet
-        working-directory: backend
-        run: go vet ./...
-      - name: Format
-        working-directory: backend
-        run: |
-          out=$(gofmt -l .)
-          if [ -n "$out" ]; then
-            echo "Formatting issues in: $out"
-            exit 1
-          fi
-      - name: Test
-        working-directory: backend
-        run: go test ./...
-
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-      - name: Install
+
+      - name: Backend - build
+        working-directory: backend
+        run: go build ./...
+      - name: Backend - vet
+        working-directory: backend
+        run: go vet ./...
+      - name: Backend - format
+        working-directory: backend
+        run: |
+          out=$(gofmt -l .)
+          if [ -n "$out" ]; then echo "Formatting issues: $out"; exit 1; fi
+      - name: Backend - test
+        working-directory: backend
+        run: go test ./...
+
+      - name: Frontend - install
         working-directory: frontend
         run: npm ci
-      - name: Lint
-        working-directory: frontend
-        run: npm run lint
-      - name: Format check
+      - name: Frontend - format check
         working-directory: frontend
         run: npx prettier --check .
-      - name: Test
+      - name: Frontend - lint
+        working-directory: frontend
+        run: npm run lint
+      - name: Frontend - test
         working-directory: frontend
         run: npm test
-      - name: Build
+      - name: Frontend - build
         working-directory: frontend
         run: npm run build

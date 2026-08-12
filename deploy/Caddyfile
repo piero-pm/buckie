@@ -1,0 +1,5 @@
+# Auto-TLS reverse proxy. DEPLOY_DOMAIN is substituted by post-deploy.sh.
+DEPLOY_DOMAIN {
+    encode gzip
+    reverse_proxy 127.0.0.1:8080
+}
