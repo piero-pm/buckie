@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import CodePage from './pages/CodePage'
 import HomePage from './pages/HomePage'
@@ -9,6 +10,7 @@ import { loadCachedKey } from './crypto'
 import { signOut as signOutApi } from './api/auth'
 
 type Page =
+  | 'landing'
   | 'login'
   | 'code'
   | 'checking'
@@ -17,11 +19,12 @@ type Page =
   | 'home'
 
 export default function App() {
-  const [page, setPage] = useState<Page>('login')
+  const [page, setPage] = useState<Page>('landing')
   const [email, setEmail] = useState('')
   const [userId, setUserId] = useState<number | null>(null)
 
   // On load: if already authed, resolve vault + cached key to pick the page.
+  // Unauthenticated users stay on the landing page.
   useEffect(() => {
     fetch('/api/auth/me')
       .then(async (r) => {
@@ -40,7 +43,7 @@ export default function App() {
         onSignOut={async () => {
           await signOutApi()
           setUserId(null)
-          setPage('login')
+          setPage('landing')
         }}
       />
     )
@@ -81,14 +84,18 @@ export default function App() {
       />
     )
   }
-  return (
-    <LoginPage
-      onCodeSent={(e) => {
-        setEmail(e)
-        setPage('code')
-      }}
-    />
-  )
+  if (page === 'login') {
+    return (
+      <LoginPage
+        onCodeSent={(e) => {
+          setEmail(e)
+          setPage('code')
+        }}
+        onBack={() => setPage('landing')}
+      />
+    )
+  }
+  return <LandingPage onAccess={() => setPage('login')} />
 }
 
 // routeAfterAuth picks the post-login page from vault status + cached key:

@@ -1,14 +1,15 @@
 import { useState, FormEvent } from 'react'
-import { Button, Stack, Text, TextInput } from '@mantine/core'
-import { IconAt } from '@tabler/icons-react'
+import { Button, Group, Stack, Text, TextInput } from '@mantine/core'
+import { IconAt, IconArrowLeft } from '@tabler/icons-react'
 import { requestCode } from '../api/auth'
 import PageShell from '../components/PageShell'
 
 interface Props {
   onCodeSent: (email: string) => void
+  onBack: () => void
 }
 
-export default function LoginPage({ onCodeSent }: Props) {
+export default function LoginPage({ onCodeSent, onBack }: Props) {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -47,6 +48,16 @@ export default function LoginPage({ onCodeSent }: Props) {
           <Button type="submit" fullWidth loading={busy}>
             Send code
           </Button>
+          <Group justify="center">
+            <Button
+              variant="subtle"
+              color="gray"
+              leftSection={<IconArrowLeft size={16} />}
+              onClick={onBack}
+            >
+              Back
+            </Button>
+          </Group>
           {error && (
             <Text role="alert" c="red.7" size="sm">
               {error}

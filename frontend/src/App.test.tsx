@@ -37,14 +37,30 @@ function queuePostVerifyToSetup() {
   mockFetch.mockResolvedValueOnce(meOk).mockResolvedValueOnce(vaultNone)
 }
 
-describe('Login + vault routing', () => {
+describe('Landing + login + vault routing', () => {
   beforeEach(() => {
     mockFetch.mockReset()
   })
 
-  it('renders login form when not authenticated', async () => {
+  // Unauthenticated users land on the public landing page (not login).
+  it('shows the landing page when not authenticated', async () => {
     mockFetch.mockResolvedValueOnce(me401)
     renderWithMantine(<App />)
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /access your space/i })
+      ).toBeDefined()
+    })
+  })
+
+  // Landing CTA routes into the login form.
+  it('routes from landing to login on CTA click', async () => {
+    mockFetch.mockResolvedValueOnce(me401)
+    renderWithMantine(<App />)
+    await waitFor(() =>
+      screen.getByRole('button', { name: /access your space/i })
+    )
+    fireEvent.click(screen.getByRole('button', { name: /access your space/i }))
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeDefined()
     })
@@ -66,7 +82,7 @@ describe('Login + vault routing', () => {
   it('advances to code entry after email submission', async () => {
     mockFetch.mockResolvedValueOnce(me401).mockResolvedValueOnce(codeSent)
     renderWithMantine(<App />)
-    await waitFor(() => screen.getByLabelText(/email/i))
+    await openLoginFromLanding()
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     })
@@ -83,7 +99,7 @@ describe('Login + vault routing', () => {
       .mockResolvedValueOnce(signedIn) // verify-code
     queuePostVerifyToSetup() // me + vault after verify
     renderWithMantine(<App />)
-    await waitFor(() => screen.getByLabelText(/email/i))
+    await openLoginFromLanding()
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     })
@@ -106,7 +122,7 @@ describe('Login + vault routing', () => {
       .mockResolvedValueOnce(codeSent)
       .mockResolvedValueOnce(badCode)
     renderWithMantine(<App />)
-    await waitFor(() => screen.getByLabelText(/email/i))
+    await openLoginFromLanding()
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'test@example.com' },
     })
@@ -122,6 +138,15 @@ describe('Login + vault routing', () => {
     expect(screen.queryByRole('main')).toBeNull()
   })
 })
+
+// Helper: click the landing CTA and wait for the login form to appear.
+async function openLoginFromLanding() {
+  await waitFor(() =>
+    screen.getByRole('button', { name: /access your space/i })
+  )
+  fireEvent.click(screen.getByRole('button', { name: /access your space/i }))
+  await waitFor(() => screen.getByLabelText(/email/i))
+}
 
 const vaultWithPassphrase = {
   ok: true,

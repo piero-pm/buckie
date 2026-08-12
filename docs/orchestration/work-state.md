@@ -36,6 +36,7 @@ without later human approval.
 | Phase 1 strategy, North Star, and epic scope | Human | Approved | User message, 2026-08-10 |
 | Periodic guidance stays a separate second epic | Human | Approved | User message, 2026-08-10 |
 | Login method: passwordless email code (no SMS) | Human | Approved | User message, 2026-08-10 |
+| Public landing page (marketing surface) - expands interface-system.md marketing exclusion | Human | Approved | User message, 2026-08-12 |
 | Expected Phase 1 user count: about 5 | Human | Noted | User message, 2026-08-10 |
 | PRD: analysis brief, 4 delivery specs, traceability, 15 tickets | Human | Approved | "Start implementation", 2026-08-10 |
 | Rule defaults: categories (Flight into Transport), ~~GBP~~ EUR (updated 2026-08-11), 10-min code/5 tries/30-day session, amount<=1e6 and date<=2yr and duplicate-warn, projection from average monthly savings | Human | Approved | "Start implementation" adopts recommended defaults, 2026-08-10; currency changed to EUR 2026-08-11 |
