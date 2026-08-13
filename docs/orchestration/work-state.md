@@ -1,10 +1,10 @@
-# Work State: Penny Saver Initial Product
+# Work State: Buckie Initial Product
 
 | Field | Value |
 | --- | --- |
 | ID | WORK-001 |
 | Status | In progress |
-| Active project | penny-saver |
+| Active project | buckie |
 | Request class | New project |
 | Current stage | Developer (Slice 2) |
 | Next owner | Developer |
@@ -12,7 +12,7 @@
 
 ## 1. Request and Route
 
-Define and deliver Phase 1 of Penny Saver: a low-cost, open-source, responsive web
+Define and deliver Phase 1 of Buckie: a low-cost, open-source, responsive web
 service for private expense capture, recurring expenses, spending dashboards,
 projections, and user-invoked periodic guidance. Start with product problem and scope
 authority because outcomes, MVP boundaries, privacy promises, and AI inclusion remain
@@ -30,7 +30,7 @@ without later human approval.
 
 | Decision or waiver | Owner | Status | Evidence |
 | --- | --- | --- | --- |
-| Use seven canonical roles for Penny Saver | Human | Approved | User message, 2026-07-24 |
+| Use seven canonical roles for Buckie | Human | Approved | User message, 2026-07-24 |
 | Run specialists via in-editor subagents, not llm-delegate MCP | Human | Approved | User message, 2026-08-10 |
 | Models: PO/BA/Lead/review -> Opus 4.8; Developer -> Sonnet 4.6 | Human | Approved | User message, 2026-08-10 |
 | Phase 1 strategy, North Star, and epic scope | Human | Approved | User message, 2026-08-10 |
@@ -42,7 +42,7 @@ without later human approval.
 | Rule defaults: categories (Flight into Transport), ~~GBP~~ EUR (updated 2026-08-11), 10-min code/5 tries/30-day session, amount<=1e6 and date<=2yr and duplicate-warn, projection from average monthly savings | Human | Approved | "Start implementation" adopts recommended defaults, 2026-08-10; currency changed to EUR 2026-08-11 |
 | Privacy: client-side passphrase-derived encryption (host-blind); dashboards client-side; email-OTP auth retained; encryption method revisited later | Human | Approved | User message, 2026-08-10 |
 | Lead brief v0.2 + ADR-001 (SQLite), ADR-002 (host-blind, passphrase-loss=data-loss, >=12 chars), ADR-003 (Argon2id + AES-256-GCM + WASM) | Human | Approved | "build slice 1", 2026-08-10 |
-| Code host linked: GitHub trunk main pushed to piero-pm/penny-saver | Human | Done | git push, 2026-08-10 |
+| Code host linked: GitHub trunk main pushed to piero-pm/buckie | Human | Done | git push, 2026-08-10 |
 
 Stage waivers (human-approved 2026-08-10): QA waived - human verifies manually; UX
 reduced - apply UX inline, no semantic-interface rendering.

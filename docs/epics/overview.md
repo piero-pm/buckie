@@ -1,4 +1,4 @@
-# Penny Saver — Epics & Delivery Overview
+# Buckie — Epics & Delivery Overview
 
 | Field | Value |
 | --- | --- |
@@ -11,7 +11,7 @@ artifacts; it points to them and records what we are doing now.
 
 ## What we are building
 
-Penny Saver: a small, low-cost, open-source, self-hostable, responsive web app that
+Buckie: a small, low-cost, open-source, self-hostable, responsive web app that
 lets a salaried person record spending with almost no friction and see where their
 money goes each month, so they can spot overspending and grow savings. Login is
 passwordless email code. Stack constraint (human-stated): Go backend + React frontend.

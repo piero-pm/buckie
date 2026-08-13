@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"penny-saver/internal/db"
+	"buckie/internal/db"
 )
 
 // openTestDB creates a fresh in-memory SQLite DB scoped to the test.

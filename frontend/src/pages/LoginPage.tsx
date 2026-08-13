@@ -29,7 +29,7 @@ export default function LoginPage({ onCodeSent, onBack }: Props) {
 
   return (
     <PageShell
-      title="Penny Saver"
+      title="Buckie"
       subtitle="Sign in to your private workspace."
       card
     >

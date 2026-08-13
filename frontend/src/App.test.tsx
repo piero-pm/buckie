@@ -169,7 +169,7 @@ async function seedCachedKey(userId: number) {
     ['encrypt', 'decrypt']
   )
   const db = await new Promise<IDBDatabase>((resolve, reject) => {
-    const req = indexedDB.open('penny-saver', 1)
+    const req = indexedDB.open('buckie', 1)
     req.onupgradeneeded = () => req.result.createObjectStore('keys')
     req.onsuccess = () => resolve(req.result)
     req.onerror = () => reject(req.error)

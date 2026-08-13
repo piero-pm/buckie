@@ -9,7 +9,7 @@ DOMAIN="${2:-}"
 cd "$INSTALL/incoming"
 
 # Move the new artifacts into place (overwrite). dist/ is replaced wholesale.
-install -m 0755 penny-saver-bin "$INSTALL/penny-saver"
+install -m 0755 buckie-bin "$INSTALL/buckie"
 rm -rf "$INSTALL/dist"
 mv dist "$INSTALL/dist"
 
@@ -23,5 +23,5 @@ if [ -n "$DOMAIN" ] && command -v caddy >/dev/null 2>&1; then
 fi
 
 # Restart the app (systemd picks up the new binary).
-sudo systemctl restart penny-saver
+sudo systemctl restart buckie
 echo "deploy activated: $INSTALL (domain=${DOMAIN:-none})"

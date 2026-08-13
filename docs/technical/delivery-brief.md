@@ -1,4 +1,4 @@
-# Technical Delivery Brief: Penny Saver Epic A — Private Spending-Visibility Loop
+# Technical Delivery Brief: Buckie Epic A — Private Spending-Visibility Loop
 
 | Field | Value |
 | --- | --- |

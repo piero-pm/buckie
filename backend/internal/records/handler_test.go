@@ -9,8 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"penny-saver/internal/auth"
-	"penny-saver/internal/db"
+	"buckie/internal/auth"
+	"buckie/internal/db"
 )
 
 func openTestDB(t *testing.T) *sql.DB {

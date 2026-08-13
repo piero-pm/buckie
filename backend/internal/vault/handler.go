@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net/http"
 
-	"penny-saver/internal/auth"
+	"buckie/internal/auth"
 )
 
 // NewMux returns a ServeMux with the session-gated vault routes registered.

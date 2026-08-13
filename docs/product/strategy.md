@@ -1,4 +1,4 @@
-# Product Strategy: Penny Saver
+# Product Strategy: Buckie
 
 | Field | Value |
 | --- | --- |

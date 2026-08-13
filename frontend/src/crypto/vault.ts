@@ -21,7 +21,7 @@ export interface DerivedVault {
 }
 
 /** Fixed plaintext marker; correctness of decrypt signals the right key. */
-const VERIFIER_PLAINTEXT = new TextEncoder().encode('penny-saver-vault-v1')
+const VERIFIER_PLAINTEXT = new TextEncoder().encode('buckie-vault-v1')
 
 /**
  * First-time setup: derives a fresh key from the passphrase, encrypts the

@@ -10,7 +10,7 @@
 
 ## 1. Outcome
 
-Reference: Penny Saver strategy v0.1 and outcome roadmap v0.1 (recommendations), roadmap outcomes 1-4, and the Impact Map trace. Epic JTBD: when I spend money during my day or week, I want to record it quickly and later see where my money goes each month, so I can spot overspending and steadily grow my savings.
+Reference: Buckie strategy v0.1 and outcome roadmap v0.1 (recommendations), roadmap outcomes 1-4, and the Impact Map trace. Epic JTBD: when I spend money during my day or week, I want to record it quickly and later see where my money goes each month, so I can spot overspending and steadily grow my savings.
 
 ## 2. Value and Evidence
 

@@ -23,7 +23,7 @@ interface Props {
   onAccess: () => void
 }
 
-/** Public landing page (no auth). Pitches Penny Saver as a self-hostable,
+/** Public landing page (no auth). Pitches Buckie as a self-hostable,
  * privacy-first, open-source spending tracker, with one CTA into the private
  * space. Scope expansion approved 2026-08-12 (interface-system.md excludes
  * marketing unless separately approved). */
@@ -134,13 +134,13 @@ function Footer() {
       <Container size={860} px="md" py="lg">
         <Group justify="space-between">
           <Text size="xs" c="gray.5">
-            Penny Saver — built open-source.
+            Buckie — built open-source.
           </Text>
           <Text
             size="xs"
             c="indigo"
             component="a"
-            href="https://github.com/piero-pm/penny-saver"
+            href="https://github.com/piero-pm/buckie"
             target="_blank"
             rel="noreferrer"
           >

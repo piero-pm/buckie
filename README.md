@@ -1,4 +1,4 @@
-# Penny Saver
+# Buckie
 
 Passwordless spending tracker for ~5 self-hosted users.
 
@@ -56,19 +56,19 @@ new device you re-enter the passphrase to unlock.
 cd frontend && npm run build   # outputs frontend/dist/
 
 # 2. Build the Go binary (run from project root)
-cd ../backend && go build -o ../penny-saver .
+cd ../backend && go build -o ../buckie .
 ```
 
 The binary serves both the API and the SPA on one port.
 
 ## Deploying
 
-1. Copy `penny-saver` (binary) to your server.
+1. Copy `buckie` (binary) to your server.
 2. Set environment variables:
    | Variable     | Default          | Description                                            |
    |--------------|------------------|--------------------------------------------------------|
    | `ADDR`       | `:8080`          | Listen address                                         |
-   | `DB_PATH`    | `penny-saver.db` | SQLite file path                                       |
+   | `DB_PATH`    | `buckie.db` | SQLite file path                                       |
    | `STATIC_DIR` | `frontend/dist`  | Path to built SPA assets                               |
    | `DEV_MODE`   | `false`          | Log codes to stdout — dev only; **never** in production |
    | `SMTP_HOST`  | (none)           | SMTP server host (e.g. `smtp.resend.com`). When unset, codes are not delivered. |

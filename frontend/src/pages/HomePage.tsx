@@ -137,7 +137,7 @@ export default function HomePage({ userId, onSignOut }: Props) {
           <Group justify="space-between" align="flex-start">
             <Stack gap={0}>
               <Text fw={600} size="xl" c="gray.9">
-                Penny Saver
+                Buckie
               </Text>
               <Text size="xs" c="gray.5">
                 Your private spending workspace

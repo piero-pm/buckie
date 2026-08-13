@@ -10,7 +10,7 @@
  *
  * The key is never written anywhere it could be extracted.
  */
-const DB_NAME = 'penny-saver'
+const DB_NAME = 'buckie'
 const STORE = 'keys'
 
 let cache: { userId: number; key: CryptoKey } | null = null

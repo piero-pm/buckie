@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # One-time provisioning for a fresh Ubuntu VPS. Idempotent: safe to re-run.
 # Run as root on the droplet:  sudo bash setup-vps.sh
-# Creates: penny user, /opt/penny-saver, Caddy + auto-TLS, systemd service,
+# Creates: buckie user, /opt/buckie, Caddy + auto-TLS, systemd service,
 # UFW firewall, and an env-file template you must fill with SMTP creds.
 set -euo pipefail
 
-INSTALL=/opt/penny-saver
-USER=penny
+INSTALL=/opt/buckie
+USER=buckie
 
 echo "==> Creating user '$USER' (if missing)"
 if ! id "$USER" >/dev/null 2>&1; then
@@ -30,17 +30,17 @@ if ! command -v caddy >/dev/null 2>&1; then
 fi
 
 echo "==> systemd unit"
-cat > /etc/systemd/system/penny-saver.service <<EOF
+cat > /etc/systemd/system/buckie.service <<EOF
 [Unit]
-Description=Penny Saver
+Description=Buckie
 After=network.target
 
 [Service]
 Type=simple
 User=$USER
 WorkingDirectory=$INSTALL
-EnvironmentFile=$INSTALL/penny-saver.env
-ExecStart=$INSTALL/penny-saver
+EnvironmentFile=$INSTALL/buckie.env
+ExecStart=$INSTALL/buckie
 Restart=on-failure
 RestartSec=3
 
@@ -48,7 +48,7 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
-systemctl enable penny-saver
+systemctl enable buckie
 
 echo "==> Firewall (UFW): allow SSH, HTTP, HTTPS"
 apt-get install -y ufw >/dev/null
@@ -58,16 +58,16 @@ ufw allow 443/tcp
 yes | ufw enable >/dev/null || true
 
 echo "==> sudo for $USER (so post-deploy.sh can restart the service + reload Caddy)"
-cat > /etc/sudoers.d/penny-saver <<EOF
-$USER ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart penny-saver, /usr/bin/systemctl reload caddy, /usr/bin/systemctl restart caddy, /usr/bin/cp /tmp/caddyfile.new /etc/caddy/Caddyfile
+cat > /etc/sudoers.d/buckie <<EOF
+$USER ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart buckie, /usr/bin/systemctl reload caddy, /usr/bin/systemctl restart caddy, /usr/bin/cp /tmp/caddyfile.new /etc/caddy/Caddyfile
 EOF
-chmod 0440 /etc/sudoers.d/penny-saver
+chmod 0440 /etc/sudoers.d/buckie
 
 echo "==> env-file template (EDIT THIS with SMTP creds before first deploy)"
-if [ ! -f "$INSTALL/penny-saver.env" ]; then
-  cat > "$INSTALL/penny-saver.env" <<EOF
+if [ ! -f "$INSTALL/buckie.env" ]; then
+  cat > "$INSTALL/buckie.env" <<EOF
 ADDR=127.0.0.1:8080
-DB_PATH=$INSTALL/penny-saver.db
+DB_PATH=$INSTALL/buckie.db
 STATIC_DIR=$INSTALL/dist
 # SMTP for sign-in codes (Resend/Brevo). Fill these in:
 SMTP_HOST=
@@ -77,8 +77,8 @@ SMTP_USER=
 SMTP_PASS=
 # Do NOT set DEV_MODE in production.
 EOF
-  chown "$USER":"$USER" "$INSTALL/penny-saver.env"
-  chmod 0640 "$INSTALL/penny-saver.env"
+  chown "$USER":"$USER" "$INSTALL/buckie.env"
+  chmod 0640 "$INSTALL/buckie.env"
 fi
 
 echo ""
@@ -86,7 +86,7 @@ echo "=========================================="
 echo "Provisioning complete."
 echo "Next steps (see DEPLOY.md):"
 echo "  1. Authorize the deploy SSH key for $USER (~$USER/.ssh/authorized_keys)."
-echo "  2. Edit $INSTALL/penny-saver.env with your SMTP credentials."
+echo "  2. Edit $INSTALL/buckie.env with your SMTP credentials."
 echo "  3. Configure GitHub secrets (VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PATH, DEPLOY_DOMAIN)."
 echo "  4. Point your domain A record at this server's IP."
 echo "  5. Push to main (or run the Deploy workflow manually) — Caddy gets TLS on first deploy."

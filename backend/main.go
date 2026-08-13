@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"os"
 
-	"penny-saver/internal/auth"
-	"penny-saver/internal/db"
-	"penny-saver/internal/records"
-	"penny-saver/internal/vault"
+	"buckie/internal/auth"
+	"buckie/internal/db"
+	"buckie/internal/records"
+	"buckie/internal/vault"
 )
 
 func main() {
-	store, err := db.Open(envOr("DB_PATH", "penny-saver.db"))
+	store, err := db.Open(envOr("DB_PATH", "buckie.db"))
 	if err != nil {
 		log.Fatalf("db: %v", err)
 	}

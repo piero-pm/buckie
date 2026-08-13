@@ -1,4 +1,4 @@
-# Outcome Roadmap: Penny Saver
+# Outcome Roadmap: Buckie
 
 | Field | Value |
 | --- | --- |
@@ -9,7 +9,7 @@
 
 ## 1. Goal
 
-Reference: Penny Saver strategy v0.1 (recommendation). Guarded North Star (candidate, needs human approval): share of review cycles in which the user opens the dashboard and records one deliberate saving action, with capture completeness and zero cross-user privacy incidents as counter-metrics.
+Reference: Buckie strategy v0.1 (recommendation). Guarded North Star (candidate, needs human approval): share of review cycles in which the user opens the dashboard and records one deliberate saving action, with capture completeness and zero cross-user privacy incidents as counter-metrics.
 
 ## 2. Ordered Outcomes
 

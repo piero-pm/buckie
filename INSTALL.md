@@ -1,10 +1,10 @@
-# Installing Penny Saver
+# Installing Buckie
 
 Two paths: **run it locally** on your own machine, or **self-host on a VPS** for
 access from your phone and other devices. Both end with you signing in, setting an
 encryption passphrase, and recording expenses.
 
-Penny Saver is one Go binary that serves both the API and the (built) web app on a
+Buckie is one Go binary that serves both the API and the (built) web app on a
 single port. SQLite stores everything in one file. Your financial data is encrypted
 in your browser before it ever reaches the server — the server only stores
 ciphertext.
@@ -25,8 +25,8 @@ Use this to try the app or develop it. You only need it running while you use it
 
 ```sh
 # 1. Get the code
-git clone https://github.com/piero-pm/penny-saver.git
-cd penny-saver
+git clone https://github.com/piero-pm/buckie.git
+cd buckie
 
 # 2. Build the web app once (outputs frontend/dist/)
 cd frontend
@@ -58,11 +58,11 @@ The server listens on **<http://localhost:8080>**. Open it in your browser.
 
 ### Stopping
 
-Press `Ctrl+C` in the terminal. Your data persists in `backend/penny-saver.db`.
+Press `Ctrl+C` in the terminal. Your data persists in `backend/buckie.db`.
 
 ### Backing up
 
-Copy `backend/penny-saver.db` somewhere safe. It's encrypted, but it's your only
+Copy `backend/buckie.db` somewhere safe. It's encrypted, but it's your only
 copy of your data.
 
 ---
@@ -75,7 +75,7 @@ desktop, with HTTPS and real email sign-in codes. Estimated cost: **~£5/month +
 
 ### What you need
 
-- A **domain name** you own (e.g. `penny.yourname.com`) — ~£10/year from any
+- A **domain name** you own (e.g. `buckie.yourname.com`) — ~£10/year from any
   registrar (Namecheap, Porkbun, Cloudflare…)
 - A **small Linux VPS** — ~£4–6/month. Options: [Hetzner](https://www.hetzner.com)
   (CX11, €4.5/mo, EU), [DigitalOcean](https://www.digitalocean.com) ($4/mo
@@ -91,7 +91,7 @@ desktop, with HTTPS and real email sign-in codes. Estimated cost: **~£5/month +
 In your registrar/DNS, add an **A record**:
 
 ```
-penny  A  <your-vps-ipv4-address>
+buckie  A  <your-vps-ipv4-address>
 ```
 
 Wait a few minutes for it to propagate.
@@ -115,37 +115,37 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo 
 sudo apt update && sudo apt install caddy
 ```
 
-### 3. Build Penny Saver on the VPS
+### 3. Build Buckie on the VPS
 
 ```sh
 cd /opt
-sudo git clone https://github.com/piero-pm/penny-saver.git
-cd penny-saver
+sudo git clone https://github.com/piero-pm/buckie.git
+cd buckie
 sudo chown -R $USER:$USER .
 
 # Build the web app
 cd frontend && npm install -g npm@latest && npm install && npm run build && cd ..
 
 # Build the Go binary
-cd backend && go build -o /opt/penny-saver/penny-saver . && cd ..
+cd backend && go build -o /opt/buckie/buckie . && cd ..
 
 # Place the database
-sudo touch /opt/penny-saver/penny-saver.db
-sudo chown $USER:$USER /opt/penny-saver/penny-saver.db
+sudo touch /opt/buckie/buckie.db
+sudo chown $USER:$USER /opt/buckie/buckie.db
 ```
 
 ### 4. Configure environment + Caddy
 
-Create `/opt/penny-saver/penny-saver.env` with your real values (this example uses
+Create `/opt/buckie/buckie.env` with your real values (this example uses
 Resend; Brevo/Mailgun follow the same pattern):
 
 ```sh
 ADDR=127.0.0.1:8080          # loopback only; Caddy proxies to it
-DB_PATH=/opt/penny-saver/penny-saver.db
-STATIC_DIR=/opt/penny-saver/frontend/dist
+DB_PATH=/opt/buckie/buckie.db
+STATIC_DIR=/opt/buckie/frontend/dist
 SMTP_HOST=smtp.resend.com
 SMTP_PORT=587
-SMTP_FROM=Penny Saver <codes@yourdomain.com>
+SMTP_FROM=Buckie <codes@yourdomain.com>
 SMTP_USER=resend              # for Resend, username is "resend"
 SMTP_PASS=re_xxxxxxxxxxxxx   # your Resend API key
 # Do NOT set DEV_MODE in production
@@ -154,26 +154,26 @@ SMTP_PASS=re_xxxxxxxxxxxxx   # your Resend API key
 Edit `/etc/caddy/Caddyfile` (replace the domain):
 
 ```caddy
-penny.yourname.com {
+buckie.yourname.com {
     reverse_proxy 127.0.0.1:8080
 }
 ```
 
 ### 5. Run it as a service (systemd)
 
-Create `/etc/systemd/system/penny-saver.service`:
+Create `/etc/systemd/system/buckie.service`:
 
 ```ini
 [Unit]
-Description=Penny Saver
+Description=Buckie
 After=network.target
 
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/penny-saver
-EnvironmentFile=/opt/penny-saver/penny-saver.env
-ExecStart=/opt/penny-saver/penny-saver
+WorkingDirectory=/opt/buckie
+EnvironmentFile=/opt/buckie/buckie.env
+ExecStart=/opt/buckie/buckie
 Restart=on-failure
 
 [Install]
@@ -184,16 +184,16 @@ Then:
 
 ```sh
 sudo systemctl daemon-reload
-sudo systemctl enable --now penny-saver
+sudo systemctl enable --now buckie
 sudo systemctl restart caddy   # provisions the TLS certificate
 ```
 
-Check it's running: `sudo systemctl status penny-saver` (should say `active
-(running)`). View logs with `sudo journalctl -u penny-saver -f`.
+Check it's running: `sudo systemctl status buckie` (should say `active
+(running)`). View logs with `sudo journalctl -u buckie -f`.
 
 ### 6. Use it
 
-Open **<https://penny.yourname.com>**. Enter your email → receive a real code by
+Open **<https://buckie.yourname.com>**. Enter your email → receive a real code by
 email → sign in → set your encryption passphrase → start recording.
 
 You can now use it from your iPhone Safari and any desktop browser.
@@ -203,14 +203,14 @@ You can now use it from your iPhone Safari and any desktop browser.
 ## Updating to a new version
 
 ```sh
-cd /opt/penny-saver
+cd /opt/buckie
 git pull
 cd frontend && npm install && npm run build && cd ..
-cd backend && go build -o /opt/penny-saver/penny-saver . && cd ..
-sudo systemctl restart penny-saver
+cd backend && go build -o /opt/buckie/buckie . && cd ..
+sudo systemctl restart buckie
 ```
 
-Your data in `penny-saver.db` is preserved across updates. (Schema uses
+Your data in `buckie.db` is preserved across updates. (Schema uses
 `CREATE TABLE IF NOT EXISTS`, so new tables are added automatically. Always keep a
 backup of the `.db` file before updating.)
 
@@ -220,7 +220,7 @@ The entire app + all user data is one file:
 
 ```sh
 # While the server is running, SQLite tolerates a file copy
-sudo cp /opt/penny-saver/penny-saver.db /backup/penny-saver-$(date +%F).db
+sudo cp /opt/buckie/buckie.db /backup/buckie-$(date +%F).db
 ```
 
 The backup is encrypted (ciphertext-only), so it's safe to store anywhere — but
@@ -228,13 +228,13 @@ it's your only recovery if the VPS dies.
 
 ## Troubleshooting
 
-- **Codes not arriving:** check `sudo journalctl -u penny-saver -f` for SMTP
+- **Codes not arriving:** check `sudo journalctl -u buckie -f` for SMTP
   errors. Verify `SMTP_HOST/PORT/USER/PASS/FROM`. With Resend, verify your sending
   domain in their dashboard. While debugging you can temporarily set
   `DEV_MODE=true` to read codes from the logs — but never leave it on in
   production.
 - **TLS not working:** ensure port 80 + 443 are open on the VPS firewall
   (`sudo ufw allow 80,443/tcp`) and the DNS A record resolves
-  (`dig penny.yourname.com`).
+  (`dig buckie.yourname.com`).
 - **Forgot your passphrase:** there is no recovery. You can reset by deleting
-  your `penny-saver.db` (loses all data) and starting fresh.
+  your `buckie.db` (loses all data) and starting fresh.

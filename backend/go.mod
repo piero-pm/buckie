@@ -1,4 +1,4 @@
-module penny-saver
+module buckie
 
 go 1.22
 

@@ -62,7 +62,7 @@ func newSMTPSender(host string) *smtpSender {
 func (s *smtpSender) Send(email, code string) error {
 	msg := "From: " + s.from + "\r\n" +
 		"To: " + email + "\r\n" +
-		"Subject: Your Penny Saver sign-in code\r\n" +
+		"Subject: Your Buckie sign-in code\r\n" +
 		"MIME-Version: 1.0\r\n" +
 		"Content-Type: text/plain; charset=UTF-8\r\n" +
 		"\r\n" +

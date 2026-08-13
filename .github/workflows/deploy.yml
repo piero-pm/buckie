@@ -3,11 +3,11 @@ name: Deploy
 # Deploys main to the VPS after CI passes. Triggered only on push to main
 # (not PRs). Required GitHub secrets — see DEPLOY.md:
 #   VPS_HOST      e.g. 203.0.113.10 (droplet public IP)
-#   VPS_USER      usually 'penny' (created by setup-vps.sh)
+#   VPS_USER      usually 'buckie' (created by setup-vps.sh)
 #   VPS_SSH_KEY   private key matching the pubkey authorized on the VPS
-#   VPS_PATH      install dir, usually /opt/penny-saver
-#   DEPLOY_DOMAIN e.g. penny.yourname.com (written into the Caddyfile)
-# Runtime app secrets (written to /opt/penny-saver/penny-saver.env on first
+#   VPS_PATH      install dir, usually /opt/buckie
+#   DEPLOY_DOMAIN e.g. buckie.yourname.com (written into the Caddyfile)
+# Runtime app secrets (written to /opt/buckie/buckie.env on first
 # provision, NOT rotated each deploy):
 #   SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS SMTP_FROM
 
@@ -50,12 +50,12 @@ jobs:
       - name: Cross-compile Go binary (linux/amd64)
         working-directory: backend
         run: |
-          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../penny-saver-bin .
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../buckie-bin .
 
       - name: Stage artifacts
         run: |
           mkdir -p stage/dist
-          cp penny-saver-bin stage/
+          cp buckie-bin stage/
           cp -r frontend/dist/* stage/dist/
           cp deploy/Caddyfile stage/ 2>/dev/null || true
           cp deploy/post-deploy.sh stage/ 2>/dev/null || true
@@ -83,4 +83,4 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script: systemctl is-active --quiet penny-saver && echo OK || (echo FAIL; exit 1)
+          script: systemctl is-active --quiet buckie && echo OK || (echo FAIL; exit 1)
