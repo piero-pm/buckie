@@ -23,7 +23,7 @@ interface Props {
   onAccess: () => void
 }
 
-/** Public landing page (no auth). Pitches Buckie as a self-hostable,
+/** Public landing page (no auth). Pitches myBuckie as a self-hostable,
  * privacy-first, open-source spending tracker, with one CTA into the private
  * space. Scope expansion approved 2026-08-12 (interface-system.md excludes
  * marketing unless separately approved). */
@@ -136,7 +136,7 @@ function Footer() {
       <Container size={860} px="md" py="lg">
         <Group justify="space-between">
           <Text size="xs" c="gray.5">
-            Buckie — built open-source.
+            myBuckie — built open-source.
           </Text>
           <Text
             size="xs"

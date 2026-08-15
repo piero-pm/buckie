@@ -38,7 +38,7 @@ export default function HelpPage({ onBack }: Props) {
 
           <Card withBorder padding="lg">
             <Text size="sm" fw={600} c="gray.7" mb="xs">
-              How Buckie works
+              How myBuckie works
             </Text>
             <Text size="sm" c="gray.6">
               Record spends as they happen with “Record a spend”. Add fixed
@@ -60,7 +60,7 @@ export default function HelpPage({ onBack }: Props) {
               Self-hosting and source
             </Text>
             <Text size="sm" c="gray.6">
-              Buckie is open source. Read the code or run your own instance:{' '}
+              myBuckie is open source. Read the code or run your own instance:{' '}
               <Anchor
                 href="https://github.com/piero-pm/buckie"
                 target="_blank"

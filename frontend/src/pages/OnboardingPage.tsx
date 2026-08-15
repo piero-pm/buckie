@@ -21,7 +21,7 @@ interface Props {
 }
 
 /** Two-stage first-run onboarding (TICKET-021, BR-ONB-1): stage 1 explains
- * how Buckie works and how privacy is protected; stage 2 collects income
+ * how myBuckie works and how privacy is protected; stage 2 collects income
  * sources (salary, savings, investments) with Skip / Done. */
 export default function OnboardingPage({ sources, onSave, onFinish }: Props) {
   const [step, setStep] = useState<1 | 2>(1)
@@ -32,11 +32,11 @@ export default function OnboardingPage({ sources, onSave, onFinish }: Props) {
         <Container size={560} px="md" py="xl">
           <Stack gap="md">
             <Title order={1} c="gray.9">
-              Welcome to Buckie
+              Welcome to myBuckie
             </Title>
             <Card withBorder padding="lg">
               <Text size="sm" fw={600} c="gray.7" mb="xs">
-                How Buckie works
+                How myBuckie works
               </Text>
               <Text size="sm" c="gray.6">
                 Record spends as they happen, register fixed monthly costs once
