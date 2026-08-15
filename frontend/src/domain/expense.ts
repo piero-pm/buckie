@@ -29,9 +29,12 @@ const MAX_AMOUNT = 1_000_000 // approved sane maximum
 const MAX_DECIMALS = /^-?\d+(\.\d{1,2})?$/
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
+/** The input a validation failure came from (shared by domain validators). */
+export type Field =
+  'amount' | 'category' | 'date' | 'kind' | 'label' | 'dayOfMonth'
+
 export type ValidationResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: 'amount' | 'category' | 'date' }
+  { ok: true } | { ok: false; error: string; field?: Field }
 
 /** Validates an expense against BR-DQ-1..4. Returns the first failure, if any. */
 export function validateExpense(input: {

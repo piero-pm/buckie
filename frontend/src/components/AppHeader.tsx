@@ -8,7 +8,12 @@ import {
   Text,
   UnstyledButton,
 } from '@mantine/core'
-import { IconList, IconHelpCircle, IconLogout } from '@tabler/icons-react'
+import {
+  IconCoins,
+  IconList,
+  IconHelpCircle,
+  IconLogout,
+} from '@tabler/icons-react'
 import type { View } from '../pages/views'
 
 interface Props {
@@ -27,6 +32,7 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { view: 'expenses', label: 'Expenses', icon: <IconList size={16} /> },
+  { view: 'income', label: 'Income', icon: <IconCoins size={16} /> },
   { view: 'help', label: 'Help', icon: <IconHelpCircle size={16} /> },
 ]
 

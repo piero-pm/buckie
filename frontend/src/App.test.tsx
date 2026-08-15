@@ -193,6 +193,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(vaultWithPassphrase)
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
+      .mockResolvedValueOnce(emptyRecords) // incomes list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
     renderWithMantine(<App />)
@@ -200,6 +201,10 @@ describe('Persistent header (BA-DS-005)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Help' }))
     await waitFor(() => {
       expect(screen.getByRole('main', { name: 'help' })).toBeDefined()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Income' }))
+    await waitFor(() => {
+      expect(screen.getByRole('main', { name: 'income sources' })).toBeDefined()
     })
     fireEvent.click(screen.getByRole('button', { name: 'sign out' }))
     await waitFor(() => {

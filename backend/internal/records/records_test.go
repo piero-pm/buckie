@@ -137,3 +137,31 @@ func TestInvalidKind(t *testing.T) {
 		t.Errorf("invalid kind: got %d, want 400", resp.StatusCode)
 	}
 }
+
+// Income kind round-trips like any encrypted record (TICKET-020).
+func TestIncomeKindRoundTrip(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	income := recordDTO{ID: "inc-1", Kind: KindIncome, Ciphertext: "aW5jb21l"}
+	put := do(t, http.MethodPut, srv.URL+"/api/records/inc-1", income, cookie)
+	put.Body.Close()
+	if put.StatusCode != http.StatusNoContent {
+		t.Fatalf("put income: got %d, want 204", put.StatusCode)
+	}
+
+	got := do(t, http.MethodGet, srv.URL+"/api/records?kind=income", nil, cookie)
+	defer got.Body.Close()
+	if got.StatusCode != http.StatusOK {
+		t.Fatalf("list income: got %d, want 200", got.StatusCode)
+	}
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	if err := json.NewDecoder(got.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body.Records) != 1 || body.Records[0].ID != "inc-1" {
+		t.Errorf("expected 1 income record inc-1, got %+v", body.Records)
+	}
+}

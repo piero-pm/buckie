@@ -12,6 +12,16 @@ if (globalThis.crypto && !globalThis.crypto.subtle) {
   })
 }
 
+// jsdom does not implement ResizeObserver, which Mantine's ScrollArea (used
+// by Select) needs. Stub it so component tests don't throw.
+globalThis.ResizeObserver =
+  globalThis.ResizeObserver ||
+  (class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver)
+
 // jsdom does not implement matchMedia, which Mantine uses for responsive
 // utilities. Stub it so component tests don't throw.
 Object.defineProperty(window, 'matchMedia', {

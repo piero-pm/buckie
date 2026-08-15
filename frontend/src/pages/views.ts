@@ -2,4 +2,4 @@
  * share one navigation state (BA-DS-005). Hub is the default view after
  * unlock. */
 export type View =
-  'hub' | 'capture' | 'expenses' | 'recurring' | 'dashboard' | 'help'
+  'hub' | 'capture' | 'expenses' | 'recurring' | 'income' | 'dashboard' | 'help'

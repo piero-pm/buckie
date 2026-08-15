@@ -1,9 +1,14 @@
 import type { Expense, Recurring } from './expense'
+import type { IncomeSource } from './income'
 import { CATEGORIES, type Category } from './taxonomy'
 
-/** ym returns the yyyy-mm key for a date string or Date. */
+/** ym returns the yyyy-mm key for a date string or Date. Accepts date-only
+ * strings (parsed as local midnight) and full ISO timestamps. */
 export function ym(date: string | Date): string {
-  const d = typeof date === 'string' ? new Date(date + 'T00:00:00') : date
+  const d =
+    typeof date === 'string'
+      ? new Date(date.length === 10 ? date + 'T00:00:00' : date)
+      : date
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
@@ -95,6 +100,21 @@ export function projectSavings(
     nextMonthEstimate: avg,
     yearlyIfContinued: avg * 12,
   }
+}
+
+/**
+ * Sums income sources into a month (TICKET-020/022): an active source counts
+ * from its creation month onward; an ended source counts only through its
+ * end month, preserving history (BR-INC-3).
+ */
+export function monthIncome(sources: IncomeSource[], month: string): number {
+  let total = 0
+  for (const s of sources) {
+    const start = ym(s.createdAt)
+    const end = s.active ? month : ym(s.endedAt ?? s.createdAt)
+    if (start <= month && month <= end) total += s.amount
+  }
+  return total
 }
 
 /** Returns the yyyy-mm keys spanning from the first to current month. */

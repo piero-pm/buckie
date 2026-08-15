@@ -1,12 +1,8 @@
-import { useEffect, useState } from 'react'
-import {
-  expenses as expenseApi,
-  recurring as recurringApi,
-} from '../api/records'
-import type { Expense, Recurring } from '../domain/expense'
+import { useWorkspace } from '../hooks/useWorkspace'
 import CapturePage from './CapturePage'
 import ExpensesPage from './ExpensesPage'
 import RecurringPage from './RecurringPage'
+import IncomePage from './IncomePage'
 import DashboardPage from './DashboardPage'
 import HelpPage from './HelpPage'
 import HubView from './HubView'
@@ -18,41 +14,17 @@ interface Props {
   onNavigate: (v: View) => void
 }
 
-/** The signed-in workspace: loads + caches decrypted records once and routes
- * the current view (owned by App so the persistent header shares it). Data
- * is mutated in place, so sub-pages see updates immediately. */
+/** The signed-in workspace: owns the decrypted record state (useWorkspace)
+ * and routes the current view (owned by App so the persistent header shares
+ * it). Data is mutated in place, so sub-pages see updates immediately. */
 export default function HomePage({ userId, view, onNavigate }: Props) {
-  const [expenses, setExpenses] = useState<Expense[]>([])
-  const [recurring, setRecurring] = useState<Recurring[]>([])
-  const [loadError, setLoadError] = useState('')
-
-  async function load() {
-    setLoadError('')
-    try {
-      const [e, r] = await Promise.all([
-        expenseApi.list(userId),
-        recurringApi.list(userId),
-      ])
-      setExpenses(e)
-      setRecurring(r)
-    } catch {
-      setLoadError('Could not load your data. Try unlocking again.')
-    }
-  }
-
-  useEffect(() => {
-    void load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+  const ws = useWorkspace(userId)
 
   if (view === 'capture') {
     return (
       <CapturePage
-        existing={expenses}
-        onSave={async (e) => {
-          await expenseApi.save(userId, e)
-          setExpenses((prev) => [e, ...prev])
-        }}
+        existing={ws.expenses}
+        onSave={ws.saveExpense}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -60,15 +32,9 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   if (view === 'expenses') {
     return (
       <ExpensesPage
-        expenses={expenses}
-        onUpdate={async (e) => {
-          await expenseApi.save(userId, e)
-          setExpenses((prev) => prev.map((x) => (x.id === e.id ? e : x)))
-        }}
-        onDelete={async (id) => {
-          await expenseApi.remove(id)
-          setExpenses((prev) => prev.filter((x) => x.id !== id))
-        }}
+        expenses={ws.expenses}
+        onUpdate={ws.updateExpense}
+        onDelete={ws.removeExpense}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -76,20 +42,19 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   if (view === 'recurring') {
     return (
       <RecurringPage
-        items={recurring}
-        onSave={async (r) => {
-          await recurringApi.save(userId, r)
-          setRecurring((prev) => {
-            const i = prev.findIndex((x) => x.id === r.id)
-            return i >= 0
-              ? prev.map((x) => (x.id === r.id ? r : x))
-              : [r, ...prev]
-          })
-        }}
-        onDelete={async (id) => {
-          await recurringApi.remove(id)
-          setRecurring((prev) => prev.filter((x) => x.id !== id))
-        }}
+        items={ws.recurring}
+        onSave={ws.saveRecurring}
+        onDelete={ws.removeRecurring}
+        onBack={() => onNavigate('hub')}
+      />
+    )
+  }
+  if (view === 'income') {
+    return (
+      <IncomePage
+        items={ws.incomes}
+        onSave={ws.saveIncome}
+        onDelete={ws.removeIncome}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -97,8 +62,8 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   if (view === 'dashboard') {
     return (
       <DashboardPage
-        expenses={expenses}
-        recurring={recurring}
+        expenses={ws.expenses}
+        recurring={ws.recurring}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -108,8 +73,8 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   }
   return (
     <HubView
-      expenses={expenses}
-      loadError={loadError}
+      expenses={ws.expenses}
+      loadError={ws.loadError}
       onNavigate={onNavigate}
     />
   )
