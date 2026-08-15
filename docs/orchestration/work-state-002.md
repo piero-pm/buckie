@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-002 |
-| Status | In progress |
+| Status | Complete — human verification pending |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Developer (Slice 4) |
-| Next owner | Developer |
+| Current stage | Human verification (QA waived -> manual) |
+| Next owner | Human |
 | Updated | 2026-08-16 |
 
 ## 1. Request and Route
@@ -40,6 +40,7 @@ API-based balance sync stays out of scope (source records only).
 | 4-slice direction + defaults (header contents, onboarding trigger, dashboard net) | Human | Approved | Plan approval, ZCode session 2026-08-16 |
 | Slice 1 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 |
 | Slice 2 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 |
+| Slice 4 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 |
 | Investment API tracking deferred to future work | Human | Noted | "in the future we can track via api call" |
 
 ## 3. Stage Ledger
@@ -50,7 +51,7 @@ API-based balance sync stays out of scope (source records only).
 | Business Analyst | Passed | Intake + Epic A specs | BA-DS-005/006, TICKET-017..022, traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Specs + live architecture | 4 slices: theme / header+help / income / onboarding+dashboard | Dev builds |
-| Developer | In progress | Tickets 017-022 | Slices 1-3 integrated and live; Slice 4 gated, awaiting push approval | Human push approval |
+| Developer | Passed | Tickets 017-022 | Slices 1-4 integrated; all Deploys success; site healthy (HTTP 200) | Human verifies manually |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Slice Map and Gate Evidence
@@ -65,7 +66,7 @@ human approval (production deploy).
 | S1 theme | 37/37 vitest, all gates green; palette audit: no old hex in src/dist, #c2410c present; favicon in dist; ~5.2:1 AA | f06700b pushed, Deploy success — live |
 | S2 header+help | 40/40 vitest (3 new: EX-NAV-1 x2, EX-NAV-2); files <=200; view state lifted to App | 06e575d pushed, Deploy success — live |
 | S3 income | 48/48 vitest (5 validation + 3 aggregation); backend records ok incl. TestIncomeKindRoundTrip; IncomePage split 106+130 to stay <=200; ResizeObserver stub in test-setup | 5753dfe pushed, Deploy success — live |
-| S4 onboarding+dash | 51/51 vitest (3 new: EX-ONB-1, EX-ONB-2 x2); frontend-only; DashboardSummary 54 + CategoryDonut 63 extracted to keep files <=200; dashboard income/net render covered by monthIncome unit tests (component-level waived, human verifies) | pending push |
+| S4 onboarding+dash | 51/51 vitest (3 new: EX-ONB-1, EX-ONB-2 x2); frontend-only; DashboardSummary 54 + CategoryDonut 63 extracted to keep files <=200; dashboard income/net render covered by monthIncome unit tests (component-level waived, human verifies) | d7f6305 pushed, Deploy success — live |
 
 Trunk repair (in S3): ym() appended T00:00:00 to every string, so full-ISO
 createdAt values (which the UI really generates) parsed as Invalid Date —
