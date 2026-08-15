@@ -55,7 +55,7 @@ jobs:
       - name: Cross-compile Go binary (linux/amd64)
         working-directory: backend
         run: |
-          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../buckie-bin .
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../buckie-bin .
 
       - name: Stage artifacts
         run: |
