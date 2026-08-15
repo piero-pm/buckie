@@ -126,7 +126,8 @@ in-place but systemd restarts from the new path only after upload succeeds).
   `sudo systemctl status buckie` and `sudo journalctl -u buckie -e`.
 - **Sign-in codes not arriving** — check the env file has real SMTP values and
   `journalctl -u buckie` shows no SMTP errors. Verify your sending domain
-  in the Resend/Brevo dashboard.
+  in the Resend dashboard. **DigitalOcean blocks outbound SMTP ports 25/465/587**
+  — use Resend's STARTTLS alternative **port 2587** (`SMTP_PORT=2587`).
 - **Rollback** — re-run the Deploy workflow for a previous commit, or SSH in and
   `git checkout <prev-tag>` style redeploy manually from a known-good binary.
 

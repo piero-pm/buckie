@@ -69,9 +69,11 @@ if [ ! -f "$INSTALL/buckie.env" ]; then
 ADDR=127.0.0.1:8080
 DB_PATH=$INSTALL/buckie.db
 STATIC_DIR=$INSTALL/dist
-# SMTP for sign-in codes (Resend/Brevo). Fill these in:
+# SMTP for sign-in codes (Resend). Fill these in:
+# NOTE: DigitalOcean blocks outbound 25/465/587; Resend's STARTTLS
+# alternative port 2587 works and net/smtp handles STARTTLS on any port.
 SMTP_HOST=
-SMTP_PORT=587
+SMTP_PORT=2587
 SMTP_FROM=
 SMTP_USER=
 SMTP_PASS=
