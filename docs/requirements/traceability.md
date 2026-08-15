@@ -21,6 +21,8 @@ Status: recommendation; human approval pending
 | BA-DS-002 | Delivery spec (capture) | [delivery-spec-capture.md](delivery-spec-capture.md) | Recommendation | None |
 | BA-DS-003 | Delivery spec (recurring) | [delivery-spec-recurring.md](delivery-spec-recurring.md) | Recommendation | None |
 | BA-DS-004 | Delivery spec (dashboard) | [delivery-spec-dashboard.md](delivery-spec-dashboard.md) | Recommendation | None |
+| BA-DS-005 | Delivery spec (site chrome) | [delivery-spec-site-chrome.md](delivery-spec-site-chrome.md) | Approved (WORK-002) | None |
+| BA-DS-006 | Delivery spec (income) | [delivery-spec-income.md](delivery-spec-income.md) | Approved (WORK-002) | None |
 
 ## 2. Coverage
 
@@ -42,6 +44,12 @@ Status: recommendation; human approval pending
 | 4 Dashboard | REQ-13 Spend-by-category breakdown | BA-DS-004 | EX-DASH-2 | TICKET-014 |
 | 4 Dashboard | REQ-14 Savings projection | BA-DS-004 | EX-DASH-4,5 | TICKET-015 |
 | 1–4 (cross-cutting) | REQ-15 Responsive web (iPhone + desktop) | BA-DS-002/004 | EX-CAP-1, EX-DASH-1 | TICKET-005, 013 |
+| WORK-002 Site chrome | REQ-17 White + orange accessible theme | BA-DS-005 / BR-THM-1 | EX-THM-1 | TICKET-017 |
+| WORK-002 Site chrome | REQ-18 Persistent header navigation (no burger) | BA-DS-005 / BR-NAV-1 | EX-NAV-1..2 | TICKET-018 |
+| WORK-002 Site chrome | REQ-19 Help + privacy reference | BA-DS-005 / BR-HLP-1 | EX-HLP-1 | TICKET-019 |
+| WORK-002 Income | REQ-20 Income source register (salary/savings/investment) | BA-DS-006 / BR-INC-1..3 | EX-INC-1..4 | TICKET-020 |
+| WORK-002 Income | REQ-21 Two-stage onboarding | BA-DS-006 / BR-ONB-1,2 | EX-ONB-1..2 | TICKET-021 |
+| WORK-002 Income | REQ-22 Dashboard income + net | BA-DS-006 | EX-DASH-6 | TICKET-022 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -53,6 +61,9 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-10 | BA-AN-001..BA-DS-004 | Initial elaboration of Epic A | Human | Pending |
 | 2026-08-10 | BR-CAT-1 | Proposed category taxonomy | Human | Pending |
 | 2026-08-10 | REQ-16 / BR-PASS-1,2 / TICKET-016 | Added encryption-passphrase setup (Slice 2, before capture) per ADR-002/003 | Human | Pending |
+| 2026-08-16 | WORK-002 / BA-DS-005/006 / TICKET-017..022 | Site experience + income increment; user-originated intake, approved with 4-slice plan | Human | Approved |
+| 2026-08-16 | Income incl. investments | Lifts WORK-001 Phase 1 exclusion of investment tracking; API balance sync stays out | Human | Approved |
+| 2026-08-16 | Theme white + orange; no-burger header; two-stage onboarding | Identity, navigation, and first-run education decisions | Human | Approved |
 
 ## 4. Link Integrity
 
@@ -63,10 +74,11 @@ external-only, or superseded links at time of writing.
 
 ## 5. Unresolved and Superseded
 
-Open decisions (owner: human): category taxonomy final list; Phase 1 currency;
-code validity window, attempt limit, and session lifetime; sane maximum amount
-and oldest allowed date; duplicate-detection window; recurring edit-effective
-timing; savings-projection method and inputs. Nothing superseded yet.
+Open decisions (owner: human): recurring edit-effective timing;
+savings-projection method and inputs (TICKET-022 deliberately leaves
+projection income-unaware). Resolved 2026-08-16: investment income enters
+scope as encrypted source records (API sync still excluded); theme, header,
+and onboarding decisions recorded in work-state-002 §2. Nothing superseded.
 
 ## 6. Handoff Verdict
 
