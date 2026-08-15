@@ -101,18 +101,18 @@ function Brand({
   if (!authed) {
     return (
       <Text fw={700} c="gray.9">
-        Buckie
+        myBuckie
       </Text>
     )
   }
   return (
     <UnstyledButton
-      aria-label="Buckie home"
+      aria-label="myBuckie home"
       c="gray.9"
       onClick={() => onNavigate?.('hub')}
     >
       <Text span fw={700}>
-        Buckie
+        myBuckie
       </Text>
     </UnstyledButton>
   )

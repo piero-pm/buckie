@@ -64,7 +64,8 @@ function Hero({ onAccess }: { onAccess: () => void }) {
   return (
     <Box
       style={{
-        background: 'linear-gradient(135deg, #ea580c 0%, #7c2d12 100%)',
+        // Dark end-first gradient: keeps near-white text >= AA on both ends.
+        background: 'linear-gradient(135deg, #c2410c 0%, #7c2d12 100%)',
         color: 'white',
       }}
     >
@@ -78,7 +79,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
             <br />
             yours alone.
           </Title>
-          <Text size="lg" c="#ffedd5" maw={520}>
+          <Text size="lg" c="#fff7ed" maw={520}>
             A self-hosted, privacy-first spending tracker. See where your money
             goes each month — without handing your data to anyone.
           </Text>
@@ -86,6 +87,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
             <Button
               size="lg"
               color="white"
+              c="dark.9"
               variant="filled"
               rightSection={<IconArrowRight size={18} />}
               onClick={onAccess}
@@ -93,7 +95,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
               Access your space
             </Button>
           </Group>
-          <Text size="xs" c="#fed7aa" mt="md">
+          <Text size="xs" c="#fff7ed" mt="md">
             Open source · self-hosted · €0
           </Text>
         </Stack>
