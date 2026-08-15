@@ -73,6 +73,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           source: 'stage/*'
           target: ${{ secrets.VPS_PATH }}/incoming
+          strip_components: 1 # drone-scp keeps the stage/ prefix otherwise
 
       - name: Activate (swap artifacts + restart service)
         uses: appleboy/ssh-action@v1.0.0
