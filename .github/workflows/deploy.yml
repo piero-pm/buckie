@@ -64,6 +64,7 @@ jobs:
           cp -r frontend/dist/* stage/dist/
           cp deploy/Caddyfile stage/ 2>/dev/null || true
           cp deploy/post-deploy.sh stage/ 2>/dev/null || true
+          chmod +x stage/post-deploy.sh # exec bit may not survive scp tar modes
 
       - name: Upload artifacts to VPS
         uses: appleboy/scp-action@v1.0.0
