@@ -1,24 +1,25 @@
 import { createTheme, MantineColorsTuple } from '@mantine/core'
 
-// Minimalist fintech palette: a calm indigo primary, restrained neutrals.
+// Open-source technical identity: white surfaces, deep-orange primary.
+// Shade 7 (#c2410c) keeps white-on-primary text at WCAG 2.2 AA (~5.2:1).
 // Small radius (no heavy rounding), system font stack for speed + familiarity.
-const indigo: MantineColorsTuple = [
-  '#eef2ff',
-  '#dde4ff',
-  '#b8c4ff',
-  '#8fa2ff',
-  '#6e84fd',
-  '#5a70fc',
-  '#4f66fc',
-  '#3f59e0',
-  '#354ecb',
-  '#2842b5',
+const orange: MantineColorsTuple = [
+  '#fff7ed',
+  '#ffedd5',
+  '#fed7aa',
+  '#fdba74',
+  '#fb923c',
+  '#f97316',
+  '#ea580c',
+  '#c2410c',
+  '#9a3412',
+  '#7c2d12',
 ]
 
 export const theme = createTheme({
-  primaryColor: 'indigo',
-  primaryShade: { light: 6, dark: 4 },
-  colors: { indigo },
+  primaryColor: 'orange',
+  primaryShade: { light: 7, dark: 7 },
+  colors: { orange },
   defaultRadius: 'sm',
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

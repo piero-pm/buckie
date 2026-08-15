@@ -32,14 +32,14 @@ const currentMonth = () => ym(new Date())
 
 // Stable category colours so the donut is consistent across months.
 const COLORS = [
-  '#4f66fc',
-  '#8fa2ff',
-  '#6e84fd',
-  '#b8c4ff',
-  '#2842b5',
-  '#354ecb',
-  '#3f59e0',
-  '#5a70fc',
+  '#c2410c',
+  '#9a3412',
+  '#ea580c',
+  '#f97316',
+  '#7c2d12',
+  '#fb923c',
+  '#b45309',
+  '#fdba74',
 ]
 
 const monthLabel = (ym: string) => {
@@ -179,7 +179,7 @@ export default function DashboardPage({ expenses, recurring, onBack }: Props) {
                 h={160}
                 data={barData}
                 dataKey="month"
-                series={[{ name: 'total', color: '#4f66fc' }]}
+                series={[{ name: 'total', color: '#c2410c' }]}
                 tickLine="y"
                 gridAxis="y"
                 valueFormatter={(v) => `€${v}`}

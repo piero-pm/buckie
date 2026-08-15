@@ -64,7 +64,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
   return (
     <Box
       style={{
-        background: 'linear-gradient(135deg, #4f66fc 0%, #2842b5 100%)',
+        background: 'linear-gradient(135deg, #ea580c 0%, #7c2d12 100%)',
         color: 'white',
       }}
     >
@@ -78,7 +78,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
             <br />
             yours alone.
           </Title>
-          <Text size="lg" c="#e7ebff" maw={520}>
+          <Text size="lg" c="#ffedd5" maw={520}>
             A self-hosted, privacy-first spending tracker. See where your money
             goes each month — without handing your data to anyone.
           </Text>
@@ -93,7 +93,7 @@ function Hero({ onAccess }: { onAccess: () => void }) {
               Access your space
             </Button>
           </Group>
-          <Text size="xs" c="#b8c4ff" mt="md">
+          <Text size="xs" c="#fed7aa" mt="md">
             Open source · self-hosted · €0
           </Text>
         </Stack>
@@ -114,7 +114,7 @@ function FeatureCard({
   return (
     <Card withBorder padding="lg" h="100%">
       <Stack gap="xs">
-        <ThemeIcon variant="light" color="indigo" size={40} radius="sm">
+        <ThemeIcon variant="light" color="orange" size={40} radius="sm">
           {icon}
         </ThemeIcon>
         <Text fw={600} size="sm" c="gray.9">
@@ -138,7 +138,7 @@ function Footer() {
           </Text>
           <Text
             size="xs"
-            c="indigo"
+            c="orange"
             component="a"
             href="https://github.com/piero-pm/buckie"
             target="_blank"

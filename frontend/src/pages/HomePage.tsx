@@ -241,7 +241,6 @@ function NavButton({
   return (
     <MButton
       variant="light"
-      color="indigo"
       fullWidth
       leftSection={icon}
       onClick={onClick}

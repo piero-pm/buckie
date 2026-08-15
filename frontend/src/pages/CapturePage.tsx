@@ -126,7 +126,7 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
             onChange={(e) => setNote(e.target.value)}
           />
           {dup && (
-            <Text role="alert" c="orange.7" size="sm">
+            <Text role="alert" c="yellow.9" size="sm">
               You already have a {formatEUR(dup.amount)} {dup.category} on{' '}
               {dup.date}. Save again to keep both.
             </Text>
