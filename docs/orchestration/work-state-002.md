@@ -70,6 +70,16 @@ Primary #c2410c on white ~5.2:1 (WCAG 2.2 AA). Visual: preview served at
 localhost:4173 for human inspection; screenshots blocked (capture error),
 human verifies manually per waiver.
 
+Slice 1 integrated 2026-08-16: human approved push; origin/main f06700b;
+Deploy workflow success — theme live on mybuckie.app.
+
+Slice 2 gate run (2026-08-16, local): frontend lint clean, prettier clean,
+vitest 40/40 pass (3 new header tests: EX-NAV-1 x2, EX-NAV-2 view switch +
+sign-out), vite build ok. All touched files <=200 lines (App 149, HomePage
+116, HubView 126, AppHeader 141, HelpPage 79, PrivacyExplainer 50); view
+state lifted to App; hub row + duplicate nav button removed per TICKET-018.
+zIndex style-prop warning fixed inline. Backend untouched.
+
 ## 5. Blockers
 
 None. Defaults adopted unless vetoed: header = brand + Expenses/Income/Help +

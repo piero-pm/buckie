@@ -158,6 +158,58 @@ const vaultWithPassphrase = {
   }),
 }
 
+const emptyRecords = { ok: true, json: async () => ({ records: [] }) }
+const signOutOk = { ok: true, json: async () => ({ message: 'signed out' }) }
+
+describe('Persistent header (BA-DS-005)', () => {
+  beforeEach(() => {
+    mockFetch.mockReset()
+  })
+
+  // EX-NAV-1: signed-out screens show brand + Log in in the header.
+  it('shows header Log in when signed out', async () => {
+    mockFetch.mockResolvedValueOnce(me401)
+    renderWithMantine(<App />)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^log in$/i })).toBeDefined()
+    })
+  })
+
+  // EX-NAV-1: header Log in opens the email-code login flow.
+  it('opens the login flow from the header', async () => {
+    mockFetch.mockResolvedValueOnce(me401)
+    renderWithMantine(<App />)
+    await waitFor(() => screen.getByRole('button', { name: /^log in$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^log in$/i }))
+    await waitFor(() => {
+      expect(screen.getByLabelText(/email/i)).toBeDefined()
+    })
+  })
+
+  // EX-NAV-2: destinations switch views; sign-out returns to the landing.
+  it('switches views and signs out from the header', async () => {
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+      .mockResolvedValueOnce(emptyRecords) // expenses list
+      .mockResolvedValueOnce(emptyRecords) // recurring list
+      .mockResolvedValueOnce(signOutOk) // sign out
+    await seedCachedKey(1)
+    renderWithMantine(<App />)
+    await waitFor(() => screen.getByRole('main', { name: 'home' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Help' }))
+    await waitFor(() => {
+      expect(screen.getByRole('main', { name: 'help' })).toBeDefined()
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'sign out' }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /access your space/i })
+      ).toBeDefined()
+    })
+  })
+})
+
 // Seed a non-extractable key into IndexedDB for user 1 so routeAfterAuth's
 // loadCachedKey finds it and routes to home (EX-PASS-3 same-device).
 async function seedCachedKey(userId: number) {

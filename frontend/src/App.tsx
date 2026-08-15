@@ -5,9 +5,11 @@ import CodePage from './pages/CodePage'
 import HomePage from './pages/HomePage'
 import PassphraseSetupPage from './pages/PassphraseSetupPage'
 import PassphraseUnlockPage from './pages/PassphraseUnlockPage'
+import AppHeader from './components/AppHeader'
 import { getVault } from './api/vault'
 import { loadCachedKey } from './crypto'
 import { signOut as signOutApi } from './api/auth'
+import type { View } from './pages/views'
 
 type Page =
   | 'landing'
@@ -20,6 +22,7 @@ type Page =
 
 export default function App() {
   const [page, setPage] = useState<Page>('landing')
+  const [view, setView] = useState<View>('hub')
   const [email, setEmail] = useState('')
   const [userId, setUserId] = useState<number | null>(null)
 
@@ -36,29 +39,46 @@ export default function App() {
       .catch(() => undefined)
   }, [])
 
+  async function handleSignOut() {
+    await signOutApi()
+    setUserId(null)
+    setView('hub')
+    setPage('landing')
+  }
+
   if (page === 'home' && userId) {
     return (
-      <HomePage
-        userId={userId}
-        onSignOut={async () => {
-          await signOutApi()
-          setUserId(null)
-          setPage('landing')
-        }}
-      />
+      <>
+        <AppHeader
+          authed
+          active={view}
+          onNavigate={setView}
+          onSignOut={handleSignOut}
+        />
+        <HomePage userId={userId} view={view} onNavigate={setView} />
+      </>
     )
   }
   if (page === 'passphrase-setup' && userId) {
     return (
-      <PassphraseSetupPage userId={userId} onUnlocked={() => setPage('home')} />
+      <>
+        <AppHeader authed={false} />
+        <PassphraseSetupPage
+          userId={userId}
+          onUnlocked={() => setPage('home')}
+        />
+      </>
     )
   }
   if (page === 'passphrase-unlock' && userId) {
     return (
-      <PassphraseUnlockPage
-        userId={userId}
-        onUnlocked={() => setPage('home')}
-      />
+      <>
+        <AppHeader authed={false} />
+        <PassphraseUnlockPage
+          userId={userId}
+          onUnlocked={() => setPage('home')}
+        />
+      </>
     )
   }
   if (page === 'checking') {
@@ -72,30 +92,41 @@ export default function App() {
   }
   if (page === 'code') {
     return (
-      <CodePage
-        email={email}
-        onSuccess={async () => {
-          // After sign-in, route by vault status + cached key (EX-PASS-3/4).
-          const r = await fetch('/api/auth/me')
-          const { user_id } = await r.json()
-          setUserId(user_id)
-          await routeAfterAuth(user_id, setPage)
-        }}
-      />
+      <>
+        <AppHeader authed={false} />
+        <CodePage
+          email={email}
+          onSuccess={async () => {
+            // After sign-in, route by vault status + cached key (EX-PASS-3/4).
+            const r = await fetch('/api/auth/me')
+            const { user_id } = await r.json()
+            setUserId(user_id)
+            await routeAfterAuth(user_id, setPage)
+          }}
+        />
+      </>
     )
   }
   if (page === 'login') {
     return (
-      <LoginPage
-        onCodeSent={(e) => {
-          setEmail(e)
-          setPage('code')
-        }}
-        onBack={() => setPage('landing')}
-      />
+      <>
+        <AppHeader authed={false} />
+        <LoginPage
+          onCodeSent={(e) => {
+            setEmail(e)
+            setPage('code')
+          }}
+          onBack={() => setPage('landing')}
+        />
+      </>
     )
   }
-  return <LandingPage onAccess={() => setPage('login')} />
+  return (
+    <>
+      <AppHeader authed={false} onLogin={() => setPage('login')} />
+      <LandingPage onAccess={() => setPage('login')} />
+    </>
+  )
 }
 
 // routeAfterAuth picks the post-login page from vault status + cached key:
