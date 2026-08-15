@@ -1,14 +1,15 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  workflow_call: # let deploy.yml run these gates on the same commit before shipping
+  workflow_dispatch:
 
 jobs:
-  # Single gate job so deploy.yml can depend on it by name. Runs all backend +
-  # frontend checks; any failure blocks both merge (branch protection) and deploy.
+  # Single gate job (build/vet/test/lint/format, backend + frontend). Runs on
+  # PRs standalone; on pushes to main it runs as a reusable workflow inside
+  # deploy.yml, so deploys only ship after it passes.
   ci:
     runs-on: ubuntu-latest
     steps:
