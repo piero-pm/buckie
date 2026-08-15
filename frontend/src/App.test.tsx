@@ -73,6 +73,7 @@ describe('Landing + login + vault routing', () => {
       .mockResolvedValueOnce(meOk)
       .mockResolvedValueOnce(vaultWithPassphrase)
     await seedCachedKey(1)
+    localStorage.setItem('buckie.onboarding.skipped.1', '1') // test home routing, not onboarding
     renderWithMantine(<App />)
     await waitFor(() => {
       expect(screen.getByRole('main')).toBeDefined()
@@ -196,6 +197,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(emptyRecords) // incomes list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
+    localStorage.setItem('buckie.onboarding.skipped.1', '1') // test nav, not onboarding
     renderWithMantine(<App />)
     await waitFor(() => screen.getByRole('main', { name: 'home' }))
     fireEvent.click(screen.getByRole('button', { name: 'Help' }))
@@ -212,6 +214,55 @@ describe('Persistent header (BA-DS-005)', () => {
         screen.getByRole('button', { name: /access your space/i })
       ).toBeDefined()
     })
+  })
+})
+
+describe('Two-stage onboarding (BA-DS-006, TICKET-021)', () => {
+  beforeEach(() => {
+    mockFetch.mockReset()
+    localStorage.clear()
+  })
+
+  // Signs in with a cached key, a passphrase, and empty record registers.
+  async function signInToWorkspace() {
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+      .mockResolvedValueOnce(emptyRecords) // expenses list
+      .mockResolvedValueOnce(emptyRecords) // recurring list
+      .mockResolvedValueOnce(emptyRecords) // incomes list
+    await seedCachedKey(1)
+    renderWithMantine(<App />)
+  }
+
+  // EX-ONB-1: stage 1 (how it works + privacy) precedes any income entry.
+  it('explains how it works + privacy before income entry', async () => {
+    await signInToWorkspace()
+    await waitFor(() => screen.getByRole('main', { name: 'onboarding' }))
+    expect(screen.getByText(/privacy and encryption/i)).toBeDefined()
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }))
+    await waitFor(() => {
+      expect(screen.getByRole('form', { name: 'add income' })).toBeDefined()
+    })
+  })
+
+  // EX-ONB-2: skip lands on the hub with the dismissible income card.
+  it('skip lands on the hub with the income-setup card', async () => {
+    await signInToWorkspace()
+    await waitFor(() => screen.getByRole('main', { name: 'onboarding' }))
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }))
+    fireEvent.click(screen.getByRole('button', { name: /skip for now/i }))
+    await waitFor(() => screen.getByRole('main', { name: 'home' }))
+    expect(screen.getByRole('button', { name: 'Set up' })).toBeDefined()
+    expect(localStorage.getItem('buckie.onboarding.skipped.1')).toBe('1')
+  })
+
+  // EX-ONB-2: stage 1 does not re-show after a skip on a later unlock.
+  it('does not re-show onboarding after skip', async () => {
+    localStorage.setItem('buckie.onboarding.skipped.1', '1')
+    await signInToWorkspace()
+    await waitFor(() => screen.getByRole('main', { name: 'home' }))
+    expect(screen.queryByRole('main', { name: 'onboarding' })).toBeNull()
   })
 })
 

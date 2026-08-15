@@ -9,38 +9,30 @@ import {
   Stack,
   Text,
 } from '@mantine/core'
-import { DonutChart, BarChart } from '@mantine/charts'
+import { BarChart } from '@mantine/charts'
 import { IconArrowLeft } from '@tabler/icons-react'
 import type { Expense, Recurring } from '../domain/expense'
+import type { IncomeSource } from '../domain/income'
 import {
   expandRecurring,
   monthlyExpenses,
   monthTotal,
-  byCategory,
+  monthIncome,
   projectSavings,
   ym,
 } from '../domain/aggregation'
 import { formatEUR } from '../domain/taxonomy'
+import DashboardSummary from './DashboardSummary'
+import CategoryDonut from './CategoryDonut'
 
 interface Props {
   expenses: Expense[]
   recurring: Recurring[]
+  incomes: IncomeSource[]
   onBack: () => void
 }
 
 const currentMonth = () => ym(new Date())
-
-// Stable category colours so the donut is consistent across months.
-const COLORS = [
-  '#c2410c',
-  '#9a3412',
-  '#ea580c',
-  '#f97316',
-  '#7c2d12',
-  '#fb923c',
-  '#b45309',
-  '#fdba74',
-]
 
 const monthLabel = (ym: string) => {
   const [y, m] = ym.split('-').map(Number)
@@ -50,10 +42,15 @@ const monthLabel = (ym: string) => {
   })
 }
 
-/** Month-on-month totals, spend-by-category, and a savings projection
- * (TICKET-013/014/015). All aggregation runs client-side over decrypted
- * records; the server only ever saw ciphertext. */
-export default function DashboardPage({ expenses, recurring, onBack }: Props) {
+/** Month-on-month totals, spend-by-category, income + net (TICKET-022), and
+ * a savings projection (TICKET-013/014/015). All aggregation runs client-side
+ * over decrypted records; the server only ever saw ciphertext. */
+export default function DashboardPage({
+  expenses,
+  recurring,
+  incomes,
+  onBack,
+}: Props) {
   const [selected, setSelected] = useState(currentMonth())
 
   const months = useMemo(() => {
@@ -78,14 +75,10 @@ export default function DashboardPage({ expenses, recurring, onBack }: Props) {
     [expenses, expandedForSelected, selected]
   )
   const total = monthTotal(monthItems)
-  const breakdown = byCategory(monthItems).filter((c) => c.total > 0)
+  const income = monthIncome(incomes, selected)
+  const net = income - total
   const projection = useMemo(() => projectSavings(months), [months])
 
-  const donutData = breakdown.map((c, i) => ({
-    name: c.category,
-    value: Math.round(c.total * 100) / 100,
-    color: COLORS[i % COLORS.length],
-  }))
   const barData = [...months]
     .reverse()
     .slice(0, 12)
@@ -122,53 +115,9 @@ export default function DashboardPage({ expenses, recurring, onBack }: Props) {
             onChange={(v) => v && setSelected(v)}
           />
 
-          <Card withBorder padding="lg">
-            <Text size="xs" c="gray.5" tt="uppercase" fw={600}>
-              Total this month
-            </Text>
-            <Text
-              size="2rem"
-              fw={700}
-              c="gray.9"
-              mt={4}
-              aria-label="month total"
-            >
-              {formatEUR(total)}
-            </Text>
-          </Card>
+          <DashboardSummary total={total} income={income} net={net} />
 
-          <Card withBorder padding="lg">
-            <Text size="sm" fw={600} c="gray.7" mb="sm">
-              By category
-            </Text>
-            {donutData.length === 0 ? (
-              <Text size="sm" c="gray.5">
-                No spend recorded this month.
-              </Text>
-            ) : (
-              <Group align="center" gap="lg" grow wrap="nowrap">
-                <DonutChart data={donutData} strokeWidth={1} size={160} />
-                <Stack gap={6}>
-                  {donutData.map((d) => (
-                    <Group key={d.name} gap="xs">
-                      <Box
-                        w={10}
-                        h={10}
-                        bg={d.color}
-                        style={{ borderRadius: 2 }}
-                      />
-                      <Text size="xs" c="gray.7" flex={1}>
-                        {d.name}
-                      </Text>
-                      <Text size="xs" fw={600} c="gray.9">
-                        {formatEUR(d.value)}
-                      </Text>
-                    </Group>
-                  ))}
-                </Stack>
-              </Group>
-            )}
-          </Card>
+          <CategoryDonut monthItems={monthItems} />
 
           {barData.length > 0 && (
             <Card withBorder padding="lg">

@@ -12,11 +12,12 @@ import { newId } from '../domain/ids'
 
 interface Props {
   onSave: (source: IncomeSource) => Promise<void>
-  onBack: () => void
+  /** Optional back action; omitted inside onboarding (TICKET-021). */
+  onBack?: () => void
 }
 
-/** Add-income form (part of IncomePage, TICKET-020). Validates BR-INC-1/2 and
- * creates a new active monthly source. */
+/** Add-income form (IncomePage + onboarding, TICKET-020/021). Validates
+ * BR-INC-1/2 and creates a new active monthly source. */
 export default function IncomeForm({ onSave, onBack }: Props) {
   const [amount, setAmount] = useState('')
   const [kind, setKind] = useState<IncomeKind | ''>('')
@@ -109,16 +110,18 @@ export default function IncomeForm({ onSave, onBack }: Props) {
         <Button type="submit" fullWidth loading={busy}>
           Add
         </Button>
-        <Group justify="center">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<IconArrowLeft size={16} />}
-            onClick={onBack}
-          >
-            Back
-          </Button>
-        </Group>
+        {onBack && (
+          <Group justify="center">
+            <Button
+              variant="subtle"
+              color="gray"
+              leftSection={<IconArrowLeft size={16} />}
+              onClick={onBack}
+            >
+              Back
+            </Button>
+          </Group>
+        )}
         {error && (
           <Text role="alert" c="red.7" size="sm">
             {error}

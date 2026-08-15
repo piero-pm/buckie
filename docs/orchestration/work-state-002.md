@@ -50,7 +50,7 @@ API-based balance sync stays out of scope (source records only).
 | Business Analyst | Passed | Intake + Epic A specs | BA-DS-005/006, TICKET-017..022, traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Specs + live architecture | 4 slices: theme / header+help / income / onboarding+dashboard | Dev builds |
-| Developer | In progress | Tickets 017-022 | Slices 1-3 integrated (see §4); Slice 4 in progress | Gates + human push approval |
+| Developer | In progress | Tickets 017-022 | Slices 1-3 integrated and live; Slice 4 gated, awaiting push approval | Human push approval |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Slice Map and Gate Evidence
@@ -64,8 +64,8 @@ human approval (production deploy).
 | --- | --- | --- |
 | S1 theme | 37/37 vitest, all gates green; palette audit: no old hex in src/dist, #c2410c present; favicon in dist; ~5.2:1 AA | f06700b pushed, Deploy success — live |
 | S2 header+help | 40/40 vitest (3 new: EX-NAV-1 x2, EX-NAV-2); files <=200; view state lifted to App | 06e575d pushed, Deploy success — live |
-| S3 income | 48/48 vitest (5 validation + 3 aggregation); backend records ok incl. TestIncomeKindRoundTrip; IncomePage split 106+130 to stay <=200; ResizeObserver stub in test-setup | pending push |
-| S4 onboarding+dash | pending | pending |
+| S3 income | 48/48 vitest (5 validation + 3 aggregation); backend records ok incl. TestIncomeKindRoundTrip; IncomePage split 106+130 to stay <=200; ResizeObserver stub in test-setup | 5753dfe pushed, Deploy success — live |
+| S4 onboarding+dash | 51/51 vitest (3 new: EX-ONB-1, EX-ONB-2 x2); frontend-only; DashboardSummary 54 + CategoryDonut 63 extracted to keep files <=200; dashboard income/net render covered by monthIncome unit tests (component-level waived, human verifies) | pending push |
 
 Trunk repair (in S3): ym() appended T00:00:00 to every string, so full-ISO
 createdAt values (which the UI really generates) parsed as Invalid Date —

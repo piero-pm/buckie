@@ -1,4 +1,9 @@
+import { useState } from 'react'
 import { useWorkspace } from '../hooks/useWorkspace'
+import {
+  hasSkippedOnboarding,
+  markOnboardingSkipped,
+} from '../domain/onboarding'
 import CapturePage from './CapturePage'
 import ExpensesPage from './ExpensesPage'
 import RecurringPage from './RecurringPage'
@@ -6,6 +11,7 @@ import IncomePage from './IncomePage'
 import DashboardPage from './DashboardPage'
 import HelpPage from './HelpPage'
 import HubView from './HubView'
+import OnboardingPage from './OnboardingPage'
 import type { View } from './views'
 
 interface Props {
@@ -16,9 +22,12 @@ interface Props {
 
 /** The signed-in workspace: owns the decrypted record state (useWorkspace)
  * and routes the current view (owned by App so the persistent header shares
- * it). Data is mutated in place, so sub-pages see updates immediately. */
+ * it). Onboarding shows until handled while the income register is empty
+ * (TICKET-021); the hub card stays until a source exists (BR-ONB-2). */
 export default function HomePage({ userId, view, onNavigate }: Props) {
   const ws = useWorkspace(userId)
+  const [onboardingClosed, setOnboardingClosed] = useState(false)
+  const [incomeCardHidden, setIncomeCardHidden] = useState(false)
 
   if (view === 'capture') {
     return (
@@ -64,6 +73,7 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
       <DashboardPage
         expenses={ws.expenses}
         recurring={ws.recurring}
+        incomes={ws.incomes}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -71,10 +81,29 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   if (view === 'help') {
     return <HelpPage onBack={() => onNavigate('hub')} />
   }
+
+  if (
+    !onboardingClosed &&
+    ws.incomes.length === 0 &&
+    !hasSkippedOnboarding(userId)
+  ) {
+    return (
+      <OnboardingPage
+        sources={ws.incomes}
+        onSave={ws.saveIncome}
+        onFinish={(skipped) => {
+          if (skipped) markOnboardingSkipped(userId)
+          setOnboardingClosed(true)
+        }}
+      />
+    )
+  }
   return (
     <HubView
       expenses={ws.expenses}
       loadError={ws.loadError}
+      showIncomeCard={ws.incomes.length === 0 && !incomeCardHidden}
+      onHideIncomeCard={() => setIncomeCardHidden(true)}
       onNavigate={onNavigate}
     />
   )

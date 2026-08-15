@@ -1,13 +1,15 @@
 import {
+  ActionIcon,
   Box,
   Button as MButton,
+  Card,
   Container,
   Group,
   SimpleGrid,
   Stack,
   Text,
 } from '@mantine/core'
-import { IconPlus, IconRepeat, IconChartBar } from '@tabler/icons-react'
+import { IconPlus, IconRepeat, IconChartBar, IconX } from '@tabler/icons-react'
 import type { Expense } from '../domain/expense'
 import { formatEUR } from '../domain/taxonomy'
 import type { View } from './views'
@@ -15,13 +17,22 @@ import type { View } from './views'
 interface Props {
   expenses: Expense[]
   loadError: string
+  /** Show the dismissible income-setup card (BR-ONB-2, TICKET-021). */
+  showIncomeCard: boolean
+  onHideIncomeCard: () => void
   onNavigate: (v: View) => void
 }
 
 /** The signed-in hub (rendered by HomePage): quick actions + the five most
  * recent spends. Header destinations (Expenses/Income/Help) live in the
  * persistent top banner (BA-DS-005). */
-export default function HubView({ expenses, loadError, onNavigate }: Props) {
+export default function HubView({
+  expenses,
+  loadError,
+  showIncomeCard,
+  onHideIncomeCard,
+  onNavigate,
+}: Props) {
   const recent = [...expenses]
     .sort((a, b) => (a.date < b.date ? 1 : -1))
     .slice(0, 5)
@@ -52,6 +63,27 @@ export default function HubView({ expenses, loadError, onNavigate }: Props) {
               onClick={() => onNavigate('dashboard')}
             />
           </SimpleGrid>
+
+          {showIncomeCard && (
+            <Card withBorder padding="md">
+              <Group justify="space-between" wrap="nowrap" align="center">
+                <Text size="sm" c="gray.7" style={{ flex: 1 }}>
+                  Set up your income to see your full monthly picture.
+                </Text>
+                <MButton size="xs" onClick={() => onNavigate('income')}>
+                  Set up
+                </MButton>
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  aria-label="dismiss income card"
+                  onClick={onHideIncomeCard}
+                >
+                  <IconX size={16} />
+                </ActionIcon>
+              </Group>
+            </Card>
+          )}
 
           <Stack gap="xs" mt="xs">
             <Text size="sm" fw={600} c="gray.7">
