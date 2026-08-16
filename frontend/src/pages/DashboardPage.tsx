@@ -8,12 +8,18 @@ import {
   monthlyExpenses,
   monthTotal,
   monthIncome,
-  projectSavings,
   ym,
 } from '../domain/aggregation'
-import { formatEUR } from '../domain/taxonomy'
+import {
+  expectedSpend,
+  monthFunnel,
+  monthlyFigures,
+} from '../domain/prediction'
 import DashboardSummary from './DashboardSummary'
 import CategoryDonut from './CategoryDonut'
+import MonthBenchmark from './MonthBenchmark'
+import SpendFunnel from './SpendFunnel'
+import TrendView from './TrendView'
 
 interface Props {
   expenses: Expense[]
@@ -31,25 +37,26 @@ const monthLabel = (ym: string) => {
   })
 }
 
-/** Month view (Dashboard A, WORK-003): month-on-month totals, spend by
- * category, income + net (TICKET-022), and a savings projection
- * (TICKET-013/014/015). Rendered inside the home scroll (BR-HOME-2); all
- * aggregation runs client-side over decrypted records. */
+/** Month view (Dashboard A, WORK-003): totals, category donut, 3-month
+ * expected-spend benchmark and the spend funnel (TICKET-028), then the
+ * 3/12-month trend + prediction (TICKET-029, replaces the old text-only
+ * projection). Rendered inside the home scroll (BR-HOME-2); all aggregation
+ * runs client-side over decrypted records. */
 export default function DashboardPage({ expenses, recurring, incomes }: Props) {
   const [selected, setSelected] = useState(currentMonth())
 
-  const months = useMemo(() => {
-    const expanded = expandRecurring(recurring, currentMonth())
-    const all = [...expenses, ...expanded]
-    const totals = new Map<string, number>()
-    for (const e of all) {
-      const m = ym(e.date)
-      totals.set(m, (totals.get(m) ?? 0) + e.amount)
-    }
-    return [...totals.entries()]
-      .map(([month, total]) => ({ month, total }))
-      .sort((a, b) => (a.month < b.month ? -1 : 1))
-  }, [expenses, recurring])
+  const figures = useMemo(
+    () => monthlyFigures(expenses, recurring, incomes, currentMonth()),
+    [expenses, recurring, incomes]
+  )
+
+  const months = useMemo(
+    () =>
+      figures
+        .map((f) => ({ month: f.month, total: f.spend }))
+        .sort((a, b) => (a.month < b.month ? -1 : 1)),
+    [figures]
+  )
 
   const expandedForSelected = useMemo(
     () => expandRecurring(recurring, selected),
@@ -62,7 +69,11 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
   const total = monthTotal(monthItems)
   const income = monthIncome(incomes, selected)
   const net = income - total
-  const projection = useMemo(() => projectSavings(months), [months])
+  const expected = useMemo(
+    () => expectedSpend(figures, selected),
+    [figures, selected]
+  )
+  const funnel = monthFunnel(monthItems, income)
 
   const barData = [...months]
     .reverse()
@@ -91,7 +102,11 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
 
         <DashboardSummary total={total} income={income} net={net} />
 
+        <MonthBenchmark expected={expected} total={total} />
+
         <CategoryDonut monthItems={monthItems} />
+
+        <SpendFunnel funnel={funnel} />
 
         {barData.length > 0 && (
           <Card withBorder padding="lg">
@@ -110,27 +125,7 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
           </Card>
         )}
 
-        <Card withBorder padding="lg">
-          <Text size="sm" fw={600} c="gray.7" mb="xs">
-            Savings projection
-          </Text>
-          {projection.hasData ? (
-            <Stack gap={4}>
-              <Text size="xs" c="gray.5" aria-label="projection">
-                Next month ~{formatEUR(projection.nextMonthEstimate ?? 0)}; at
-                this rate ~{formatEUR(projection.yearlyIfContinued ?? 0)} over
-                12 months.
-              </Text>
-              <Text size="xs" c="gray.5" fs="italic">
-                Estimate. {projection.basis}
-              </Text>
-            </Stack>
-          ) : (
-            <Text size="xs" c="gray.5" aria-label="projection">
-              {projection.basis}
-            </Text>
-          )}
-        </Card>
+        <TrendView figures={figures} />
       </Stack>
     </Box>
   )

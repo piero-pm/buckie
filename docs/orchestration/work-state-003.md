@@ -3,10 +3,10 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-003 |
-| Status | Slice 1 built — awaiting human push approval |
+| Status | Slice 3 built — awaiting human push approval, then human verification |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Developer (Slice 1 gates green; S2/S3 pending) |
+| Current stage | Developer complete (S1/S2 live) — final push + manual verification |
 | Next owner | Human |
 | Updated | 2026-08-16 |
 
@@ -47,6 +47,7 @@ as 127.0.0.1, so the 5/hour per-IP cap is one shared bucket for all users
 | Resend cooldown 60 s | Human | Default adopted | BA-DS-007 §6, vetoable at Lead gate |
 | 3-slice direction + tickets 023..029 | Human | Approved | AskUser answer, 2026-08-16 |
 | Slice 1 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 (ba58947 pushed) |
+| Slice 2 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 (ef6d8dd pushed) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 
@@ -58,7 +59,7 @@ as 127.0.0.1, so the 5/hour per-IP cap is one shared bucket for all users
 | Business Analyst | Passed | Intake + BA-DS-001/003/004/006 | BA-DS-007/008, TICKET-023..029, traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Approved specs | 3-slice direction §4 | Human approves direction |
-| Developer | Running | Tickets 023-029 | S1 gates green (see §4.1); S2/S3 pending | Slices 2-3, then close |
+| Developer | Passed | Tickets 023-029 | S1+S2 live (ba58947, ef6d8dd); S3 gates green, push pending | S3 push + human verification |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -90,9 +91,32 @@ S1 deployed: ba58947 pushed, CI + Deploy success — live. Frontend S2:
 eslint + prettier clean; 64/64 vitest incl. 6 new (3 topCategories, 2
 home-scroll order, 1 chips; taxonomy/expense tests updated for 14
 categories); build green. Sizes: all touched files <=200 (HubView 138,
-DashboardPage 137, CapturePage 179, aggregation 160).
+DashboardPage 137, CapturePage 179, aggregation 160). S2 deployed:
+ef6d8dd pushed, CI + Deploy success — live.
 
-## 5. Blockers
+### 4.3 Slice 3 gate evidence (2026-08-16, local ZCode/GLM-5.2)
 
-None. Open decisions live in the specs §6; proposed defaults there apply
-unless vetoed at this gate.
+Frontend only: eslint + prettier clean; 77/77 vitest incl. 13 new
+(8 prediction domain: figures/averages/cumulative/benchmark/funnel;
+3 TrendView incl. EX-PRJ-2 window switch + EX-PRJ-3 guidance); build
+green. New modules stay <=200: prediction.ts 113, TrendView 127,
+DashboardPage 132, SpendFunnel 37, MonthBenchmark 32. Old text-only
+projection card removed (superseded by TrendView).
+
+## 5. Blockers and Deferred
+
+None blocking. Deferred fast-follows (human-noted, out of WORK-003
+scope): offsite backups/Litestream, PUT request-size limit, /health
+endpoint. Human verification checklist (production): 15+ logins in one
+hour, throttle copy on a 429, forced save failure (devtools offline),
+iPhone Safari home scroll, funnel + trend render with real history.
+
+## 6. Completion
+
+Delivered when S3 is pushed and verified: honest login scale (100/IP,
+10/email real-client-IP limits, truthful errors, resend), mutation
+failures visible, 14-category everyday capture with quick-pick chips,
+one-scroll home (capture -> recents -> month view), 3-month expected-
+spend benchmark, month funnel, income-aware 3/12-month trend with
+projected balance (TICKET-015 resolved). QA waived -> human verifies
+manually; integration via ba58947, ef6d8dd, and the S3 commit.

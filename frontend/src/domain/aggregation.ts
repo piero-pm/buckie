@@ -153,7 +153,8 @@ function resolveDay(month: string, dayOfMonth: number): string {
   return `${month}-${String(Math.min(dayOfMonth, lastDay)).padStart(2, '0')}`
 }
 
-function nextMonth(month: string): string {
+/** Returns the yyyy-mm key of the month after `month`. */
+export function nextMonth(month: string): string {
   const [y, m] = month.split('-').map(Number)
   const d = new Date(y, m, 1) // m is 0-indexed; m = next month
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
