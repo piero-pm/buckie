@@ -25,6 +25,7 @@ Status: recommendation; human approval pending
 | BA-DS-006 | Delivery spec (income) | [delivery-spec-income.md](delivery-spec-income.md) | Approved (WORK-002) | None |
 | BA-DS-007 | Delivery spec (login scale) | [delivery-spec-login-scale.md](delivery-spec-login-scale.md) | Approved (WORK-003) | None |
 | BA-DS-008 | Delivery spec (home + prediction) | [delivery-spec-home-prediction.md](delivery-spec-home-prediction.md) | Approved (WORK-003) | None |
+| BA-DS-009 | Delivery spec (data safety) | [delivery-spec-data-safety.md](delivery-spec-data-safety.md) | Approved (WORK-004) | None |
 
 ## 2. Coverage
 
@@ -54,6 +55,9 @@ Status: recommendation; human approval pending
 | WORK-002 Income | REQ-22 Dashboard income + net | BA-DS-006 | EX-DASH-6 | TICKET-022 |
 | WORK-003 Scale | REQ-23 Login scale + honest errors (100/IP, 10/email; truthful messages) | BA-DS-007 / BR-RL-1..3, BR-ERR-1..4 | EX-RL-1..3, EX-ERR-1..3 | TICKET-023, 024, 025 |
 | WORK-003 Home | REQ-24 Home flow, 14-category capture, prediction dashboards | BA-DS-008 / BR-HOME-1..2, BR-CAP-1, BR-TAX-1, BR-INC-4, BR-PRJ-1..3 | EX-HOME-1, EX-CAP-1, EX-PRJ-1..3 | TICKET-026, 027, 028, 029 |
+| WORK-004 Data safety | REQ-25 Lock on sign-out + encrypted export/import | BA-DS-009 / BR-LOCK-1, BR-EXP-1..2, BR-IMP-1..4 | EX-LOCK-1, EX-EXP-1, EX-IMP-1..3 | TICKET-030..033 |
+| WORK-004 Data safety | REQ-26 Passphrase change without data loss | BA-DS-009 / BR-PASS-1..3 | EX-PASS-1..2 | TICKET-034, 035 |
+| WORK-004 Data safety | REQ-27 Server hardening + copy quick wins | BA-DS-009 / BR-HARD-1..3, BR-QW-1..2 | EX-HARD-1 | TICKET-030, 031 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -72,6 +76,7 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-16 | REQ-23 ceilings 100/IP + 10/email | Human proposed 100/20; per-email lowered to 10 on anti-bombing + Resend-quota rationale | Human | Approved |
 | 2026-08-16 | BR-TAX-1 taxonomy 8 -> 14; BR-INC-4 income kinds + freelance/other (savings kept) | Extends REQ-5 and BR-INC-1; superset, no migration | Human | Approved |
 | 2026-08-16 | TICKET-015 resolved: projection income-aware | Avg saving = avg income − avg spend over selected 3/12-month window (BA-DS-008 BR-PRJ-2) | Human | Approved |
+| 2026-08-16 | WORK-004 / BA-DS-009 / TICKET-030..035 | Data-safety increment (lock, backup, passphrase change); user-originated intake, 3-slice plan | Human | Approved (gate) |
 
 ## 4. Link Integrity
 

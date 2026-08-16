@@ -4,6 +4,7 @@ import { Notifications } from '@mantine/notifications'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import 'fake-indexeddb/auto'
 import App from './App'
+import { loadCachedKey } from './crypto'
 import { theme } from './theme'
 
 function renderWithMantine(ui: React.ReactElement) {
@@ -214,6 +215,29 @@ describe('Persistent header (BA-DS-005)', () => {
         screen.getByRole('button', { name: /access your space/i })
       ).toBeDefined()
     })
+  })
+
+  // EX-LOCK-1 (BR-LOCK-1): signing out clears the cached key, so the next
+  // sign-in on the same device must ask for the passphrase again.
+  it('clears the cached key on sign-out', async () => {
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+      .mockResolvedValueOnce(emptyRecords) // expenses list
+      .mockResolvedValueOnce(emptyRecords) // recurring list
+      .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(signOutOk) // sign out
+    await seedCachedKey(1)
+    localStorage.setItem('buckie.onboarding.skipped.1', '1')
+    renderWithMantine(<App />)
+    await waitFor(() => screen.getByRole('main', { name: 'home' }))
+    fireEvent.click(screen.getByRole('button', { name: 'sign out' }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /access your space/i })
+      ).toBeDefined()
+    })
+    expect(await loadCachedKey(1)).toBeUndefined()
   })
 })
 

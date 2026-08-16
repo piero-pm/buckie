@@ -12,6 +12,12 @@ export function ym(date: string | Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
+/** Month list for selectors: data months plus the current one even when it
+ * has no data yet (BR-QW-2 — an empty current month stays reachable). */
+export function withCurrentMonth(months: string[], current: string): string[] {
+  return months.includes(current) ? months : [...months, current]
+}
+
 /**
  * Expands active recurring templates into synthetic expenses for every month
  * from each template's creation month through the current month (TICKET-011).

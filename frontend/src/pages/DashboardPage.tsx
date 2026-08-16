@@ -8,6 +8,7 @@ import {
   monthlyExpenses,
   monthTotal,
   monthIncome,
+  withCurrentMonth,
   ym,
 } from '../domain/aggregation'
 import {
@@ -58,6 +59,17 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
     [figures]
   )
 
+  const monthOptions = useMemo(
+    () =>
+      withCurrentMonth(
+        months.map((m) => m.month),
+        currentMonth()
+      )
+        .reverse()
+        .map((m) => ({ value: m, label: monthLabel(m) })),
+    [months]
+  )
+
   const expandedForSelected = useMemo(
     () => expandRecurring(recurring, selected),
     [recurring, selected]
@@ -93,9 +105,7 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
         <Select
           label="Month"
           id="month"
-          data={[...months]
-            .reverse()
-            .map((m) => ({ value: m.month, label: monthLabel(m.month) }))}
+          data={monthOptions}
           value={selected}
           onChange={(v) => v && setSelected(v)}
         />

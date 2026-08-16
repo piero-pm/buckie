@@ -7,7 +7,7 @@ import PassphraseSetupPage from './pages/PassphraseSetupPage'
 import PassphraseUnlockPage from './pages/PassphraseUnlockPage'
 import AppHeader from './components/AppHeader'
 import { getVault } from './api/vault'
-import { loadCachedKey } from './crypto'
+import { loadCachedKey, clearKey } from './crypto'
 import { signOut as signOutApi } from './api/auth'
 import type { View } from './pages/views'
 
@@ -40,6 +40,9 @@ export default function App() {
   }, [])
 
   async function handleSignOut() {
+    // BR-LOCK-1: signing out locks the space — the cached key leaves the
+    // device before the session ends, so re-entry needs the passphrase.
+    if (userId) await clearKey(userId)
     await signOutApi()
     setUserId(null)
     setView('hub')

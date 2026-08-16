@@ -43,11 +43,13 @@ func List(db *sql.DB, userID int64, kind string) ([]Record, error) {
 }
 
 // Put inserts or replaces a record (upsert by id). The client owns the id.
+// Re-upload also refreshes the kind column so it never drifts from the
+// payload's actual type (BR-HARD-3).
 func Put(db *sql.DB, userID int64, r Record) error {
 	_, err := db.Exec(
 		`INSERT INTO records (id, user_id, kind, ciphertext, updated_at)
 		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-		 ON CONFLICT(id) DO UPDATE SET ciphertext = excluded.ciphertext, updated_at = CURRENT_TIMESTAMP
+		 ON CONFLICT(id) DO UPDATE SET kind = excluded.kind, ciphertext = excluded.ciphertext, updated_at = CURRENT_TIMESTAMP
 		 WHERE records.user_id = ?`,
 		r.ID, userID, r.Kind, r.Ciphertext, userID,
 	)

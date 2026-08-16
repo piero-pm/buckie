@@ -1,6 +1,7 @@
 package records
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"testing"
@@ -54,6 +55,52 @@ func TestPutUpsert(t *testing.T) {
 	}
 	if body.Records[0].Ciphertext != "dXBkYXRlZA==" {
 		t.Error("upsert did not replace ciphertext")
+	}
+}
+
+// BR-HARD-3: re-uploading an id updates the kind column with the ciphertext.
+func TestPutUpsertUpdatesKind(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	do(t, http.MethodPut, srv.URL+"/api/records/rec-1", dto("rec-1"), cookie).Body.Close()
+	moved := recordDTO{ID: "rec-1", Kind: KindIncome, Ciphertext: "aW5jb21l"}
+	do(t, http.MethodPut, srv.URL+"/api/records/rec-1", moved, cookie).Body.Close()
+
+	old := do(t, http.MethodGet, srv.URL+"/api/records?kind=expense", nil, cookie)
+	defer old.Body.Close()
+	var expenses struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(old.Body).Decode(&expenses)
+	if len(expenses.Records) != 0 {
+		t.Errorf("record should have left kind=expense, got %d rows", len(expenses.Records))
+	}
+	movedList := do(t, http.MethodGet, srv.URL+"/api/records?kind=income", nil, cookie)
+	defer movedList.Body.Close()
+	var incomes struct {
+		Records []recordDTO `json:"records"`
+	}
+	_ = json.NewDecoder(movedList.Body).Decode(&incomes)
+	if len(incomes.Records) != 1 || incomes.Records[0].Ciphertext != "aW5jb21l" {
+		t.Errorf("record should now list under kind=income, got %+v", incomes.Records)
+	}
+}
+
+// BR-HARD-1: record uploads above 1 MiB are rejected with 413.
+func TestPutTooLarge(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	big := recordDTO{
+		ID:         "rec-big",
+		Kind:       KindExpense,
+		Ciphertext: base64.StdEncoding.EncodeToString(make([]byte, 1100*1024)),
+	}
+	resp := do(t, http.MethodPut, srv.URL+"/api/records/rec-big", big, cookie)
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusRequestEntityTooLarge {
+		t.Errorf("oversize put: got %d, want 413", resp.StatusCode)
 	}
 }
 

@@ -51,7 +51,7 @@ export default function LandingPage({ onAccess }: Props) {
           <FeatureCard
             icon={<IconHome size={22} />}
             title="Self-hosted & free"
-            body="Open source. Runs on a small ~£5/mo VPS. Your data stays on your terms — no ads, no resale, ever."
+            body="Open source. Runs on a small ~€5/mo VPS. Your data stays on your terms — no ads, no resale, ever."
           />
         </SimpleGrid>
       </Container>

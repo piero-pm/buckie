@@ -7,6 +7,7 @@ import {
   byCategory,
   projectSavings,
   topCategories,
+  withCurrentMonth,
   ym,
 } from './aggregation'
 import type { Expense, Recurring } from './expense'
@@ -225,5 +226,28 @@ describe('topCategories quick picks (BR-CAP-1, TICKET-026)', () => {
       'Gift',
       'Health',
     ])
+  })
+})
+
+// BR-QW-2: the month selector always offers the current month, even when it
+// has no data yet (EX: empty current month is reachable and shows zeros).
+describe('withCurrentMonth', () => {
+  it('appends the current month when it has no data', () => {
+    expect(withCurrentMonth(['2026-05', '2026-06'], '2026-08')).toEqual([
+      '2026-05',
+      '2026-06',
+      '2026-08',
+    ])
+  })
+
+  it('keeps the list unchanged when the current month already has data', () => {
+    expect(withCurrentMonth(['2026-06', '2026-08'], '2026-08')).toEqual([
+      '2026-06',
+      '2026-08',
+    ])
+  })
+
+  it('adds the current month to an empty history', () => {
+    expect(withCurrentMonth([], '2026-08')).toEqual(['2026-08'])
   })
 })

@@ -21,6 +21,7 @@ func main() {
 	// One top-level mux composes the auth, vault, and records route groups, then
 	// serves the built SPA for everything else.
 	mux := http.NewServeMux()
+	mux.HandleFunc("/health", health)
 	mux.Handle("/api/auth/", auth.NewMux(store, auth.NewSender()))
 	mux.Handle("/api/vault", vault.NewMux(store))
 	mux.Handle("/api/records", records.NewMux(store))
@@ -39,4 +40,11 @@ func envOr(key, def string) string {
 		return v
 	}
 	return def
+}
+
+// health answers unauthenticated liveness for uptime checks (BR-HARD-2).
+func health(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("ok"))
 }
