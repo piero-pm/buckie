@@ -128,7 +128,7 @@ export default function DashboardPage({
                 h={160}
                 data={barData}
                 dataKey="month"
-                series={[{ name: 'total', color: '#c2410c' }]}
+                series={[{ name: 'total', color: '#ea580c' }]}
                 tickLine="y"
                 gridAxis="y"
                 valueFormatter={(v) => `€${v}`}

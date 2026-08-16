@@ -64,38 +64,36 @@ function Hero({ onAccess }: { onAccess: () => void }) {
   return (
     <Box
       style={{
-        // Dark end-first gradient: keeps near-white text >= AA on both ends.
-        background: 'linear-gradient(135deg, #c2410c 0%, #7c2d12 100%)',
-        color: 'white',
+        // Light orange wash (human preference: "lighter, less heavy"), with
+        // dark text for AA contrast instead of white-on-dark-orange.
+        background: 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)',
       }}
     >
       <Container size={860} px="md" py={64}>
         <Stack gap="md" align="flex-start">
           <Title
             order={1}
-            style={{ color: 'white', fontSize: '2.5rem', lineHeight: 1.1 }}
+            style={{ color: '#7c2d12', fontSize: '2.5rem', lineHeight: 1.1 }}
           >
             Your money,
             <br />
             yours alone.
           </Title>
-          <Text size="lg" c="#fff7ed" maw={520}>
+          <Text size="lg" c="gray.7" maw={520}>
             A self-hosted, privacy-first spending tracker. See where your money
             goes each month — without handing your data to anyone.
           </Text>
           <Group gap="sm" mt="sm">
             <Button
               size="lg"
-              color="white"
               c="dark.9"
-              variant="filled"
               rightSection={<IconArrowRight size={18} />}
               onClick={onAccess}
             >
               Access your space
             </Button>
           </Group>
-          <Text size="xs" c="#fff7ed" mt="md">
+          <Text size="xs" c="gray.6" mt="md">
             Open source · self-hosted · €0
           </Text>
         </Stack>
@@ -140,7 +138,7 @@ function Footer() {
           </Text>
           <Text
             size="xs"
-            c="orange"
+            c="orange.7"
             component="a"
             href="https://github.com/piero-pm/buckie"
             target="_blank"

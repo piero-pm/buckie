@@ -130,7 +130,7 @@ function Destination({
   return (
     <UnstyledButton
       aria-label={item.label}
-      c={active ? 'orange' : 'gray.7'}
+      c={active ? 'orange.7' : 'gray.7'}
       px={8}
       py={6}
       style={{ borderRadius: 4 }}

@@ -1,7 +1,8 @@
 import { createTheme, MantineColorsTuple } from '@mantine/core'
 
-// Open-source technical identity: white surfaces, deep-orange primary.
-// Shade 7 (#c2410c) keeps white-on-primary text at WCAG 2.2 AA (~5.2:1).
+// Open-source technical identity: white surfaces, bright-orange primary.
+// Shade 6 (#ea580c) is the lighter working primary (human preference
+// 2026-08-16); text-on-white accents use orange.7 explicitly for AA.
 // Small radius (no heavy rounding), system font stack for speed + familiarity.
 const orange: MantineColorsTuple = [
   '#fff7ed',
@@ -18,7 +19,7 @@ const orange: MantineColorsTuple = [
 
 export const theme = createTheme({
   primaryColor: 'orange',
-  primaryShade: { light: 7, dark: 7 },
+  primaryShade: { light: 6, dark: 6 },
   colors: { orange },
   defaultRadius: 'sm',
   fontFamily:
