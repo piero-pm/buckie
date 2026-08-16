@@ -23,6 +23,8 @@ Status: recommendation; human approval pending
 | BA-DS-004 | Delivery spec (dashboard) | [delivery-spec-dashboard.md](delivery-spec-dashboard.md) | Recommendation | None |
 | BA-DS-005 | Delivery spec (site chrome) | [delivery-spec-site-chrome.md](delivery-spec-site-chrome.md) | Approved (WORK-002) | None |
 | BA-DS-006 | Delivery spec (income) | [delivery-spec-income.md](delivery-spec-income.md) | Approved (WORK-002) | None |
+| BA-DS-007 | Delivery spec (login scale) | [delivery-spec-login-scale.md](delivery-spec-login-scale.md) | Approved (WORK-003) | None |
+| BA-DS-008 | Delivery spec (home + prediction) | [delivery-spec-home-prediction.md](delivery-spec-home-prediction.md) | Approved (WORK-003) | None |
 
 ## 2. Coverage
 
@@ -50,6 +52,8 @@ Status: recommendation; human approval pending
 | WORK-002 Income | REQ-20 Income source register (salary/savings/investment) | BA-DS-006 / BR-INC-1..3 | EX-INC-1..4 | TICKET-020 |
 | WORK-002 Income | REQ-21 Two-stage onboarding | BA-DS-006 / BR-ONB-1,2 | EX-ONB-1..2 | TICKET-021 |
 | WORK-002 Income | REQ-22 Dashboard income + net | BA-DS-006 | EX-DASH-6 | TICKET-022 |
+| WORK-003 Scale | REQ-23 Login scale + honest errors (100/IP, 10/email; truthful messages) | BA-DS-007 / BR-RL-1..3, BR-ERR-1..4 | EX-RL-1..3, EX-ERR-1..3 | TICKET-023, 024, 025 |
+| WORK-003 Home | REQ-24 Home flow, 14-category capture, prediction dashboards | BA-DS-008 / BR-HOME-1..2, BR-CAP-1, BR-TAX-1, BR-INC-4, BR-PRJ-1..3 | EX-HOME-1, EX-CAP-1, EX-PRJ-1..3 | TICKET-026, 027, 028, 029 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -64,6 +68,10 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-16 | WORK-002 / BA-DS-005/006 / TICKET-017..022 | Site experience + income increment; user-originated intake, approved with 4-slice plan | Human | Approved |
 | 2026-08-16 | Income incl. investments | Lifts WORK-001 Phase 1 exclusion of investment tracking; API balance sync stays out | Human | Approved |
 | 2026-08-16 | Theme white + orange; no-burger header; two-stage onboarding | Identity, navigation, and first-run education decisions | Human | Approved |
+| 2026-08-16 | WORK-003 / BA-DS-007/008 / TICKET-023..029 | Login scale + honest errors + home/prediction increment; user-originated intake, 3-slice plan | Human | Approved |
+| 2026-08-16 | REQ-23 ceilings 100/IP + 10/email | Human proposed 100/20; per-email lowered to 10 on anti-bombing + Resend-quota rationale | Human | Approved |
+| 2026-08-16 | BR-TAX-1 taxonomy 8 -> 14; BR-INC-4 income kinds + freelance/other (savings kept) | Extends REQ-5 and BR-INC-1; superset, no migration | Human | Approved |
+| 2026-08-16 | TICKET-015 resolved: projection income-aware | Avg saving = avg income − avg spend over selected 3/12-month window (BA-DS-008 BR-PRJ-2) | Human | Approved |
 
 ## 4. Link Integrity
 
@@ -74,11 +82,12 @@ external-only, or superseded links at time of writing.
 
 ## 5. Unresolved and Superseded
 
-Open decisions (owner: human): recurring edit-effective timing;
-savings-projection method and inputs (TICKET-022 deliberately leaves
-projection income-unaware). Resolved 2026-08-16: investment income enters
-scope as encrypted source records (API sync still excluded); theme, header,
-and onboarding decisions recorded in work-state-002 §2. Nothing superseded.
+Open decisions (owner: human): recurring edit-effective timing. Resolved
+2026-08-16: savings-projection method — income-aware averages over a
+selectable 3/12-month window (BA-DS-008 BR-PRJ-2, TICKET-029); investment
+income in scope as encrypted source records (API sync still excluded);
+theme, header, and onboarding decisions recorded in work-state-002 §2.
+Nothing superseded.
 
 ## 6. Handoff Verdict
 

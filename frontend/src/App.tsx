@@ -103,6 +103,7 @@ export default function App() {
             setUserId(user_id)
             await routeAfterAuth(user_id, setPage)
           }}
+          onChangeEmail={() => setPage('login')}
         />
       </>
     )

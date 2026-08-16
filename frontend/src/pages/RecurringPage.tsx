@@ -14,6 +14,7 @@ import { IconArrowLeft, IconTrash } from '@tabler/icons-react'
 import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
 import { validateRecurring, type Recurring } from '../domain/expense'
 import { newId } from '../domain/ids'
+import { failToast } from '../components/failToast'
 import PageShell from '../components/PageShell'
 
 interface Props {
@@ -110,8 +111,12 @@ export default function RecurringPage({
                 variant="subtle"
                 color={r.active ? 'gray' : 'red'}
                 onClick={async () => {
-                  if (r.active) await onSave({ ...r, active: false })
-                  else await onDelete(r.id)
+                  try {
+                    if (r.active) await onSave({ ...r, active: false })
+                    else await onDelete(r.id)
+                  } catch {
+                    failToast(r.active ? 'end' : 'remove')
+                  }
                 }}
                 aria-label={r.active ? 'end' : 'remove'}
               >

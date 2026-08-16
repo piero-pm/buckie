@@ -1,18 +1,11 @@
 import { useState } from 'react'
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core'
+import { ActionIcon, Box, Button, Group, Stack, Text } from '@mantine/core'
 import { IconArrowLeft, IconPencil, IconTrash } from '@tabler/icons-react'
-import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
-import { validateExpense, type Expense } from '../domain/expense'
+import { formatEUR } from '../domain/taxonomy'
+import type { Expense } from '../domain/expense'
+import { failToast } from '../components/failToast'
 import PageShell from '../components/PageShell'
+import EditExpense from './EditExpense'
 
 interface Props {
   expenses: Expense[]
@@ -21,9 +14,8 @@ interface Props {
   onBack: () => void
 }
 
-const today = () => new Date().toISOString().slice(0, 10)
-
-/** Review + correct recent expenses (TICKET-009). Edits re-apply BR-DQ-1..4. */
+/** Review + correct recent expenses (TICKET-009/025). Delete failures are
+ * visible toasts; rows remain until the API succeeds (BR-ERR-4). */
 export default function ExpensesPage({
   expenses,
   onUpdate,
@@ -94,7 +86,11 @@ export default function ExpensesPage({
                   variant="subtle"
                   color="red"
                   onClick={async () => {
-                    await onDelete(e.id)
+                    try {
+                      await onDelete(e.id)
+                    } catch {
+                      failToast('delete')
+                    }
                   }}
                   aria-label="delete"
                 >
@@ -115,76 +111,6 @@ export default function ExpensesPage({
           </Button>
         </Group>
       </Box>
-    </PageShell>
-  )
-}
-
-function EditExpense({
-  expense,
-  onSave,
-  onCancel,
-}: {
-  expense: Expense
-  onSave: (e: Expense) => Promise<void>
-  onCancel: () => void
-}) {
-  const [amount, setAmount] = useState(String(expense.amount))
-  const [category, setCategory] = useState<Category>(expense.category)
-  const [date, setDate] = useState(expense.date)
-  const [error, setError] = useState('')
-
-  async function save() {
-    setError('')
-    const result = validateExpense({ amount: Number(amount), category, date })
-    if (!result.ok) {
-      setError(result.error)
-      return
-    }
-    await onSave({ ...expense, amount: Number(amount), category, date })
-  }
-
-  return (
-    <PageShell title="Edit expense" card>
-      <form aria-label="edit expense" onSubmit={(e) => e.preventDefault()}>
-        <Stack gap="md">
-          <TextInput
-            label="Amount"
-            id="amount"
-            type="number"
-            step="0.01"
-            leftSection={<span style={{ fontWeight: 600 }}>€</span>}
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <Select
-            label="Category"
-            id="category"
-            data={CATEGORIES as readonly string[]}
-            value={category}
-            onChange={(v) => setCategory((v as Category) ?? category)}
-            searchable
-          />
-          <TextInput
-            label="Date"
-            id="date"
-            type="date"
-            value={date}
-            max={today()}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <Group grow>
-            <Button variant="default" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button onClick={save}>Save</Button>
-          </Group>
-          {error && (
-            <Text role="alert" c="red.7" size="sm">
-              {error}
-            </Text>
-          )}
-        </Stack>
-      </form>
     </PageShell>
   )
 }

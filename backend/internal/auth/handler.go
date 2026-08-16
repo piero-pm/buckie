@@ -3,8 +3,11 @@ package auth
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
+	"net"
 	"net/http"
 	"net/mail"
+	"strings"
 	"time"
 )
 
@@ -33,8 +36,10 @@ func (h *handler) requestCode(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid email"})
 		return
 	}
-	if !h.limiter.allowCodeRequest(req.Email, r.RemoteAddr) {
-		writeJSON(w, http.StatusTooManyRequests, map[string]string{"message": "a code was sent"})
+	if !h.limiter.allowCodeRequest(req.Email, clientIP(r)) {
+		writeJSON(w, http.StatusTooManyRequests, map[string]string{
+			"error": "too many codes requested — try again within the hour",
+		})
 		return
 	}
 	uid, err := upsertUser(h.db, req.Email)
@@ -47,7 +52,13 @@ func (h *handler) requestCode(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "internal"})
 		return
 	}
-	_ = h.sender.Send(req.Email, code)
+	if err := h.sender.Send(req.Email, code); err != nil {
+		log.Printf("auth: code delivery to %s failed: %v", req.Email, err)
+		writeJSON(w, http.StatusBadGateway, map[string]string{
+			"error": "could not send the email just now — please try again in a minute",
+		})
+		return
+	}
 	writeJSON(w, http.StatusOK, map[string]string{"message": "a code was sent"})
 }
 
@@ -111,6 +122,23 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(v)
+}
+
+// clientIP returns the originating network peer: the first forwarded-for
+// value when the proxy supplies one (Caddy is the only ingress), else the
+// socket address (BR-RL-1).
+func clientIP(r *http.Request) string {
+	if fwd := r.Header.Get("X-Forwarded-For"); fwd != "" {
+		if i := strings.Index(fwd, ","); i >= 0 {
+			fwd = fwd[:i]
+		}
+		return strings.TrimSpace(fwd)
+	}
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+	return ip
 }
 
 func validEmail(email string) bool {

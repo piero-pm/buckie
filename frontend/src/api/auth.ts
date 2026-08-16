@@ -3,41 +3,35 @@ interface ApiResult {
   error?: string
 }
 
-export async function requestCode(email: string): Promise<ApiResult> {
+/** BR-ERR-2: network-level failures get connection guidance, distinct from
+ * server messages. */
+const NETWORK_ERROR =
+  "Can't reach myBuckie — check your connection and try again."
+
+async function post(path: string, body: unknown): Promise<ApiResult> {
   try {
-    const res = await fetch('/api/auth/request-code', {
+    const res = await fetch(path, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify(body),
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
-      return { ok: false, error: (data as { error?: string }).error }
+      const err = data as { error?: string; message?: string }
+      return { ok: false, error: err.error ?? err.message }
     }
     return { ok: true }
   } catch {
-    return { ok: false, error: 'Network error' }
+    return { ok: false, error: NETWORK_ERROR }
   }
 }
 
-export async function verifyCode(
-  email: string,
-  code: string
-): Promise<ApiResult> {
-  try {
-    const res = await fetch('/api/auth/verify-code', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, code }),
-    })
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      return { ok: false, error: (data as { error?: string }).error }
-    }
-    return { ok: true }
-  } catch {
-    return { ok: false, error: 'Network error' }
-  }
+export function requestCode(email: string): Promise<ApiResult> {
+  return post('/api/auth/request-code', { email })
+}
+
+export function verifyCode(email: string, code: string): Promise<ApiResult> {
+  return post('/api/auth/verify-code', { email, code })
 }
 
 export async function signOut(): Promise<void> {

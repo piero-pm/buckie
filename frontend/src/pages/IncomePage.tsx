@@ -2,6 +2,7 @@ import { ActionIcon, Badge, Box, Group, Stack, Text } from '@mantine/core'
 import { IconTrash } from '@tabler/icons-react'
 import { formatEUR } from '../domain/taxonomy'
 import { INCOME_LABELS, type IncomeSource } from '../domain/income'
+import { failToast } from '../components/failToast'
 import PageShell from '../components/PageShell'
 import IncomeForm from './IncomeForm'
 
@@ -87,14 +88,18 @@ function SourceRow({
         variant="subtle"
         color={s.active ? 'gray' : 'red'}
         onClick={async () => {
-          if (s.active) {
-            await onSave({
-              ...s,
-              active: false,
-              endedAt: new Date().toISOString(),
-            })
-          } else {
-            await onDelete(s.id)
+          try {
+            if (s.active) {
+              await onSave({
+                ...s,
+                active: false,
+                endedAt: new Date().toISOString(),
+              })
+            } else {
+              await onDelete(s.id)
+            }
+          } catch {
+            failToast(s.active ? 'end' : 'remove')
           }
         }}
         aria-label={s.active ? 'end' : 'remove'}
