@@ -5,11 +5,10 @@ import {
   Card,
   Container,
   Group,
-  SimpleGrid,
   Stack,
   Text,
 } from '@mantine/core'
-import { IconPlus, IconRepeat, IconChartBar, IconX } from '@tabler/icons-react'
+import { IconPlus, IconRepeat, IconX } from '@tabler/icons-react'
 import type { Expense } from '../domain/expense'
 import { formatEUR } from '../domain/taxonomy'
 import type { View } from './views'
@@ -21,17 +20,19 @@ interface Props {
   showIncomeCard: boolean
   onHideIncomeCard: () => void
   onNavigate: (v: View) => void
+  /** The month dashboard embedded in the scroll (BR-HOME-2, TICKET-027). */
+  children?: React.ReactNode
 }
 
-/** The signed-in hub (rendered by HomePage): quick actions + the five most
- * recent spends. Header destinations (Expenses/Income/Help) live in the
- * persistent top banner (BA-DS-005). */
+/** The returning home: one scrollable page — add-expense entry at top,
+ * then recent spends, then the embedded month dashboard (BR-HOME-2). */
 export default function HubView({
   expenses,
   loadError,
   showIncomeCard,
   onHideIncomeCard,
   onNavigate,
+  children,
 }: Props) {
   const recent = [...expenses]
     .sort((a, b) => (a.date < b.date ? 1 : -1))
@@ -46,23 +47,22 @@ export default function HubView({
             </Text>
           )}
 
-          <SimpleGrid cols={2} spacing="sm">
-            <NavButton
-              icon={<IconPlus size={20} />}
-              label="Record a spend"
-              onClick={() => onNavigate('capture')}
-            />
-            <NavButton
-              icon={<IconRepeat size={20} />}
-              label="Recurring"
-              onClick={() => onNavigate('recurring')}
-            />
-            <NavButton
-              icon={<IconChartBar size={20} />}
-              label="Dashboard"
-              onClick={() => onNavigate('dashboard')}
-            />
-          </SimpleGrid>
+          <MButton
+            size="lg"
+            leftSection={<IconPlus size={20} />}
+            onClick={() => onNavigate('capture')}
+            styles={{ root: { height: 56 } }}
+          >
+            Record a spend
+          </MButton>
+          <MButton
+            variant="light"
+            leftSection={<IconRepeat size={20} />}
+            onClick={() => onNavigate('recurring')}
+            styles={{ root: { height: 56, justifyContent: 'flex-start' } }}
+          >
+            Recurring
+          </MButton>
 
           {showIncomeCard && (
             <Card withBorder padding="md">
@@ -101,6 +101,8 @@ export default function HubView({
               </Stack>
             )}
           </Stack>
+
+          {children}
         </Stack>
       </Container>
     </Box>
@@ -132,27 +134,5 @@ function RecentRow({ expense: e }: { expense: Expense }) {
         {formatEUR(e.amount)}
       </Text>
     </Group>
-  )
-}
-
-function NavButton({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: React.ReactNode
-  label: string
-  onClick: () => void
-}) {
-  return (
-    <MButton
-      variant="light"
-      fullWidth
-      leftSection={icon}
-      onClick={onClick}
-      styles={{ root: { height: 56, justifyContent: 'flex-start' } }}
-    >
-      {label}
-    </MButton>
   )
 }

@@ -133,6 +133,20 @@ export function monthRange(
   return months
 }
 
+/** BR-CAP-1 quick picks: the user's most-used categories first (by record
+ * count), filled up to `limit` from the fixed taxonomy in fixed order. */
+export function topCategories(expenses: Expense[], limit = 6): Category[] {
+  const counts = new Map<Category, number>()
+  for (const e of expenses) {
+    counts.set(e.category, (counts.get(e.category) ?? 0) + 1)
+  }
+  const used = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([category]) => category)
+  const rest = CATEGORIES.filter((c) => !used.includes(c))
+  return [...used, ...rest].slice(0, limit)
+}
+
 function resolveDay(month: string, dayOfMonth: number): string {
   const [y, m] = month.split('-').map(Number)
   const lastDay = new Date(y, m, 0).getDate() // day 0 of next month = last of this

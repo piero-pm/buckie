@@ -46,6 +46,7 @@ as 127.0.0.1, so the 5/hour per-IP cap is one shared bucket for all users
 | TICKET-015 resolved income-aware (BA-DS-008 BR-PRJ-2) | Human | Approved | Gate answer, 2026-08-16 |
 | Resend cooldown 60 s | Human | Default adopted | BA-DS-007 §6, vetoable at Lead gate |
 | 3-slice direction + tickets 023..029 | Human | Approved | AskUser answer, 2026-08-16 |
+| Slice 1 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 (ba58947 pushed) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 
@@ -82,6 +83,14 @@ send-failure 502). Frontend: eslint + prettier clean; 58/58 vitest incl.
 visibles); build green. Sizes: source files <=200 (ExpensesPage 116 +
 EditExpense 89 extracted); specs 98/107 lines (WORK-002 precedent 109;
 further trimming would drop approved rule content).
+
+### 4.2 Slice 2 gate evidence (2026-08-16, local ZCode/GLM-5.2)
+
+S1 deployed: ba58947 pushed, CI + Deploy success — live. Frontend S2:
+eslint + prettier clean; 64/64 vitest incl. 6 new (3 topCategories, 2
+home-scroll order, 1 chips; taxonomy/expense tests updated for 14
+categories); build green. Sizes: all touched files <=200 (HubView 138,
+DashboardPage 137, CapturePage 179, aggregation 160).
 
 ## 5. Blockers
 

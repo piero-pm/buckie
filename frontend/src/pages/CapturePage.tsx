@@ -1,9 +1,18 @@
 import { useState, FormEvent } from 'react'
-import { Button, Group, Select, Stack, Text, TextInput } from '@mantine/core'
+import {
+  Button,
+  Chip,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
 import { validateExpense, type Expense } from '../domain/expense'
+import { topCategories } from '../domain/aggregation'
 import { newId } from '../domain/ids'
 import PageShell from '../components/PageShell'
 
@@ -15,9 +24,9 @@ interface Props {
 
 const today = () => new Date().toISOString().slice(0, 10)
 
-/** Quick expense capture (TICKET-005/006/007/008). Validates BR-DQ-1..4 and
- * warns on a likely duplicate (same amount+category+date, BR-DQ-5) without
- * blocking a genuine repeat. */
+/** Quick expense capture (TICKET-005/006/007/008, chips BR-CAP-1). Validates
+ * BR-DQ-1..4 and warns on a likely duplicate (same amount+category+date,
+ * BR-DQ-5) without blocking a genuine repeat. */
 export default function CapturePage({ existing, onSave, onBack }: Props) {
   const [amount, setAmount] = useState('')
   const [category, setCategory] = useState<Category | ''>('')
@@ -26,6 +35,7 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
   const [error, setError] = useState('')
   const [dup, setDup] = useState<Expense | null>(null)
   const [busy, setBusy] = useState(false)
+  const quickPicks = topCategories(existing)
 
   function reset() {
     setAmount('')
@@ -98,6 +108,19 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
             onChange={(e) => setAmount(e.target.value)}
             required
           />
+          <Group gap="xs" wrap="wrap" aria-label="quick picks">
+            {quickPicks.map((c) => (
+              <Chip
+                key={c}
+                size="sm"
+                variant="outline"
+                checked={category === c}
+                onChange={() => setCategory(category === c ? '' : c)}
+              >
+                {c}
+              </Chip>
+            ))}
+          </Group>
           <Select
             label="Category"
             id="category"

@@ -1,16 +1,6 @@
 import { useMemo, useState } from 'react'
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Group,
-  Select,
-  Stack,
-  Text,
-} from '@mantine/core'
+import { Box, Card, Select, Stack, Text } from '@mantine/core'
 import { BarChart } from '@mantine/charts'
-import { IconArrowLeft } from '@tabler/icons-react'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
 import {
@@ -29,7 +19,6 @@ interface Props {
   expenses: Expense[]
   recurring: Recurring[]
   incomes: IncomeSource[]
-  onBack: () => void
 }
 
 const currentMonth = () => ym(new Date())
@@ -42,15 +31,11 @@ const monthLabel = (ym: string) => {
   })
 }
 
-/** Month-on-month totals, spend-by-category, income + net (TICKET-022), and
- * a savings projection (TICKET-013/014/015). All aggregation runs client-side
- * over decrypted records; the server only ever saw ciphertext. */
-export default function DashboardPage({
-  expenses,
-  recurring,
-  incomes,
-  onBack,
-}: Props) {
+/** Month view (Dashboard A, WORK-003): month-on-month totals, spend by
+ * category, income + net (TICKET-022), and a savings projection
+ * (TICKET-013/014/015). Rendered inside the home scroll (BR-HOME-2); all
+ * aggregation runs client-side over decrypted records. */
+export default function DashboardPage({ expenses, recurring, incomes }: Props) {
   const [selected, setSelected] = useState(currentMonth())
 
   const months = useMemo(() => {
@@ -88,77 +73,65 @@ export default function DashboardPage({
     }))
 
   return (
-    <Box component="main" aria-label="dashboard">
-      <Container size={560} px="md" py="xl">
-        <Stack gap="md">
-          <Group justify="space-between" align="center">
-            <Text fw={600} size="xl" c="gray.9">
-              Dashboard
-            </Text>
-            <Button
-              variant="subtle"
-              color="gray"
-              leftSection={<IconArrowLeft size={16} />}
-              onClick={onBack}
-            >
-              Back
-            </Button>
-          </Group>
+    <Box component="section" aria-label="month view">
+      <Stack gap="md">
+        <Text fw={600} size="xl" c="gray.9">
+          Month view
+        </Text>
 
-          <Select
-            label="Month"
-            id="month"
-            data={[...months]
-              .reverse()
-              .map((m) => ({ value: m.month, label: monthLabel(m.month) }))}
-            value={selected}
-            onChange={(v) => v && setSelected(v)}
-          />
+        <Select
+          label="Month"
+          id="month"
+          data={[...months]
+            .reverse()
+            .map((m) => ({ value: m.month, label: monthLabel(m.month) }))}
+          value={selected}
+          onChange={(v) => v && setSelected(v)}
+        />
 
-          <DashboardSummary total={total} income={income} net={net} />
+        <DashboardSummary total={total} income={income} net={net} />
 
-          <CategoryDonut monthItems={monthItems} />
+        <CategoryDonut monthItems={monthItems} />
 
-          {barData.length > 0 && (
-            <Card withBorder padding="lg">
-              <Text size="sm" fw={600} c="gray.7" mb="sm">
-                Month-on-month
-              </Text>
-              <BarChart
-                h={160}
-                data={barData}
-                dataKey="month"
-                series={[{ name: 'total', color: '#ea580c' }]}
-                tickLine="y"
-                gridAxis="y"
-                valueFormatter={(v) => `€${v}`}
-              />
-            </Card>
-          )}
-
+        {barData.length > 0 && (
           <Card withBorder padding="lg">
-            <Text size="sm" fw={600} c="gray.7" mb="xs">
-              Savings projection
+            <Text size="sm" fw={600} c="gray.7" mb="sm">
+              Month-on-month
             </Text>
-            {projection.hasData ? (
-              <Stack gap={4}>
-                <Text size="xs" c="gray.5" aria-label="projection">
-                  Next month ~{formatEUR(projection.nextMonthEstimate ?? 0)}; at
-                  this rate ~{formatEUR(projection.yearlyIfContinued ?? 0)} over
-                  12 months.
-                </Text>
-                <Text size="xs" c="gray.5" fs="italic">
-                  Estimate. {projection.basis}
-                </Text>
-              </Stack>
-            ) : (
-              <Text size="xs" c="gray.5" aria-label="projection">
-                {projection.basis}
-              </Text>
-            )}
+            <BarChart
+              h={160}
+              data={barData}
+              dataKey="month"
+              series={[{ name: 'total', color: '#ea580c' }]}
+              tickLine="y"
+              gridAxis="y"
+              valueFormatter={(v) => `€${v}`}
+            />
           </Card>
-        </Stack>
-      </Container>
+        )}
+
+        <Card withBorder padding="lg">
+          <Text size="sm" fw={600} c="gray.7" mb="xs">
+            Savings projection
+          </Text>
+          {projection.hasData ? (
+            <Stack gap={4}>
+              <Text size="xs" c="gray.5" aria-label="projection">
+                Next month ~{formatEUR(projection.nextMonthEstimate ?? 0)}; at
+                this rate ~{formatEUR(projection.yearlyIfContinued ?? 0)} over
+                12 months.
+              </Text>
+              <Text size="xs" c="gray.5" fs="italic">
+                Estimate. {projection.basis}
+              </Text>
+            </Stack>
+          ) : (
+            <Text size="xs" c="gray.5" aria-label="projection">
+              {projection.basis}
+            </Text>
+          )}
+        </Card>
+      </Stack>
     </Box>
   )
 }

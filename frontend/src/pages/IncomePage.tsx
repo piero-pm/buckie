@@ -13,13 +13,14 @@ interface Props {
   onBack: () => void
 }
 
-/** Manage monthly income sources — salary, savings, investments (TICKET-020).
- * Editable anytime (EX-INC-4); ending preserves past months (EX-INC-3). */
+/** Manage monthly income sources — salary, freelance, investments, other
+ * (TICKET-020, kinds extended BR-INC-4). Editable anytime (EX-INC-4);
+ * ending preserves past months (EX-INC-3). */
 export default function IncomePage({ items, onSave, onDelete, onBack }: Props) {
   return (
     <PageShell
       title="Income"
-      subtitle="Monthly money in: salary, savings, investments."
+      subtitle="Monthly money in: salary, freelance, investments, and more."
       card={false}
     >
       <Box component="main" aria-label="income sources">

@@ -32,7 +32,7 @@ describe('expense validation (BR-DQ-1..4)', () => {
   })
 
   it('rejects a category not in the taxonomy', () => {
-    expect(validateExpense({ ...valid, category: 'Pets' }).ok).toBe(false)
+    expect(validateExpense({ ...valid, category: 'Vacations' }).ok).toBe(false)
   })
 
   // BR-DQ-3: date required, not in the future.
@@ -70,10 +70,12 @@ describe('recurring validation (TICKET-010)', () => {
 })
 
 describe('taxonomy', () => {
-  it('has the approved 8 categories', () => {
-    expect(CATEGORIES).toHaveLength(8)
+  it('has the approved 14 categories (BR-TAX-1)', () => {
+    expect(CATEGORIES).toHaveLength(14)
     expect(CATEGORIES).toContain('Rent')
     expect(CATEGORIES).toContain('Miscellaneous')
+    expect(CATEGORIES).toContain('Entertainment & Subscriptions')
+    expect(CATEGORIES).toContain('Insurance')
   })
 })
 

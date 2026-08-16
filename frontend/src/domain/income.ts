@@ -1,13 +1,22 @@
 import type { ValidationResult } from './expense'
 
-/** Income source kinds (BR-INC-1, fixed taxonomy). */
-export const INCOME_KINDS = ['salary', 'savings', 'investment'] as const
+/** Income source kinds (BR-INC-1 + BR-INC-4, WORK-003: general set;
+ * savings kept for existing records). */
+export const INCOME_KINDS = [
+  'salary',
+  'freelance',
+  'savings',
+  'investment',
+  'other',
+] as const
 export type IncomeKind = (typeof INCOME_KINDS)[number]
 
 export const INCOME_LABELS: Record<IncomeKind, string> = {
   salary: 'Salary',
+  freelance: 'Freelance & side income',
   savings: 'Savings',
   investment: 'Investments (stocks)',
+  other: 'Other income',
 }
 
 /**
@@ -55,7 +64,7 @@ function validateKind(kind: string): ValidationResult | null {
     return {
       ok: false,
       field: 'kind',
-      error: 'Choose salary, savings, or investment.',
+      error: 'Choose an income kind.',
     }
   }
   return null

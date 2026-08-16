@@ -68,16 +68,6 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
       />
     )
   }
-  if (view === 'dashboard') {
-    return (
-      <DashboardPage
-        expenses={ws.expenses}
-        recurring={ws.recurring}
-        incomes={ws.incomes}
-        onBack={() => onNavigate('hub')}
-      />
-    )
-  }
   if (view === 'help') {
     return <HelpPage onBack={() => onNavigate('hub')} />
   }
@@ -105,6 +95,12 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
       showIncomeCard={ws.incomes.length === 0 && !incomeCardHidden}
       onHideIncomeCard={() => setIncomeCardHidden(true)}
       onNavigate={onNavigate}
-    />
+    >
+      <DashboardPage
+        expenses={ws.expenses}
+        recurring={ws.recurring}
+        incomes={ws.incomes}
+      />
+    </HubView>
   )
 }

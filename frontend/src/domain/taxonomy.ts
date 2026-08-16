@@ -1,6 +1,9 @@
 /**
- * Fixed Phase-1 category taxonomy (TICKET-006, analysis-brief §5). Used by both
- * capture and recurring; user-defined categories are out of scope.
+ * Fixed category taxonomy (BR-TAX-1, WORK-003): 14 general everyday
+ * categories — a superset of the Phase-1 eight, so existing records stay
+ * valid with no migration ("not a bank": general spending, not bank-grade
+ * detail). Used by capture and recurring; user-defined categories remain
+ * out of scope.
  */
 export const CATEGORIES = [
   'Rent',
@@ -11,6 +14,12 @@ export const CATEGORIES = [
   'Health',
   'Shopping',
   'Miscellaneous',
+  'Entertainment & Subscriptions',
+  'Personal care',
+  'Education & Books',
+  'Pets',
+  'Family & Kids',
+  'Insurance',
 ] as const
 
 export type Category = (typeof CATEGORIES)[number]

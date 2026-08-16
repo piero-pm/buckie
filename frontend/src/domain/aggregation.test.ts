@@ -6,6 +6,7 @@ import {
   monthTotal,
   byCategory,
   projectSavings,
+  topCategories,
   ym,
 } from './aggregation'
 import type { Expense, Recurring } from './expense'
@@ -186,5 +187,43 @@ describe('savings projection (TICKET-015)', () => {
     expect(p.nextMonthEstimate).toBe(1000)
     expect(p.yearlyIfContinued).toBe(12000)
     expect(p.basis).toContain('Average')
+  })
+})
+
+describe('topCategories quick picks (BR-CAP-1, TICKET-026)', () => {
+  it('ranks the most-used categories first', () => {
+    const spends = [
+      expense('1', 5, 'Food', '2026-08-01'),
+      expense('2', 5, 'Food', '2026-08-02'),
+      expense('3', 5, 'Food', '2026-08-03'),
+      expense('4', 3, 'Transport & Travel', '2026-08-04'),
+    ]
+    const picks = topCategories(spends)
+    expect(picks).toHaveLength(6)
+    expect(picks[0]).toBe('Food')
+    expect(picks[1]).toBe('Transport & Travel')
+  })
+
+  it('fills unused slots from the fixed taxonomy in fixed order', () => {
+    const picks = topCategories([expense('1', 5, 'Health', '2026-08-01')])
+    expect(picks[0]).toBe('Health')
+    expect(picks.slice(1)).toEqual([
+      'Rent',
+      'Bills',
+      'Food',
+      'Transport & Travel',
+      'Gift',
+    ])
+  })
+
+  it('falls back to fixed defaults with no history', () => {
+    expect(topCategories([])).toEqual([
+      'Rent',
+      'Bills',
+      'Food',
+      'Transport & Travel',
+      'Gift',
+      'Health',
+    ])
   })
 })

@@ -22,7 +22,7 @@ interface Props {
 
 /** Two-stage first-run onboarding (TICKET-021, BR-ONB-1): stage 1 explains
  * how myBuckie works and how privacy is protected; stage 2 collects income
- * sources (salary, savings, investments) with Skip / Done. */
+ * income sources with Skip / Done. */
 export default function OnboardingPage({ sources, onSave, onFinish }: Props) {
   const [step, setStep] = useState<1 | 2>(1)
 
@@ -40,9 +40,8 @@ export default function OnboardingPage({ sources, onSave, onFinish }: Props) {
               </Text>
               <Text size="sm" c="gray.6">
                 Record spends as they happen, register fixed monthly costs once
-                under “Recurring”, and read your month on the “Dashboard”.
-                Income sources — salary, savings, investments — complete the
-                picture.
+                under “Recurring”, and read your month right below your recent
+                spends. Income sources complete the picture.
               </Text>
             </Card>
             <Card withBorder padding="lg">
