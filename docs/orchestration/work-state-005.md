@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-005 |
-| Status | Deployed 2026-08-17 (a30fa9a + retrigger c4661b7; CI/Deploy green) — awaiting human manual verification |
+| Status | Completed 2026-08-17 — deployed, verified (manual checks passed), §6 recorded |
 | Active project | buckie |
 | Request class | Increment to live product |
 | Current stage | Business Analyst |
@@ -44,7 +44,7 @@ verifies manually) per WORK-001 standing waivers.
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 | Slice pushes (production deploy) | Human | Approved | User "push", 2026-08-17. First run failed at GitHub "Set up job" (runner provisioning flake, no checks ran); retriggered via empty commit c4661b7 — green |
-| Manual verification (production) | Human | Pending | Checklist §4 |
+| Manual verification (production) | Human | Passed | User confirmation 2026-08-17: Expected view, over/under, sankey, saved bar, order, iPhone Safari — all pass |
 
 ## 3. Stage Ledger
 
@@ -133,9 +133,17 @@ material rule (§ gate).
 
 ## 6. Completion
 
-Delivered when slices are pushed and verified: onboarding collects
-balance + expectations, expectations editable from the top bar, month
-view shows expected vs actual for six buckets, taxonomy is 16 in
-buckets, dashboard shows capture -> month -> projection -> month list
-with a saved bar, sankey replaces the funnel, projection anchors at the
-starting balance. QA waived -> human verifies manually.
+Delivered and verified 2026-08-17: the taxonomy is 16 categories in four
+buckets with groceries/restaurants separated and legacy records intact
+(BR-TAX-2/3); the plan (starting balance + six expected buckets) is
+captured in onboarding stage 3 and editable anytime from the top-bar
+Expected view (BR-EXP-SET-1/2); the month view shows expected vs actual
+per bucket and a green saved bar (BR-CMP-1, BR-DASH-2); the home scroll
+runs capture -> month view -> projection -> this month's expense list
+(BR-DASH-1); a sankey replaces the funnel (BR-SANK-1) and the projection
+anchors at the starting balance (BR-PRJ-2). Verification: QA waived;
+human verified manually on production 2026-08-17 (all checks pass).
+Integration: 17b1772, 763c2c7, a30fa9a; retrigger c4661b7; docs a79cfad;
+CI/Deploy green. Remaining approved risk: none open; displaced old-scope
+items (one-off income, income frequency, edit UIs, recurring endedAt)
+and the WORK-006/007 roadmap stay recorded in §5 / work-state-004 §5.
