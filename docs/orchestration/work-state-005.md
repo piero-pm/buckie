@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-005 |
-| Status | Running — Business Analyst |
+| Status | Deployed 2026-08-17 (a30fa9a + retrigger c4661b7; CI/Deploy green) — awaiting human manual verification |
 | Active project | buckie |
 | Request class | Increment to live product |
 | Current stage | Business Analyst |
@@ -43,7 +43,8 @@ verifies manually) per WORK-001 standing waivers.
 | Slice direction + tickets (S1 036/037, S2 038/039, S3 040/041) | Human | Approved | AskUser answer, 2026-08-17 (start S1) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Slice pushes (production deploy) | Human | Pending | Per-slice gates |
+| Slice pushes (production deploy) | Human | Approved | User "push", 2026-08-17. First run failed at GitHub "Set up job" (runner provisioning flake, no checks ran); retriggered via empty commit c4661b7 — green |
+| Manual verification (production) | Human | Pending | Checklist §4 |
 
 ## 3. Stage Ledger
 
@@ -110,6 +111,16 @@ SankeyFlow 90, DashboardPage 162, TrendView 138, prediction.ts 88
 (monthFunnel/FIXED_CATEGORIES removed with SpendFunnel.tsx). Custom
 recharts node renderer for labels (their default node has no text);
 horizontal scroll wrapper for narrow screens.
+
+### 4.4 Integration result (2026-08-17)
+
+Push approved ("push"). First workflow run failed at "Set up job" — a
+GitHub runner provisioning flake, zero checks executed; retriggered with
+an empty commit (c4661b7) and CI + Deploy went green. Operator-verified
+on production: /health 200 "ok"; deployed bundle index-BAkI4pmt.js
+contains "Where your money went" (sankey), the Expected nav, and the new
+taxonomy (Groceries, Restaurants & drinks). Remaining: human manual
+checks (§4 checklist).
 
 ## 5. Blockers and Deferred
 
