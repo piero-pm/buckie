@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-003 |
-| Status | Slice 3 built — awaiting human push approval, then human verification |
+| Status | S3 deployed 2026-08-17 (WORK-004 push batch); manual verification pending |
 | Active project | buckie |
 | Request class | Increment to live product |
 | Current stage | Developer complete (S1/S2 live) — final push + manual verification |
@@ -48,6 +48,7 @@ as 127.0.0.1, so the 5/hour per-IP cap is one shared bucket for all users
 | 3-slice direction + tickets 023..029 | Human | Approved | AskUser answer, 2026-08-16 |
 | Slice 1 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 (ba58947 pushed) |
 | Slice 2 push (production deploy) | Human | Approved | AskUser answer, 2026-08-16 (ef6d8dd pushed) |
+| Slice 3 push (production deploy) | Human | Approved | AskUser answer, 2026-08-17 — pushed with the WORK-004 batch; deploy green at 36728ef |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 

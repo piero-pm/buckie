@@ -3,12 +3,12 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-004 |
-| Status | Running — Developer complete (S1-S3 committed); pushes + verification pending |
+| Status | Deployed (eaf8b50 + repairs 22b290d, 36728ef; CI/Deploy green 2026-08-17) — awaiting human manual verification |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Developer complete — human push gates + manual verification |
+| Current stage | Deployed — human manual verification (§4 checklist) |
 | Next owner | Human |
-| Updated | 2026-08-16 |
+| Updated | 2026-08-17 |
 
 ## 1. Request and Route
 
@@ -38,7 +38,7 @@ WORK-004 slices deploy only after S3 is pushed (trunk deploys green).
 | 3-slice direction + TICKET-030..035 | Human | Approved | AskUser answer, 2026-08-16 (start S1) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Slice pushes (production deploy) | Human | Pending | S1 committed 2e00d77; push question unanswered 2026-08-16 — held, not deployed |
+| Slice pushes (production deploy) | Human | Approved | AskUser answer 2026-08-17: push all 5 (WORK-003 S3+seed included). eaf8b50 pushed; two trunk repairs followed (below); deploy green at 36728ef |
 
 ## 3. Stage Ledger
 
@@ -104,6 +104,20 @@ passphrase.ts 15, PassphraseChangeCard 108, HelpPage 99, api/vault.ts
 Design note: changePassphrase re-encrypts from the raw record list and
 falls back to the new key per record, so a retry after a partial failure
 re-encrypts mixed-key state safely (BR-PASS-3).
+
+### 4.4 Integration result (2026-08-17)
+
+Push approved (all 5 incl. WORK-003 S3). Two trunk repairs during deploy,
+both root-caused: (1) 22b290d — CI prettier checks the whole frontend
+tree, not just src/; dev-seed.mjs (463f67b) was never in that scope;
+formatted. (2) 36728ef — the KDF-heavy changePassphrase tests (2-3 real
+Argon2 derivations, m=64 MiB) exceeded vitest's 5s default under parallel
+load; timeouts raised to 20s/30s, 3x green locally. Final deploy green at
+36728ef. Operator-verified on production: /health 200 "ok" behind Caddy;
+landing shows "~€5/mo VPS", no "£" in the deployed bundle (gzip required
+--compressed when curling assets). Remaining: human account checks (§4
+checklist) — export/import round trip, passphrase change on a test
+account, sign-out re-asks passphrase, iPhone Safari.
 
 ## 5. Blockers and Deferred
 
