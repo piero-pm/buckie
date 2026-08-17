@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-004 |
-| Status | Deployed (eaf8b50 + repairs 22b290d, 36728ef; CI/Deploy green 2026-08-17) — awaiting human manual verification |
+| Status | Completed 2026-08-17 — deployed, verified (manual checks passed), §6 recorded |
 | Active project | buckie |
 | Request class | Increment to live product |
 | Current stage | Deployed — human manual verification (§4 checklist) |
@@ -39,6 +39,7 @@ WORK-004 slices deploy only after S3 is pushed (trunk deploys green).
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 | Slice pushes (production deploy) | Human | Approved | AskUser answer 2026-08-17: push all 5 (WORK-003 S3+seed included). eaf8b50 pushed; two trunk repairs followed (below); deploy green at 36728ef |
+| Manual verification (production) | Human | Passed | User confirmation 2026-08-17: export/import round trip, passphrase change, sign-out lock, iPhone Safari — all pass |
 
 ## 3. Stage Ledger
 
@@ -132,8 +133,13 @@ is C:\Users\asant\penny-saver. Offsite backups/Litestream stay excluded.
 
 ## 6. Completion
 
-Delivered when slices are pushed and verified: signing out locks the
-space, an encrypted bundle can be exported and restored, the passphrase
-can be changed without data loss, oversized uploads are rejected, and
-/health answers. QA waived -> human verifies manually; integration via
-the slice commits approved in §2.
+Delivered and verified 2026-08-17: signing out locks the space (BR-LOCK-1),
+an encrypted bundle can be exported and restored with wrong-key refusal and
+merge semantics (BR-EXP/IMP), the passphrase can be changed without data
+loss with the envelope swapped last (BR-PASS), oversized uploads are
+rejected (BR-HARD-1), /health answers (BR-HARD-2), record kind stays
+current (BR-HARD-3), and the copy/selector quick wins shipped (BR-QW).
+Verification: QA waived; human verified manually on production 2026-08-17
+(all checks pass). Integration: eaf8b50 + repairs 22b290d, 36728ef; docs
+7d2aede; CI/Deploy green. Remaining approved risk: none open; roadmap
+WORK-005..007 recorded in §5. Supersedes nothing.
