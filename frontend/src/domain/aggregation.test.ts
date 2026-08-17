@@ -62,8 +62,8 @@ describe('recurring expansion (TICKET-010/011)', () => {
 
 describe('monthly totals (TICKET-013)', () => {
   const expenses = [
-    expense('1', 50, 'Food', '2026-08-01'),
-    expense('2', 30, 'Food', '2026-08-15'),
+    expense('1', 50, 'Groceries', '2026-08-01'),
+    expense('2', 30, 'Groceries', '2026-08-15'),
     expense('3', 100, 'Rent', '2026-07-01'),
   ]
 
@@ -93,12 +93,12 @@ describe('monthly totals (TICKET-013)', () => {
 describe('category breakdown (TICKET-014)', () => {
   it('sums by category and totals equal the month total', () => {
     const expenses = [
-      expense('1', 50, 'Food', '2026-08-01'),
-      expense('2', 30, 'Food', '2026-08-02'),
+      expense('1', 50, 'Groceries', '2026-08-01'),
+      expense('2', 30, 'Groceries', '2026-08-02'),
       expense('3', 100, 'Rent', '2026-08-03'),
     ]
     const breakdown = byCategory(expenses)
-    const food = breakdown.find((c) => c.category === 'Food')
+    const food = breakdown.find((c) => c.category === 'Groceries')
     const rent = breakdown.find((c) => c.category === 'Rent')
     expect(food?.total).toBe(80)
     expect(rent?.total).toBe(100)
@@ -109,8 +109,8 @@ describe('category breakdown (TICKET-014)', () => {
   })
 
   it('shows zero for categories with no spend', () => {
-    const breakdown = byCategory([expense('1', 50, 'Food', '2026-08-01')])
-    expect(breakdown.find((c) => c.category === 'Gift')?.total).toBe(0)
+    const breakdown = byCategory([expense('1', 50, 'Groceries', '2026-08-01')])
+    expect(breakdown.find((c) => c.category === 'Subscriptions')?.total).toBe(0)
   })
 })
 
@@ -194,14 +194,14 @@ describe('savings projection (TICKET-015)', () => {
 describe('topCategories quick picks (BR-CAP-1, TICKET-026)', () => {
   it('ranks the most-used categories first', () => {
     const spends = [
-      expense('1', 5, 'Food', '2026-08-01'),
-      expense('2', 5, 'Food', '2026-08-02'),
-      expense('3', 5, 'Food', '2026-08-03'),
+      expense('1', 5, 'Groceries', '2026-08-01'),
+      expense('2', 5, 'Groceries', '2026-08-02'),
+      expense('3', 5, 'Groceries', '2026-08-03'),
       expense('4', 3, 'Transport & Travel', '2026-08-04'),
     ]
     const picks = topCategories(spends)
     expect(picks).toHaveLength(6)
-    expect(picks[0]).toBe('Food')
+    expect(picks[0]).toBe('Groceries')
     expect(picks[1]).toBe('Transport & Travel')
   })
 
@@ -211,9 +211,9 @@ describe('topCategories quick picks (BR-CAP-1, TICKET-026)', () => {
     expect(picks.slice(1)).toEqual([
       'Rent',
       'Bills',
-      'Food',
+      'Insurance',
+      'Groceries',
       'Transport & Travel',
-      'Gift',
     ])
   })
 
@@ -221,9 +221,9 @@ describe('topCategories quick picks (BR-CAP-1, TICKET-026)', () => {
     expect(topCategories([])).toEqual([
       'Rent',
       'Bills',
-      'Food',
+      'Insurance',
+      'Groceries',
       'Transport & Travel',
-      'Gift',
       'Health',
     ])
   })

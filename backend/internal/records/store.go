@@ -8,9 +8,10 @@ import (
 // Kind labels the record type. The server treats this as opaque grouping only;
 // the payload is ciphertext the server cannot read.
 const (
-	KindExpense   = "expense"
-	KindRecurring = "recurring"
-	KindIncome    = "income" // income sources (TICKET-020); payload stays opaque
+	KindExpense     = "expense"
+	KindRecurring   = "recurring"
+	KindIncome      = "income"       // income sources (TICKET-020); payload stays opaque
+	KindExpectation = "expectations" // the single plan record (WORK-005); opaque payload
 )
 
 // Record is one opaque encrypted blob. Ciphertext is produced by the client's
@@ -64,7 +65,8 @@ func Delete(db *sql.DB, userID int64, id string) error {
 
 // validKind reports whether kind is one of the known record types.
 func validKind(kind string) bool {
-	return kind == KindExpense || kind == KindRecurring || kind == KindIncome
+	return kind == KindExpense || kind == KindRecurring || kind == KindIncome ||
+		kind == KindExpectation
 }
 
 // isUniqueConstraint reports whether err is a SQLite UNIQUE/PK violation.

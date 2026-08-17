@@ -35,7 +35,7 @@ describe('monthlyFigures (BR-PRJ-2)', () => {
       createdAt: '2026-01-01',
     }
     const figures = monthlyFigures(
-      [spend('e1', 100, 'Food', '2026-02-05')],
+      [spend('e1', 100, 'Groceries', '2026-02-05')],
       [rent],
       [salary(2000, '2026-01-01')],
       '2026-02'
@@ -128,7 +128,7 @@ describe('monthFunnel (BR-PRJ-1)', () => {
     const items = [
       spend('r', 800, 'Rent', '2026-08-01'),
       spend('b', 200, 'Bills', '2026-08-02'),
-      spend('f', 300, 'Food', '2026-08-03'),
+      spend('f', 300, 'Groceries', '2026-08-03'),
     ]
     const f = monthFunnel(items, 1500)
     expect(f.fixed).toBe(1000)
@@ -138,7 +138,7 @@ describe('monthFunnel (BR-PRJ-1)', () => {
   })
 
   it('reports a negative saving when overspending', () => {
-    const f = monthFunnel([spend('f', 300, 'Food', '2026-08-01')], 100)
+    const f = monthFunnel([spend('f', 300, 'Groceries', '2026-08-01')], 100)
     expect(f.saved).toBe(-200)
   })
 })

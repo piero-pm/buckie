@@ -3,7 +3,9 @@ import {
   expenses as expenseApi,
   incomes as incomeApi,
   recurring as recurringApi,
+  expectationsApi,
 } from '../api/records'
+import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
 
@@ -15,20 +17,23 @@ export function useWorkspace(userId: number) {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [recurring, setRecurring] = useState<Recurring[]>([])
   const [incomes, setIncomes] = useState<IncomeSource[]>([])
+  const [expectations, setExpectations] = useState<Expectations | null>(null)
   const [loadError, setLoadError] = useState('')
 
-  /** Loads (or reloads, e.g. after a backup import) all three registers. */
+  /** Loads (or reloads, e.g. after a backup import) all registers. */
   const reload = useCallback(async () => {
     setLoadError('')
     try {
-      const [e, r, i] = await Promise.all([
+      const [e, r, i, x] = await Promise.all([
         expenseApi.list(userId),
         recurringApi.list(userId),
         incomeApi.list(userId),
+        expectationsApi.list(userId),
       ])
       setExpenses(e)
       setRecurring(r)
       setIncomes(i)
+      setExpectations(x[0] ?? null)
     } catch {
       setLoadError('Could not load your data. Try unlocking again.')
     }
@@ -81,12 +86,22 @@ export function useWorkspace(userId: number) {
     setIncomes((prev) => prev.filter((x) => x.id !== id))
   }, [])
 
+  const saveExpectations = useCallback(
+    async (x: Expectations) => {
+      await expectationsApi.save(userId, x)
+      setExpectations(x)
+    },
+    [userId]
+  )
+
   return {
     expenses,
     recurring,
     incomes,
+    expectations,
     loadError,
     reload,
+    saveExpectations,
     saveExpense,
     updateExpense,
     removeExpense,

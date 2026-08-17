@@ -196,6 +196,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // expectations list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
     localStorage.setItem('buckie.onboarding.skipped.1', '1') // test nav, not onboarding
@@ -226,6 +227,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // expectations list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
     localStorage.setItem('buckie.onboarding.skipped.1', '1')
@@ -255,6 +257,7 @@ describe('Two-stage onboarding (BA-DS-006, TICKET-021)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // expectations list
     await seedCachedKey(1)
     renderWithMantine(<App />)
   }
@@ -287,6 +290,43 @@ describe('Two-stage onboarding (BA-DS-006, TICKET-021)', () => {
     await signInToWorkspace()
     await waitFor(() => screen.getByRole('main', { name: 'home' }))
     expect(screen.queryByRole('main', { name: 'onboarding' })).toBeNull()
+  })
+
+  // EX-EA-1 (BR-EXP-SET-2): a third stage collects balance + expectations.
+  it('collects balance and expectations in a third onboarding stage', async () => {
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+      .mockResolvedValueOnce(emptyRecords) // expenses list
+      .mockResolvedValueOnce(emptyRecords) // recurring list
+      .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // expectations list
+      .mockResolvedValueOnce({ ok: true, json: async () => ({}) }) // save
+    await seedCachedKey(1)
+    renderWithMantine(<App />)
+    await waitFor(() => screen.getByRole('main', { name: 'onboarding' }))
+    fireEvent.click(screen.getByRole('button', { name: /continue/i })) // stage 1
+    fireEvent.click(screen.getByRole('button', { name: /continue/i })) // stage 2
+    await waitFor(() => expect(screen.getByText('Your plan')).toBeDefined())
+    fireEvent.change(screen.getByLabelText(/starting bank balance/i), {
+      target: { value: '1500' },
+    })
+    fireEvent.change(screen.getByLabelText(/expected groceries/i), {
+      target: { value: '300' },
+    })
+    fireEvent.change(screen.getByLabelText(/expected going out/i), {
+      target: { value: '150' },
+    })
+    fireEvent.change(screen.getByLabelText(/expected shopping/i), {
+      target: { value: '100' },
+    })
+    fireEvent.submit(screen.getByRole('form', { name: /expected amounts/i }))
+    await waitFor(() => screen.getByRole('main', { name: 'home' }))
+    const save = mockFetch.mock.calls.find(
+      (c) => c[0] === '/api/records/expectations'
+    )
+    if (!save) throw new Error('missing expectations PUT')
+    expect(save[1].method).toBe('PUT')
   })
 })
 

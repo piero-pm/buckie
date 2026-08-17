@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Group, Select, Stack, Text, TextInput } from '@mantine/core'
-import { CATEGORIES, type Category } from '../domain/taxonomy'
+import { editableCategories, type Category } from '../domain/taxonomy'
 import { validateExpense, type Expense } from '../domain/expense'
 import PageShell from '../components/PageShell'
 
@@ -56,7 +56,7 @@ export default function EditExpense({
           <Select
             label="Category"
             id="category"
-            data={CATEGORIES as readonly string[]}
+            data={editableCategories(category)}
             value={category}
             onChange={(v) => setCategory((v as Category) ?? category)}
             searchable

@@ -11,7 +11,11 @@ import {
   TextInput,
 } from '@mantine/core'
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react'
-import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
+import {
+  categoriesByBucket,
+  formatEUR,
+  type Category,
+} from '../domain/taxonomy'
 import { validateRecurring, type Recurring } from '../domain/expense'
 import { newId } from '../domain/ids'
 import { failToast } from '../components/failToast'
@@ -150,7 +154,7 @@ export default function RecurringPage({
               label="Category"
               id="category"
               placeholder="Choose…"
-              data={CATEGORIES as readonly string[]}
+              data={categoriesByBucket()}
               value={category}
               onChange={(v) => setCategory((v as Category) ?? '')}
               searchable

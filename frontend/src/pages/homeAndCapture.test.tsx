@@ -19,7 +19,7 @@ const spends: Expense[] = [
   {
     id: 'e1',
     amount: 12.5,
-    category: 'Food',
+    category: 'Groceries',
     date: '2026-08-01',
     createdAt: '2026-08-01T10:00:00.000Z',
   },
@@ -84,7 +84,7 @@ describe('Capture quick-pick chips (BR-CAP-1, TICKET-026)', () => {
           {
             id: 'e3',
             amount: 9,
-            category: 'Food',
+            category: 'Groceries',
             date: '2026-08-03',
             createdAt: '2026-08-03T10:00:00.000Z',
           },
@@ -95,10 +95,10 @@ describe('Capture quick-pick chips (BR-CAP-1, TICKET-026)', () => {
     )
     expect(screen.getAllByRole('checkbox')).toHaveLength(6)
     const text = container.textContent ?? ''
-    expect(text.indexOf('Food')).toBeLessThan(text.indexOf('Rent'))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Food' }))
+    expect(text.indexOf('Groceries')).toBeLessThan(text.indexOf('Rent'))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Groceries' }))
     expect(
-      (screen.getByRole('checkbox', { name: 'Food' }) as HTMLInputElement)
+      (screen.getByRole('checkbox', { name: 'Groceries' }) as HTMLInputElement)
         .checked
     ).toBe(true)
   })

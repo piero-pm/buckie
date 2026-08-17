@@ -212,3 +212,31 @@ func TestIncomeKindRoundTrip(t *testing.T) {
 		t.Errorf("expected 1 income record inc-1, got %+v", body.Records)
 	}
 }
+
+// Expectations kind round-trips like any encrypted record (WORK-005).
+func TestExpectationsKindRoundTrip(t *testing.T) {
+	srv, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "alice@example.com")
+
+	plan := recordDTO{ID: "expectations", Kind: KindExpectation, Ciphertext: "cGxhbg=="}
+	put := do(t, http.MethodPut, srv.URL+"/api/records/expectations", plan, cookie)
+	put.Body.Close()
+	if put.StatusCode != http.StatusNoContent {
+		t.Fatalf("put expectations: got %d, want 204", put.StatusCode)
+	}
+
+	got := do(t, http.MethodGet, srv.URL+"/api/records?kind=expectations", nil, cookie)
+	defer got.Body.Close()
+	if got.StatusCode != http.StatusOK {
+		t.Fatalf("list expectations: got %d", got.StatusCode)
+	}
+	var body struct {
+		Records []recordDTO `json:"records"`
+	}
+	if err := json.NewDecoder(got.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body.Records) != 1 || body.Records[0].ID != "expectations" {
+		t.Errorf("expected 1 expectations record, got %+v", body.Records)
+	}
+}

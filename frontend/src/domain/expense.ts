@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category } from './taxonomy'
+import { CATEGORIES, LEGACY_CATEGORIES, type Category } from './taxonomy'
 
 /**
  * A single one-off expense (TICKET-005). Amount/category/date are domain fields;
@@ -81,7 +81,12 @@ function validateCategory(category: string): ValidationResult | null {
   if (!category) {
     return { ok: false, field: 'category', error: 'Category is required.' }
   }
-  if (!(CATEGORIES as readonly string[]).includes(category)) {
+  // Legacy stored values stay valid so old records keep passing (BR-TAX-3);
+  // new capture never offers them (taxonomy's editableCategories handles UI).
+  if (
+    !(CATEGORIES as readonly string[]).includes(category) &&
+    !(LEGACY_CATEGORIES as readonly string[]).includes(category)
+  ) {
     return {
       ok: false,
       field: 'category',

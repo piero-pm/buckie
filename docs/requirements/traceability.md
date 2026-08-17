@@ -26,6 +26,7 @@ Status: recommendation; human approval pending
 | BA-DS-007 | Delivery spec (login scale) | [delivery-spec-login-scale.md](delivery-spec-login-scale.md) | Approved (WORK-003) | None |
 | BA-DS-008 | Delivery spec (home + prediction) | [delivery-spec-home-prediction.md](delivery-spec-home-prediction.md) | Approved (WORK-003) | None |
 | BA-DS-009 | Delivery spec (data safety) | [delivery-spec-data-safety.md](delivery-spec-data-safety.md) | Approved (WORK-004) | None |
+| BA-DS-010 | Delivery spec (expected vs actual) | [delivery-spec-expected-actual.md](delivery-spec-expected-actual.md) | Approved (WORK-005) | None |
 
 ## 2. Coverage
 
@@ -58,6 +59,9 @@ Status: recommendation; human approval pending
 | WORK-004 Data safety | REQ-25 Lock on sign-out + encrypted export/import | BA-DS-009 / BR-LOCK-1, BR-EXP-1..2, BR-IMP-1..4 | EX-LOCK-1, EX-EXP-1, EX-IMP-1..3 | TICKET-030..033 |
 | WORK-004 Data safety | REQ-26 Passphrase change without data loss | BA-DS-009 / BR-PASS-1..3 | EX-PASS-1..2 | TICKET-034, 035 |
 | WORK-004 Data safety | REQ-27 Server hardening + copy quick wins | BA-DS-009 / BR-HARD-1..3, BR-QW-1..2 | EX-HARD-1 | TICKET-030, 031 |
+| WORK-005 Expected | REQ-28 Buckets taxonomy 16 + expectations record + Expected view | BA-DS-010 / BR-TAX-2..3, BR-EXP-SET-1..2 | EX-EA-1, 2, 4 | TICKET-036, 037 |
+| WORK-005 Expected | REQ-29 Expected-vs-actual + saved bar + dashboard order + month list | BA-DS-010 / BR-CMP-1, BR-DASH-1..2 | EX-EA-1, 3 | TICKET-038, 039 |
+| WORK-005 Expected | REQ-30 Sankey + anchored projection | BA-DS-010 / BR-SANK-1, BR-PRJ-2 | EX-EA-5, 6 | TICKET-040, 041 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -77,6 +81,8 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-16 | BR-TAX-1 taxonomy 8 -> 14; BR-INC-4 income kinds + freelance/other (savings kept) | Extends REQ-5 and BR-INC-1; superset, no migration | Human | Approved |
 | 2026-08-16 | TICKET-015 resolved: projection income-aware | Avg saving = avg income − avg spend over selected 3/12-month window (BA-DS-008 BR-PRJ-2) | Human | Approved |
 | 2026-08-16 | WORK-004 / BA-DS-009 / TICKET-030..035 | Data-safety increment (lock, backup, passphrase change); user-originated intake, 3-slice plan | Human | Approved (gate) |
+| 2026-08-17 | WORK-005 direction: expected vs actual + dashboard v2; buckets taxonomy 16 (groceries/restaurants split); rent/bills/subs expectations manual; sankey (recharts exception) | User intake reshaping the roadmap; merchant/payment/tags dropped as "generic tracker" | Human | Approved |
+| 2026-08-17 | WORK-005 / BA-DS-010 | Remaining material rules (16-category table, legacy values, onboarding shape) | Human | Approved (gate: soft legacy, separate third stage) |
 
 ## 4. Link Integrity
 

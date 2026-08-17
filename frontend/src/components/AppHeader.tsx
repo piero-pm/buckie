@@ -13,6 +13,7 @@ import {
   IconList,
   IconHelpCircle,
   IconLogout,
+  IconTarget,
 } from '@tabler/icons-react'
 import type { View } from '../pages/views'
 
@@ -33,6 +34,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { view: 'expenses', label: 'Expenses', icon: <IconList size={16} /> },
   { view: 'income', label: 'Income', icon: <IconCoins size={16} /> },
+  { view: 'expected', label: 'Expected', icon: <IconTarget size={16} /> },
   { view: 'help', label: 'Help', icon: <IconHelpCircle size={16} /> },
 ]
 

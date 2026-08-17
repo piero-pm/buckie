@@ -1,6 +1,6 @@
 import type { Expense, Recurring } from './expense'
 import type { IncomeSource } from './income'
-import { CATEGORIES, type Category } from './taxonomy'
+import { CATEGORIES, LEGACY_CATEGORIES, type Category } from './taxonomy'
 
 /** ym returns the yyyy-mm key for a date string or Date. Accepts date-only
  * strings (parsed as local midnight) and full ISO timestamps. */
@@ -61,16 +61,17 @@ export function monthTotal(expenses: Expense[]): number {
   return expenses.reduce((sum, e) => sum + e.amount, 0)
 }
 
-/** Breaks a month's spend down by category; sums equal the month total. */
+/** Breaks a month's spend down by category; sums equal the month total.
+ * Legacy stored categories appear only when actually used (BR-TAX-3). */
 export function byCategory(
   expenses: Expense[]
-): { category: Category; total: number }[] {
-  const totals = new Map<Category, number>()
-  for (const c of CATEGORIES) totals.set(c, 0)
+): { category: string; total: number }[] {
+  const totals = new Map<string, number>()
   for (const e of expenses) {
     totals.set(e.category, (totals.get(e.category) ?? 0) + e.amount)
   }
-  return CATEGORIES.map((category) => ({
+  const legacyUsed = LEGACY_CATEGORIES.filter((c) => totals.has(c))
+  return [...CATEGORIES, ...legacyUsed].map((category) => ({
     category,
     total: totals.get(category) ?? 0,
   }))

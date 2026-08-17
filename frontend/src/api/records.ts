@@ -1,9 +1,10 @@
 import { encrypt, decrypt, loadCachedKey } from '../crypto'
+import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
 
 /** Record kinds the server stores (records table `kind` column). */
-type Kind = 'expense' | 'recurring' | 'income'
+type Kind = 'expense' | 'recurring' | 'income' | 'expectations'
 
 /**
  * Encrypts a domain record with the user's cached key and stores it on the
@@ -13,7 +14,7 @@ type Kind = 'expense' | 'recurring' | 'income'
 async function putRecord(
   userId: number,
   kind: Kind,
-  record: Expense | Recurring | IncomeSource
+  record: Expense | Recurring | IncomeSource | Expectations
 ): Promise<void> {
   const key = await requireKey(userId)
   const plaintext = new TextEncoder().encode(JSON.stringify(record))
@@ -100,6 +101,12 @@ export const incomes = {
   list: (userId: number) => listRecords<IncomeSource>(userId, 'income'),
   save: (userId: number, s: IncomeSource) => putRecord(userId, 'income', s),
   remove: (id: string) => deleteRecord(id),
+}
+
+export const expectationsApi = {
+  list: (userId: number) => listRecords<Expectations>(userId, 'expectations'),
+  save: (userId: number, x: Expectations) =>
+    putRecord(userId, 'expectations', x),
 }
 
 async function requireKey(userId: number): Promise<CryptoKey> {

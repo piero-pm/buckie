@@ -1,9 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { validateExpense, validateRecurring, type Expense } from './expense'
-import { CATEGORIES } from './taxonomy'
+import { CATEGORIES, LEGACY_CATEGORIES, bucketFor } from './taxonomy'
 
 describe('expense validation (BR-DQ-1..4)', () => {
-  const valid = { amount: 12.5, category: 'Food' as const, date: '2026-08-01' }
+  const valid = {
+    amount: 12.5,
+    category: 'Groceries' as const,
+    date: '2026-08-01',
+  }
 
   it('accepts a valid expense (EX-CAP-2)', () => {
     expect(validateExpense(valid).ok).toBe(true)
@@ -70,12 +74,30 @@ describe('recurring validation (TICKET-010)', () => {
 })
 
 describe('taxonomy', () => {
-  it('has the approved 14 categories (BR-TAX-1)', () => {
-    expect(CATEGORIES).toHaveLength(14)
+  it('has the approved 16 categories in four buckets (BR-TAX-2)', () => {
+    expect(CATEGORIES).toHaveLength(16)
     expect(CATEGORIES).toContain('Rent')
-    expect(CATEGORIES).toContain('Miscellaneous')
-    expect(CATEGORIES).toContain('Entertainment & Subscriptions')
-    expect(CATEGORIES).toContain('Insurance')
+    expect(CATEGORIES).toContain('Groceries')
+    expect(CATEGORIES).toContain('Restaurants & drinks')
+    expect(CATEGORIES).toContain('Subscriptions')
+    expect(CATEGORIES).not.toContain('Food')
+  })
+
+  it('keeps legacy stored values valid for old records (BR-TAX-3)', () => {
+    expect(LEGACY_CATEGORIES).toContain('Food')
+    expect(LEGACY_CATEGORIES).toContain('Entertainment & Subscriptions')
+    expect(
+      validateExpense({ amount: 10, category: 'Food', date: '2026-08-01' }).ok
+    ).toBe(true)
+  })
+
+  it('buckets categories with legacy mappings (BR-TAX-2/3)', () => {
+    expect(bucketFor('Rent')).toBe('Fixed')
+    expect(bucketFor('Groceries')).toBe('Everyday')
+    expect(bucketFor('Restaurants & drinks')).toBe('Social')
+    expect(bucketFor('Subscriptions')).toBe('Lifestyle')
+    expect(bucketFor('Food')).toBe('Everyday') // legacy
+    expect(bucketFor('Entertainment & Subscriptions')).toBe('Social') // legacy
   })
 })
 
@@ -98,14 +120,14 @@ describe('duplicate detection (BR-DQ-5)', () => {
       {
         id: '1',
         amount: 10,
-        category: 'Food',
+        category: 'Groceries',
         date: '2026-08-01',
         createdAt: '2026-08-01',
       },
     ]
     const dup = findDuplicate(list, {
       amount: 10,
-      category: 'Food',
+      category: 'Groceries',
       date: '2026-08-01',
     })
     expect(dup).toBeDefined()
@@ -116,14 +138,14 @@ describe('duplicate detection (BR-DQ-5)', () => {
       {
         id: '1',
         amount: 10,
-        category: 'Food',
+        category: 'Groceries',
         date: '2026-08-01',
         createdAt: '2026-08-01',
       },
     ]
     const dup = findDuplicate(list, {
       amount: 10,
-      category: 'Food',
+      category: 'Groceries',
       date: '2026-08-02',
     })
     expect(dup).toBeUndefined()

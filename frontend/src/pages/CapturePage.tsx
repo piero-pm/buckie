@@ -10,7 +10,11 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowLeft } from '@tabler/icons-react'
-import { CATEGORIES, formatEUR, type Category } from '../domain/taxonomy'
+import {
+  categoriesByBucket,
+  formatEUR,
+  type Category,
+} from '../domain/taxonomy'
 import { validateExpense, type Expense } from '../domain/expense'
 import { topCategories } from '../domain/aggregation'
 import { newId } from '../domain/ids'
@@ -125,7 +129,7 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
             label="Category"
             id="category"
             placeholder="Choose…"
-            data={CATEGORIES as readonly string[]}
+            data={categoriesByBucket()}
             value={category}
             onChange={(v) => setCategory((v as Category) ?? '')}
             searchable

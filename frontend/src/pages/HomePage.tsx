@@ -9,6 +9,7 @@ import ExpensesPage from './ExpensesPage'
 import RecurringPage from './RecurringPage'
 import IncomePage from './IncomePage'
 import DashboardPage from './DashboardPage'
+import ExpectedPage from './ExpectedPage'
 import HelpPage from './HelpPage'
 import HubView from './HubView'
 import OnboardingPage from './OnboardingPage'
@@ -68,6 +69,15 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
       />
     )
   }
+  if (view === 'expected') {
+    return (
+      <ExpectedPage
+        initial={ws.expectations}
+        onSave={ws.saveExpectations}
+        onBack={() => onNavigate('hub')}
+      />
+    )
+  }
   if (view === 'help') {
     return (
       <HelpPage
@@ -87,6 +97,7 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
       <OnboardingPage
         sources={ws.incomes}
         onSave={ws.saveIncome}
+        onSaveExpectations={ws.saveExpectations}
         onFinish={(skipped) => {
           if (skipped) markOnboardingSkipped(userId)
           setOnboardingClosed(true)

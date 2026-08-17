@@ -30,7 +30,7 @@ const okSent = {
 const expense: Expense = {
   id: 'e1',
   amount: 12.5,
-  category: 'Food',
+  category: 'Groceries',
   date: '2026-08-01',
   createdAt: '2026-08-01T10:00:00.000Z',
 }
@@ -128,7 +128,7 @@ describe('Mutation failures are visible (BR-ERR-4, TICKET-025)', () => {
     await waitFor(() => {
       expect(screen.getByText(/could not delete — try again/i)).toBeDefined()
     })
-    expect(screen.getByText('Food')).toBeDefined() // row remains
+    expect(screen.getByText('Groceries')).toBeDefined() // row remains
   })
 
   it('shows a toast when ending a recurring item fails', async () => {
