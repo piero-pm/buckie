@@ -12,6 +12,7 @@ import {
 import { IconArrowLeft } from '@tabler/icons-react'
 import BackupCard from '../components/BackupCard'
 import ImportCard from '../components/ImportCard'
+import PassphraseChangeCard from '../components/PassphraseChangeCard'
 import PrivacyExplainer from '../components/PrivacyExplainer'
 
 interface Props {
@@ -69,6 +70,8 @@ export default function HelpPage({ onBack, userId, onRestored }: Props) {
               <BackupCard />
               <Divider />
               <ImportCard mode="help" userId={userId} onRestored={onRestored} />
+              <Divider />
+              <PassphraseChangeCard userId={userId} />
             </Stack>
           </Card>
 

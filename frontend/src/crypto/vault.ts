@@ -33,16 +33,24 @@ export async function setupVault(
   userId: number,
   passphrase: string
 ): Promise<DerivedVault> {
+  const vault = await deriveReplacement(passphrase)
+  await cacheKey(userId, vault.key)
+  return vault
+}
+
+/** Derives a fresh envelope for a passphrase WITHOUT touching the key cache.
+ * The passphrase-change flow caches the new key only after the server accepts
+ * the envelope swap (BR-PASS-2/3). */
+export async function deriveReplacement(
+  passphrase: string
+): Promise<DerivedVault> {
   const salt = generateSalt()
   const key = await deriveKey(passphrase, salt)
   const verifier = await encrypt(key, VERIFIER_PLAINTEXT)
-  const envelope: VaultEnvelope = {
-    salt,
-    params: { ...DEFAULT_PARAMS() },
-    verifier,
+  return {
+    key,
+    envelope: { salt, params: { ...DEFAULT_PARAMS() }, verifier },
   }
-  await cacheKey(userId, key)
-  return { key, envelope }
 }
 
 /**

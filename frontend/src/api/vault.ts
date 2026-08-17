@@ -77,6 +77,21 @@ export async function restoreEnvelope(v: VaultJsonBundle): Promise<void> {
   }
 }
 
+/** Overwrites the stored envelope after a verified passphrase change
+ * (BR-PASS-2, TICKET-034). Repeatable; never 409. */
+export async function replaceEnvelope(v: VaultJsonBundle): Promise<void> {
+  const res = await fetch('/api/vault', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(v),
+  })
+  if (!res.ok) {
+    throw new Error(
+      (await res.json().catch(() => ({}))).error ?? 'passphrase change failed'
+    )
+  }
+}
+
 function toStatus(j: VaultJson): VaultStatus {
   if (!j.hasPassphrase || !j.salt || !j.params || !j.verifier) {
     return { hasPassphrase: false }

@@ -89,6 +89,23 @@ func postWithCookie(t *testing.T, srv *httptest.Server, path string, body any, c
 	return resp
 }
 
+// putWithCookie sends an authed PUT with the session cookie attached.
+func putWithCookie(t *testing.T, srv *httptest.Server, path string, body any, cookie *http.Cookie) *http.Response {
+	t.Helper()
+	b, _ := json.Marshal(body)
+	req, err := http.NewRequest(http.MethodPut, srv.URL+path, bytes.NewReader(b))
+	if err != nil {
+		t.Fatalf("new request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.AddCookie(cookie)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("PUT %s: %v", path, err)
+	}
+	return resp
+}
+
 func get(t *testing.T, srv *httptest.Server, path string, cookie *http.Cookie) *http.Response {
 	t.Helper()
 	req, _ := http.NewRequest(http.MethodGet, srv.URL+path, nil)

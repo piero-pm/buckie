@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-004 |
-| Status | Running — Business Analyst |
+| Status | Running — Developer complete (S1-S3 committed); pushes + verification pending |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Business Analyst |
-| Next owner | Human (BA material-rule gate) |
+| Current stage | Developer complete — human push gates + manual verification |
+| Next owner | Human |
 | Updated | 2026-08-16 |
 
 ## 1. Request and Route
@@ -48,7 +48,7 @@ WORK-004 slices deploy only after S3 is pushed (trunk deploys green).
 | Business Analyst | Passed | BA-DS-001/007 + review evidence | BA-DS-009 approved; traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Approved BA-DS-009 | 3-slice direction + TICKET-030..035 approved | Developer starts S1 |
-| Developer | Running | Tickets 030-035 | Slices per §4 | Push approval + human verification |
+| Developer | Passed | Tickets 030-035 | S1 2e00d77, S2 e157d1b, S3 (this commit) — all gates green | Push approval + human verification |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -90,6 +90,20 @@ api/vault.ts 105, HelpPage 96, PassphraseSetupPage 137, useWorkspace
 105, crypto/vault.ts 97 — all <=200. Design note: restore flow lives in
 api/backup.ts (restoreBundle) so the flow is unit-testable without DOM
 file-input flakiness; ImportCard is thin glue.
+
+### 4.3 Slice 3 gate evidence (2026-08-16, local ZCode/GLM-5.2)
+
+Backend: go build/vet/gofmt clean; 36/36 tests incl. 3 new (PUT /api/vault
+overwrite + GET shows new envelope, repeatable no-409, unauth 401 leaves
+vault unchanged). Frontend: eslint + prettier clean; 101/101 vitest incl.
+6 new (policy x4; changePassphrase wrong-current no-write refusal + happy
+path asserting envelope-PUT-last and per-record decrypt-ability under the
+new key); tsc + build green. Sizes: api/passphrase.ts 69, domain/
+passphrase.ts 15, PassphraseChangeCard 108, HelpPage 99, api/vault.ts
+120, crypto/vault.ts 105, vault handler.go 138, store.go 58 — all <=200.
+Design note: changePassphrase re-encrypts from the raw record list and
+falls back to the new key per record, so a retry after a partial failure
+re-encrypts mixed-key state safely (BR-PASS-3).
 
 ## 5. Blockers and Deferred
 

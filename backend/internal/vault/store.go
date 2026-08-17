@@ -46,3 +46,13 @@ func Create(db *sql.DB, userID int64, v Vault) error {
 	}
 	return err
 }
+
+// Update overwrites the user's vault envelope after a verified passphrase
+// change (BR-PASS-2). Repeatable, never ErrVaultExists.
+func Update(db *sql.DB, userID int64, v Vault) error {
+	_, err := db.Exec(
+		`UPDATE user_vaults SET kdf_salt = ?, kdf_params = ?, verifier = ? WHERE user_id = ?`,
+		v.Salt, v.Params, v.Verifer, userID,
+	)
+	return err
+}

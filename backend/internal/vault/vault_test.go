@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -99,4 +100,73 @@ func TestUnauthenticatedRefused(t *testing.T) {
 		t.Errorf("GET no-auth: got %d, want 401", getResp.StatusCode)
 	}
 	_, _ = io.ReadAll(getResp.Body)
+}
+
+// BR-PASS-2 (TICKET-034): PUT overwrites the stored envelope.
+func TestReplaceEnvelope(t *testing.T) {
+	srv, _, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "changer@example.com")
+
+	postWithCookie(t, srv, "/api/vault", sampleEnvelope(t), cookie).Body.Close()
+
+	next := envelopeDTO{
+		Salt:     base64.StdEncoding.EncodeToString([]byte("fedcba9876543210")),
+		Params:   `{"m":65536,"t":3,"p":1}`,
+		Verifier: base64.StdEncoding.EncodeToString([]byte("new-verifier-blob")),
+	}
+	put := putWithCookie(t, srv, "/api/vault", next, cookie)
+	put.Body.Close()
+	if put.StatusCode != http.StatusNoContent {
+		t.Fatalf("replace: got %d, want 204", put.StatusCode)
+	}
+
+	got := get(t, srv, "/api/vault", cookie)
+	defer got.Body.Close()
+	var body map[string]any
+	_ = json.NewDecoder(got.Body).Decode(&body)
+	if body["verifier"] != next.Verifier || body["salt"] != next.Salt {
+		t.Errorf("GET after replace should show the new envelope, got %v", body)
+	}
+}
+
+// BR-PASS-2: replacement is repeatable — a second PUT also succeeds (no 409).
+func TestReplaceRepeatable(t *testing.T) {
+	srv, _, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "twice@example.com")
+
+	postWithCookie(t, srv, "/api/vault", sampleEnvelope(t), cookie).Body.Close()
+	putWithCookie(t, srv, "/api/vault", sampleEnvelope(t), cookie).Body.Close()
+	second := putWithCookie(t, srv, "/api/vault", sampleEnvelope(t), cookie)
+	second.Body.Close()
+	if second.StatusCode != http.StatusNoContent {
+		t.Fatalf("second replace: got %d, want 204", second.StatusCode)
+	}
+}
+
+// PUT without a session is refused 401 and changes nothing.
+func TestReplaceUnauthenticatedRefused(t *testing.T) {
+	srv, _, sender := newTestServer(t)
+	cookie := signIn(t, srv, sender, "locked@example.com")
+	postWithCookie(t, srv, "/api/vault", sampleEnvelope(t), cookie).Body.Close()
+
+	req, err := http.NewRequest(http.MethodPut, srv.URL+"/api/vault", nil)
+	if err != nil {
+		t.Fatalf("new request: %v", err)
+	}
+	anon, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("PUT: %v", err)
+	}
+	anon.Body.Close()
+	if anon.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("unauth replace: got %d, want 401", anon.StatusCode)
+	}
+
+	got := get(t, srv, "/api/vault", cookie)
+	defer got.Body.Close()
+	var body map[string]any
+	_ = json.NewDecoder(got.Body).Decode(&body)
+	if body["hasPassphrase"] != true {
+		t.Error("unauthenticated PUT must not disturb the stored vault")
+	}
 }

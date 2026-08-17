@@ -17,6 +17,7 @@ func NewMux(db *sql.DB) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/vault", h.get)
 	mux.HandleFunc("POST /api/vault", h.create)
+	mux.HandleFunc("PUT /api/vault", h.replace)
 	return mux
 }
 
@@ -58,22 +59,11 @@ func (h *handler) get(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// create stores a first-time vault envelope. 201 on success; 409 if a vault
+// create stores a first-time vault envelope. 204 on success; 409 if a vault
 // already exists (one-shot setup guard for EX-PASS-1).
 func (h *handler) create(w http.ResponseWriter, r *http.Request) {
-	uid, ok, err := auth.CurrentUserID(h.db, r)
-	if err != nil || !ok {
-		writeJSON(w, http.StatusUnauthorized, errBody("unauthenticated"))
-		return
-	}
-	var dto envelopeDTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
-		writeJSON(w, http.StatusBadRequest, errBody("invalid request"))
-		return
-	}
-	v, err := decodeEnvelope(dto)
-	if err != nil {
-		writeJSON(w, http.StatusBadRequest, errBody("invalid envelope"))
+	uid, v, ok := h.readEnvelope(w, r)
+	if !ok {
 		return
 	}
 	if err := Create(h.db, uid, v); err != nil {
@@ -85,6 +75,41 @@ func (h *handler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// replace overwrites the stored envelope after a verified passphrase change
+// (BR-PASS-2, TICKET-034). Repeatable, never 409. 204 on success.
+func (h *handler) replace(w http.ResponseWriter, r *http.Request) {
+	uid, v, ok := h.readEnvelope(w, r)
+	if !ok {
+		return
+	}
+	if err := Update(h.db, uid, v); err != nil {
+		writeJSON(w, http.StatusInternalServerError, errBody("internal"))
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// readEnvelope authenticates the session and decodes the envelope body; it
+// writes the error response itself and reports ok=false.
+func (h *handler) readEnvelope(w http.ResponseWriter, r *http.Request) (int64, Vault, bool) {
+	uid, ok, err := auth.CurrentUserID(h.db, r)
+	if err != nil || !ok {
+		writeJSON(w, http.StatusUnauthorized, errBody("unauthenticated"))
+		return 0, Vault{}, false
+	}
+	var dto envelopeDTO
+	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
+		writeJSON(w, http.StatusBadRequest, errBody("invalid request"))
+		return 0, Vault{}, false
+	}
+	v, err := decodeEnvelope(dto)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, errBody("invalid envelope"))
+		return 0, Vault{}, false
+	}
+	return uid, v, true
 }
 
 func decodeEnvelope(dto envelopeDTO) (Vault, error) {

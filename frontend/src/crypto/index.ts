@@ -11,5 +11,10 @@ export {
 } from './kdf'
 export { encrypt, decrypt } from './cipher'
 export { cacheKey, hasCachedKey, loadCachedKey, clearKey } from './keystore'
-export { setupVault, unlockVault, verifierMatches } from './vault'
+export {
+  setupVault,
+  unlockVault,
+  verifierMatches,
+  deriveReplacement,
+} from './vault'
 export type { VaultEnvelope, DerivedVault } from './vault'
