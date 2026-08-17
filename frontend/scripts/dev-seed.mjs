@@ -46,7 +46,9 @@ await api('/api/auth/request-code', {
   body: JSON.stringify({ email: EMAIL }),
 })
 const log = readFileSync(LOG, 'utf8')
-const codes = [...log.matchAll(new RegExp(`DEV sign-in code for ${EMAIL}: (\\d{6})`, 'g'))]
+const codes = [
+  ...log.matchAll(new RegExp(`DEV sign-in code for ${EMAIL}: (\\d{6})`, 'g')),
+]
 const code = codes[codes.length - 1]?.[1]
 if (!code) throw new Error(`no DEV code for ${EMAIL} in ${LOG}`)
 const verified = await api('/api/auth/verify-code', {
@@ -60,15 +62,15 @@ const auth = { headers: { 'Content-Type': 'application/json', Cookie: cookie } }
 // --- 2. Vault: mirror the browser's kdf.ts + vault.ts exactly ------------
 const salt = crypto.getRandomValues(new Uint8Array(16))
 const dk = await argon2idAsync(Buffer.from(PASS, 'utf8'), salt, {
-  m: 65536, t: 3, p: 1, dkLen: 32,
+  m: 65536,
+  t: 3,
+  p: 1,
+  dkLen: 32,
 })
 const key = await crypto.subtle.importKey('raw', dk, 'AES-GCM', false, [
   'encrypt',
 ])
-const verifier = await encrypt(
-  key,
-  new TextEncoder().encode('buckie-vault-v1')
-)
+const verifier = await encrypt(key, new TextEncoder().encode('buckie-vault-v1'))
 await api('/api/vault', {
   method: 'POST',
   headers: auth.headers,
@@ -82,19 +84,34 @@ await api('/api/vault', {
 // --- 3. Three months of realistic data (Jun-Jul-Aug 2026) -----------------
 const iso = (s) => `${s}T10:00:00.000Z`
 const expense = (amount, category, date, note) => ({
-  id: crypto.randomUUID(), amount, category, date,
-  note, createdAt: iso(date),
+  id: crypto.randomUUID(),
+  amount,
+  category,
+  date,
+  note,
+  createdAt: iso(date),
 })
 const recurring = (amount, category, day, note) => ({
-  id: crypto.randomUUID(), amount, category, dayOfMonth: day,
-  note, active: true, createdAt: iso('2026-06-01'),
+  id: crypto.randomUUID(),
+  amount,
+  category,
+  dayOfMonth: day,
+  note,
+  active: true,
+  createdAt: iso('2026-06-01'),
 })
 const income = (amount, kind, label, day) => ({
-  id: crypto.randomUUID(), amount, kind, label,
-  dayOfMonth: day, active: true, createdAt: iso('2026-06-01'),
+  id: crypto.randomUUID(),
+  amount,
+  kind,
+  label,
+  dayOfMonth: day,
+  active: true,
+  createdAt: iso('2026-06-01'),
 })
 
-const food = (d, m, a, n) => expense(a, 'Food', `2026-${m}-${String(d).padStart(2, '0')}`, n)
+const food = (d, m, a, n) =>
+  expense(a, 'Food', `2026-${m}-${String(d).padStart(2, '0')}`, n)
 const SEED = [
   ['income', income(2200, 'salary', 'Acme payroll', 27)],
   ['income', income(350, 'freelance', 'Side design work', 15)],
