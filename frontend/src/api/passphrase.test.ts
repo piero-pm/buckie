@@ -49,7 +49,7 @@ describe('changePassphrase (BA-DS-009 BR-PASS-1..3)', () => {
       /wrong passphrase/i
     )
     expect(mockFetch).toHaveBeenCalledTimes(1) // the vault GET only
-  })
+  }, 20000) // 2 Argon2 derivations; default 5s can flake under load
 
   // EX-PASS-1: every record re-encrypts under the new key; envelope last.
   it('re-encrypts all records and swaps the envelope last', async () => {
@@ -114,5 +114,5 @@ describe('changePassphrase (BA-DS-009 BR-PASS-1..3)', () => {
       const out = await decrypt(newKey, unb64(body.ciphertext))
       expect(new TextDecoder().decode(out)).toBe(expected)
     }
-  })
+  }, 30000) // 3 Argon2 derivations; default 5s flakes under load
 })
