@@ -13,19 +13,16 @@ import {
   withCurrentMonth,
   ym,
 } from '../domain/aggregation'
-import {
-  expectedSpend,
-  monthFunnel,
-  monthlyFigures,
-} from '../domain/prediction'
+import { expectedSpend, monthlyFigures } from '../domain/prediction'
+import { monthFlows } from '../domain/flows'
 import DashboardSummary from './DashboardSummary'
 import CategoryDonut from './CategoryDonut'
 import MonthBenchmark from './MonthBenchmark'
-import SpendFunnel from './SpendFunnel'
 import TrendView from './TrendView'
 import ExpectedVsActual from '../components/ExpectedVsActual'
 import SavedBar from '../components/SavedBar'
 import MonthExpenseList from '../components/MonthExpenseList'
+import SankeyFlow from '../components/SankeyFlow'
 
 interface Props {
   expenses: Expense[]
@@ -95,7 +92,7 @@ export default function DashboardPage({
     () => expectedSpend(figures, selected),
     [figures, selected]
   )
-  const funnel = monthFunnel(monthItems, income)
+  const flows = monthFlows(monthItems, income)
   const comparison = useMemo(
     () => compareBuckets(monthItems, expectations?.expected ?? {}),
     [monthItems, expectations]
@@ -134,7 +131,7 @@ export default function DashboardPage({
 
         <CategoryDonut monthItems={monthItems} />
 
-        <SpendFunnel funnel={funnel} />
+        <SankeyFlow flows={flows} />
 
         {barData.length > 0 && (
           <Card withBorder padding="lg">
@@ -153,7 +150,10 @@ export default function DashboardPage({
           </Card>
         )}
 
-        <TrendView figures={figures} />
+        <TrendView
+          figures={figures}
+          startingBalance={expectations?.startingBalance ?? 0}
+        />
 
         <MonthExpenseList items={monthItems} />
       </Stack>

@@ -53,7 +53,7 @@ verifies manually) per WORK-001 standing waivers.
 | Business Analyst | Passed | BA-DS-002/006/008 + intake | BA-DS-010 approved; traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Approved BA-DS-010 | Slice direction + TICKET-036..041 approved | Developer starts S1 |
-| Developer | Running | Tickets 036-041 | Slices per §4 | Push approval + human verification |
+| Developer | Passed | Tickets 036-041 | S1 17b1772, S2 763c2c7, S3 (this commit) — all gates green | Push approval + human verification |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -96,6 +96,20 @@ the month expense list closing the scroll (BR-DASH-1's exact order);
 legacy categories approximate into buckets (Food->groceries,
 Entertainment & Subscriptions->going out) per code comment in
 comparison.ts.
+
+### 4.3 Slice 3 gate evidence (2026-08-17, local ZCode/GLM-5.2)
+
+Frontend only: eslint + prettier clean; 118/118 vitest incl. 4 new
+(monthFlows x3: full distribution incl. income conservation, zero-flow
+omission + legacy mapping + negative saving, empty month; cumulativeNet
+anchored x1) and monthFunnel tests removed with the function;
+tsc + build green. recharts 2.15.4 added as an explicit dependency
+(already transitively present via @mantine/charts; open source, zero
+cost — interface exception recorded in §2). Sizes: flows.ts 75,
+SankeyFlow 90, DashboardPage 162, TrendView 138, prediction.ts 88
+(monthFunnel/FIXED_CATEGORIES removed with SpendFunnel.tsx). Custom
+recharts node renderer for labels (their default node has no text);
+horizontal scroll wrapper for narrow screens.
 
 ## 5. Blockers and Deferred
 

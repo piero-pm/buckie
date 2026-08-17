@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   cumulativeNet,
   expectedSpend,
-  monthFunnel,
   monthlyFigures,
   windowAverages,
 } from './prediction'
@@ -100,6 +99,21 @@ describe('cumulativeNet', () => {
       { month: '2026-02', balance: 2 },
     ])
   })
+
+  // EX-EA-6 (BR-PRJ-2, WORK-005): the line anchors at the starting balance.
+  it('anchors at the starting balance once set', () => {
+    const out = cumulativeNet(
+      [
+        { month: '2026-01', spend: 1, income: 2, net: 1 },
+        { month: '2026-02', spend: 1, income: 2, net: 1 },
+      ],
+      2000
+    )
+    expect(out).toEqual([
+      { month: '2026-01', balance: 2001 },
+      { month: '2026-02', balance: 2002 },
+    ])
+  })
 })
 
 describe('expectedSpend (BR-PRJ-1, 3-month average)', () => {
@@ -120,25 +134,5 @@ describe('expectedSpend (BR-PRJ-1, 3-month average)', () => {
 
   it('is null with no prior month', () => {
     expect(expectedSpend(figures, '2026-01')).toBeNull()
-  })
-})
-
-describe('monthFunnel (BR-PRJ-1)', () => {
-  it('keeps income = fixed + other + saved with Rent/Bills fixed', () => {
-    const items = [
-      spend('r', 800, 'Rent', '2026-08-01'),
-      spend('b', 200, 'Bills', '2026-08-02'),
-      spend('f', 300, 'Groceries', '2026-08-03'),
-    ]
-    const f = monthFunnel(items, 1500)
-    expect(f.fixed).toBe(1000)
-    expect(f.other).toBe(300)
-    expect(f.saved).toBe(200)
-    expect(f.income).toBe(f.fixed + f.other + f.saved)
-  })
-
-  it('reports a negative saving when overspending', () => {
-    const f = monthFunnel([spend('f', 300, 'Groceries', '2026-08-01')], 100)
-    expect(f.saved).toBe(-200)
   })
 })

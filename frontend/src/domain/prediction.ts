@@ -1,16 +1,6 @@
 import type { Expense, Recurring } from './expense'
 import type { IncomeSource } from './income'
-import {
-  expandRecurring,
-  monthIncome,
-  monthTotal,
-  nextMonth,
-  ym,
-} from './aggregation'
-import type { Category } from './taxonomy'
-
-/** Fixed-cost categories for the month funnel (BR-PRJ-1). */
-const FIXED_CATEGORIES: readonly Category[] = ['Rent', 'Bills']
+import { expandRecurring, monthIncome, nextMonth, ym } from './aggregation'
 
 export interface MonthlyFigure {
   month: string
@@ -63,12 +53,17 @@ export function windowAverages(
   return { avgSpend: spend, avgSaving: saving, months: n }
 }
 
-/** Running net balance over the series (BR-PRJ-2 chart line). */
-export function cumulativeNet(figures: MonthlyFigure[]): {
+/** Running net balance over the series (BR-PRJ-2 chart line). With a
+ * starting balance (BR-PRJ-2, WORK-005) the line anchors there; without one
+ * it starts from zero as before. */
+export function cumulativeNet(
+  figures: MonthlyFigure[],
+  startingBalance = 0
+): {
   month: string
   balance: number
 }[] {
-  let balance = 0
+  let balance = startingBalance
   return figures.map((f) => {
     balance += f.net
     return { month: f.month, balance }
@@ -85,29 +80,4 @@ export function expectedSpend(
   const prior = figures.filter((f) => f.month < selected).slice(-lookback)
   if (prior.length === 0) return null
   return prior.reduce((s, f) => s + f.spend, 0) / prior.length
-}
-
-export interface MonthFunnel {
-  income: number
-  fixed: number
-  other: number
-  saved: number
-}
-
-/** Month funnel (BR-PRJ-1): income -> fixed costs (Rent + Bills) -> other
- * spending -> saved. Invariant: income = fixed + other + saved. */
-export function monthFunnel(
-  monthItems: Expense[],
-  income: number
-): MonthFunnel {
-  const total = monthTotal(monthItems)
-  const fixed = monthItems
-    .filter((e) => FIXED_CATEGORIES.includes(e.category))
-    .reduce((s, e) => s + e.amount, 0)
-  return {
-    income,
-    fixed,
-    other: total - fixed,
-    saved: income - total,
-  }
 }

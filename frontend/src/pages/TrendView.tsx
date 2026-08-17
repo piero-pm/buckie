@@ -23,17 +23,24 @@ const nextMonthLabel = (ymStr: string, step: number) => {
 
 const round2 = (v: number) => Math.round(v * 100) / 100
 
-/** Trend + prediction (Dashboard B, TICKET-029): a selectable 3/12-month
- * window with average spending, average saving (income-aware — resolves
- * TICKET-015), and a projected balance line (BR-PRJ-2/3). */
-export default function TrendView({ figures }: { figures: MonthlyFigure[] }) {
+/** Trend + prediction (Dashboard B, TICKET-029 + WORK-005 anchor): a
+ * selectable 3/12-month window with average spending, average saving
+ * (income-aware — resolves TICKET-015), and a projected balance line
+ * (BR-PRJ-2/3) anchored at the starting balance once set (BR-PRJ-2). */
+export default function TrendView({
+  figures,
+  startingBalance = 0,
+}: {
+  figures: MonthlyFigure[]
+  startingBalance?: number
+}) {
   const [window, setWindow] = useState('3')
   const n = Number(window)
 
   const view = useMemo(() => {
     const slice = figures.slice(-n)
     const averages = windowAverages(figures, n)
-    const history = cumulativeNet(slice)
+    const history = cumulativeNet(slice, startingBalance)
     const anchor = history[history.length - 1]
     const projected: { month: string; balance: number }[] = []
     if (anchor) {
@@ -49,7 +56,7 @@ export default function TrendView({ figures }: { figures: MonthlyFigure[] }) {
       }
     }
     return { averages, history, projected }
-  }, [figures, n])
+  }, [figures, n, startingBalance])
 
   const data = [
     ...view.history.map((h) => ({
@@ -116,7 +123,11 @@ export default function TrendView({ figures }: { figures: MonthlyFigure[] }) {
               />
               <Text size="xs" c="gray.5" fs="italic" mt="xs">
                 Projection continues the average saving of{' '}
-                {formatEUR(view.averages.avgSaving)}/mo.
+                {formatEUR(view.averages.avgSaving)}/mo
+                {startingBalance !== 0
+                  ? `, starting from your ${formatEUR(startingBalance)} balance`
+                  : ''}
+                .
               </Text>
             </Card>
           </>
