@@ -3,6 +3,8 @@ import { Box, Card, Select, Stack, Text } from '@mantine/core'
 import { BarChart } from '@mantine/charts'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
+import type { Expectations } from '../domain/expectations'
+import { compareBuckets } from '../domain/comparison'
 import {
   expandRecurring,
   monthlyExpenses,
@@ -21,11 +23,15 @@ import CategoryDonut from './CategoryDonut'
 import MonthBenchmark from './MonthBenchmark'
 import SpendFunnel from './SpendFunnel'
 import TrendView from './TrendView'
+import ExpectedVsActual from '../components/ExpectedVsActual'
+import SavedBar from '../components/SavedBar'
+import MonthExpenseList from '../components/MonthExpenseList'
 
 interface Props {
   expenses: Expense[]
   recurring: Recurring[]
   incomes: IncomeSource[]
+  expectations: Expectations | null
 }
 
 const currentMonth = () => ym(new Date())
@@ -38,12 +44,16 @@ const monthLabel = (ym: string) => {
   })
 }
 
-/** Month view (Dashboard A, WORK-003): totals, category donut, 3-month
- * expected-spend benchmark and the spend funnel (TICKET-028), then the
- * 3/12-month trend + prediction (TICKET-029, replaces the old text-only
- * projection). Rendered inside the home scroll (BR-HOME-2); all aggregation
- * runs client-side over decrypted records. */
-export default function DashboardPage({ expenses, recurring, incomes }: Props) {
+/** Month view + trend (BR-DASH-1, WORK-005): totals, saved bar, 3-month
+ * benchmark, expected vs actual (BR-CMP-1), donut and month-on-month, then
+ * the 3/12-month trend + prediction, and this month's expense list last.
+ * All aggregation runs client-side over decrypted records. */
+export default function DashboardPage({
+  expenses,
+  recurring,
+  incomes,
+  expectations,
+}: Props) {
   const [selected, setSelected] = useState(currentMonth())
 
   const figures = useMemo(
@@ -86,6 +96,10 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
     [figures, selected]
   )
   const funnel = monthFunnel(monthItems, income)
+  const comparison = useMemo(
+    () => compareBuckets(monthItems, expectations?.expected ?? {}),
+    [monthItems, expectations]
+  )
 
   const barData = [...months]
     .reverse()
@@ -112,7 +126,11 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
 
         <DashboardSummary total={total} income={income} net={net} />
 
+        <SavedBar income={income} spend={total} />
+
         <MonthBenchmark expected={expected} total={total} />
+
+        <ExpectedVsActual rows={comparison} />
 
         <CategoryDonut monthItems={monthItems} />
 
@@ -136,6 +154,8 @@ export default function DashboardPage({ expenses, recurring, incomes }: Props) {
         )}
 
         <TrendView figures={figures} />
+
+        <MonthExpenseList items={monthItems} />
       </Stack>
     </Box>
   )

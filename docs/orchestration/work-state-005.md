@@ -84,6 +84,19 @@ Books), so byCategory now includes legacy categories only when used —
 old records keep appearing in the donut; edit selects gain a Legacy
 group only when the record's value is legacy.
 
+### 4.2 Slice 2 gate evidence (2026-08-17, local ZCode/GLM-5.2)
+
+Frontend only: eslint + prettier clean; 116/116 vitest incl. 6 new
+(compareBuckets x4 incl. legacy mapping + overspend flag, savedThisMonth
+x2; home-scroll order test updated to BR-DASH-1); tsc + build green.
+Sizes: comparison.ts 82, ExpectedVsActual 61, SavedBar 41,
+MonthExpenseList 57, DashboardPage 162, HubView 88 — all <=200. Lead
+call recorded: the old hub "Recent" block is removed — superseded by
+the month expense list closing the scroll (BR-DASH-1's exact order);
+legacy categories approximate into buckets (Food->groceries,
+Entertainment & Subscriptions->going out) per code comment in
+comparison.ts.
+
 ## 5. Blockers and Deferred
 
 None blocking. Displaced old WORK-005 scope (later package): one-off

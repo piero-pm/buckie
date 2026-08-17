@@ -107,7 +107,6 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   }
   return (
     <HubView
-      expenses={ws.expenses}
       loadError={ws.loadError}
       showIncomeCard={ws.incomes.length === 0 && !incomeCardHidden}
       onHideIncomeCard={() => setIncomeCardHidden(true)}
@@ -117,6 +116,7 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
         expenses={ws.expenses}
         recurring={ws.recurring}
         incomes={ws.incomes}
+        expectations={ws.expectations}
       />
     </HubView>
   )

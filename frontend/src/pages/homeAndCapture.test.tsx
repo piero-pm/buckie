@@ -32,38 +32,47 @@ const spends: Expense[] = [
   },
 ]
 
-describe('Returning home scroll (BA-DS-008 BR-HOME-2, TICKET-027)', () => {
-  // EX-HOME-1: add-expense entry first, month dashboard below the recents.
-  it('embeds the month view below the capture entry and recents', () => {
+describe('Returning home scroll (BA-DS-010 BR-DASH-1, TICKET-039)', () => {
+  // EX-HOME-1 / BR-DASH-1: capture entry first, month view next, and the
+  // month's expense list closes the scroll (old "Recent" superseded).
+  it('runs capture -> month view -> month expense list in order', () => {
     renderWithMantine(
       <HubView
-        expenses={spends}
         loadError=""
         showIncomeCard={false}
         onHideIncomeCard={() => {}}
         onNavigate={() => {}}
       >
-        <DashboardPage expenses={spends} recurring={[]} incomes={[]} />
+        <DashboardPage
+          expenses={spends}
+          recurring={[]}
+          incomes={[]}
+          expectations={null}
+        />
       </HubView>
     )
     const home = screen.getByRole('main', { name: 'home' })
     expect(home).toBeDefined()
     const entry = screen.getByRole('button', { name: /record a spend/i })
     const monthView = screen.getByRole('region', { name: 'month view' })
-    expect(entry).toBeDefined()
+    const monthList = screen.getByText(/this month's expenses/i)
     expect(monthView).toBeDefined()
+    expect(monthList).toBeDefined()
     expect(
       entry.compareDocumentPosition(monthView) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
-    expect(screen.getByText('Recent')).toBeDefined()
+    expect(
+      monthView.compareDocumentPosition(monthList) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(screen.queryByText('Recent')).toBeNull()
   })
 
-  // BR-HOME-2: the header destinations are unchanged (no dashboard view).
+  // Without children the hub renders the entry points only.
   it('navigates to capture from the top entry', () => {
     renderWithMantine(
       <HubView
-        expenses={[]}
         loadError=""
         showIncomeCard={false}
         onHideIncomeCard={() => {}}
