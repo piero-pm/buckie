@@ -69,6 +69,7 @@ export default function App() {
         <PassphraseSetupPage
           userId={userId}
           onUnlocked={() => setPage('home')}
+          onRestored={() => setPage('passphrase-unlock')}
         />
       </>
     )

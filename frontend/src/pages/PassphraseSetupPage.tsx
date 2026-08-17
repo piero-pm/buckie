@@ -1,12 +1,21 @@
 import { useState, FormEvent } from 'react'
-import { Button, Checkbox, Stack, Text, PasswordInput } from '@mantine/core'
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Stack,
+  Text,
+  PasswordInput,
+} from '@mantine/core'
 import { setupVault } from '../api/vault'
 import { setupVault as deriveVault } from '../crypto'
+import ImportCard from '../components/ImportCard'
 import PageShell from '../components/PageShell'
 
 interface Props {
   userId: number
   onUnlocked: () => void
+  onRestored?: () => void
 }
 
 const MIN = 12
@@ -19,12 +28,17 @@ const ALPHANUMERIC = /^[a-zA-Z0-9]+$/
  * passphrase and derived key never leave the browser; only ciphertext (the
  * verifier) is stored server-side.
  */
-export default function PassphraseSetupPage({ userId, onUnlocked }: Props) {
+export default function PassphraseSetupPage({
+  userId,
+  onUnlocked,
+  onRestored,
+}: Props) {
   const [passphrase, setPassphrase] = useState('')
   const [confirm, setConfirm] = useState('')
   const [acknowledged, setAcknowledged] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [restoring, setRestoring] = useState(false)
 
   function validate(): string | null {
     if (passphrase.length < MIN)
@@ -53,6 +67,18 @@ export default function PassphraseSetupPage({ userId, onUnlocked }: Props) {
     } finally {
       setBusy(false)
     }
+  }
+
+  if (restoring && onRestored) {
+    return (
+      <PageShell
+        title="Restore from a backup"
+        subtitle="Upload a backup made by myBuckie. Your passphrase becomes the one in use when that backup was created (BR-IMP-3)."
+        card
+      >
+        <ImportCard mode="setup" userId={userId} onRestored={onRestored} />
+      </PageShell>
+    )
   }
 
   return (
@@ -89,6 +115,16 @@ export default function PassphraseSetupPage({ userId, onUnlocked }: Props) {
           <Button type="submit" fullWidth loading={busy}>
             Create passphrase
           </Button>
+          {onRestored && (
+            <Anchor
+              component="button"
+              type="button"
+              size="sm"
+              onClick={() => setRestoring(true)}
+            >
+              Restore from a backup instead
+            </Anchor>
+          )}
           {error && (
             <Text role="alert" c="red.7" size="sm">
               {error}

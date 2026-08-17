@@ -45,6 +45,38 @@ export async function setupVault(envelope: VaultEnvelope): Promise<void> {
   }
 }
 
+/** The envelope exactly as served: base64 fields + opaque params string. */
+export interface VaultJsonBundle {
+  salt: string
+  params: string
+  verifier: string
+}
+
+/** Fetches the vault envelope in server form, for backup export (BR-EXP-1). */
+export async function getEnvelopeJson(): Promise<VaultJsonBundle> {
+  const res = await fetch('/api/vault')
+  if (!res.ok) throw new Error('vault fetch failed')
+  const j: VaultJson = await res.json()
+  if (!j.hasPassphrase || !j.salt || !j.params || !j.verifier) {
+    throw new Error('no passphrase set')
+  }
+  return { salt: j.salt, params: j.params, verifier: j.verifier }
+}
+
+/** Stores a bundle's envelope verbatim on a fresh account (BR-IMP-3). */
+export async function restoreEnvelope(v: VaultJsonBundle): Promise<void> {
+  const res = await fetch('/api/vault', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(v),
+  })
+  if (!res.ok) {
+    throw new Error(
+      (await res.json().catch(() => ({}))).error ?? 'restore failed'
+    )
+  }
+}
+
 function toStatus(j: VaultJson): VaultStatus {
   if (!j.hasPassphrase || !j.salt || !j.params || !j.verifier) {
     return { hasPassphrase: false }

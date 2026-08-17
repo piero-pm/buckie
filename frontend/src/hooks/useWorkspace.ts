@@ -17,22 +17,26 @@ export function useWorkspace(userId: number) {
   const [incomes, setIncomes] = useState<IncomeSource[]>([])
   const [loadError, setLoadError] = useState('')
 
-  useEffect(() => {
+  /** Loads (or reloads, e.g. after a backup import) all three registers. */
+  const reload = useCallback(async () => {
     setLoadError('')
-    Promise.all([
-      expenseApi.list(userId),
-      recurringApi.list(userId),
-      incomeApi.list(userId),
-    ])
-      .then(([e, r, i]) => {
-        setExpenses(e)
-        setRecurring(r)
-        setIncomes(i)
-      })
-      .catch(() =>
-        setLoadError('Could not load your data. Try unlocking again.')
-      )
+    try {
+      const [e, r, i] = await Promise.all([
+        expenseApi.list(userId),
+        recurringApi.list(userId),
+        incomeApi.list(userId),
+      ])
+      setExpenses(e)
+      setRecurring(r)
+      setIncomes(i)
+    } catch {
+      setLoadError('Could not load your data. Try unlocking again.')
+    }
   }, [userId])
+
+  useEffect(() => {
+    void reload()
+  }, [reload])
 
   const saveExpense = useCallback(
     async (e: Expense) => {
@@ -82,6 +86,7 @@ export function useWorkspace(userId: number) {
     recurring,
     incomes,
     loadError,
+    reload,
     saveExpense,
     updateExpense,
     removeExpense,

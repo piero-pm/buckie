@@ -38,7 +38,7 @@ WORK-004 slices deploy only after S3 is pushed (trunk deploys green).
 | 3-slice direction + TICKET-030..035 | Human | Approved | AskUser answer, 2026-08-16 (start S1) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Slice pushes (production deploy) | Human | Pending | Per-slice gates in §4 |
+| Slice pushes (production deploy) | Human | Pending | S1 committed 2e00d77; push question unanswered 2026-08-16 — held, not deployed |
 
 ## 3. Stage Ledger
 
@@ -77,6 +77,19 @@ aggregation.ts 167, main.go 50); BA-DS-009 trimmed to 121 lines (15 rules
 + 8 examples kept; over the 90 limit under the WORK-002/003 spec
 precedent 109/98 — further trimming drops approved rule content); test
 files follow pre-existing sizes (App.test.tsx was 293).
+
+### 4.2 Slice 2 gate evidence (2026-08-16, local ZCode/GLM-5.2)
+
+Frontend only: eslint + prettier clean; 95/95 vitest incl. 14 new
+(build/parse bundle x9 incl. no-plaintext + malformed refusals,
+verifierMatches x2, restoreBundle flows x3: setup adopt+replay,
+wrong-key no-write refusal, same-key merge replay); tsc + build green.
+Backend untouched. Sizes: new modules domain/backup.ts 98, api/backup.ts
+39, BackupCard 51, ImportCard 83; touched api/records.ts 122,
+api/vault.ts 105, HelpPage 96, PassphraseSetupPage 137, useWorkspace
+105, crypto/vault.ts 97 — all <=200. Design note: restore flow lives in
+api/backup.ts (restoreBundle) so the flow is unit-testable without DOM
+file-input flakiness; ImportCard is thin glue.
 
 ## 5. Blockers and Deferred
 

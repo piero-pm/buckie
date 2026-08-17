@@ -69,7 +69,13 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
     )
   }
   if (view === 'help') {
-    return <HelpPage onBack={() => onNavigate('hub')} />
+    return (
+      <HelpPage
+        onBack={() => onNavigate('hub')}
+        userId={userId}
+        onRestored={() => void ws.reload()}
+      />
+    )
   }
 
   if (

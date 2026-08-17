@@ -72,6 +72,19 @@ export async function unlockVault(
   return key
 }
 
+/** True when verifier bytes decrypt under `key` to the vault marker — proves
+ * the key matches the envelope that produced the verifier (BR-IMP-2). */
+export async function verifierMatches(
+  key: CryptoKey,
+  verifier: Uint8Array
+): Promise<boolean> {
+  try {
+    return bytesEqual(await decrypt(key, verifier), VERIFIER_PLAINTEXT)
+  } catch {
+    return false
+  }
+}
+
 function DEFAULT_PARAMS(): KdfParams {
   return { m: 65536, t: 3, p: 1, dkLen: 32 }
 }

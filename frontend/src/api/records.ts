@@ -46,6 +46,44 @@ async function deleteRecord(id: string): Promise<void> {
   if (!res.ok) throw new Error('failed to delete record')
 }
 
+/** Raw (undecrypted) record view — base64 ciphertext exactly as served. */
+export interface RawRecord {
+  id: string
+  kind: Kind
+  ciphertext: string
+}
+
+/** Lists ciphertext records of one kind — no key required (BR-EXP-1). */
+async function listRaw(kind: Kind): Promise<RawRecord[]> {
+  const res = await fetch(`/api/records?kind=${kind}`)
+  if (!res.ok) throw new Error('failed to load records')
+  const { records } = await res.json()
+  return (records as { id: string; ciphertext: string }[]).map((r) => ({
+    ...r,
+    kind,
+  }))
+}
+
+/** Stores a ciphertext record verbatim — import replay (BR-IMP-3/4). */
+async function putRaw(r: RawRecord): Promise<void> {
+  const res = await fetch(`/api/records/${r.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ kind: r.kind, ciphertext: r.ciphertext }),
+  })
+  if (!res.ok) throw new Error('failed to save record')
+}
+
+/** Raw-record API for backup export/import; payloads stay server-blind. */
+export const raw = {
+  listAll: async (): Promise<RawRecord[]> => {
+    const kinds: Kind[] = ['expense', 'recurring', 'income']
+    const lists = await Promise.all(kinds.map((k) => listRaw(k)))
+    return lists.flat()
+  },
+  put: putRaw,
+}
+
 export const expenses = {
   list: (userId: number) => listRecords<Expense>(userId, 'expense'),
   save: (userId: number, e: Expense) => putRecord(userId, 'expense', e),

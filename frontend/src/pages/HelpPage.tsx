@@ -4,20 +4,26 @@ import {
   Button,
   Card,
   Container,
+  Divider,
   Group,
   Stack,
   Text,
 } from '@mantine/core'
 import { IconArrowLeft } from '@tabler/icons-react'
+import BackupCard from '../components/BackupCard'
+import ImportCard from '../components/ImportCard'
 import PrivacyExplainer from '../components/PrivacyExplainer'
 
 interface Props {
   onBack: () => void
+  userId: number
+  onRestored: () => void
 }
 
-/** Help + privacy reference (BA-DS-005, TICKET-019). Static, signed-in only;
- * the encryption story reuses PrivacyExplainer so onboarding says the same. */
-export default function HelpPage({ onBack }: Props) {
+/** Help + privacy reference (BA-DS-005, TICKET-019) + data & safety
+ * (BA-DS-009, TICKET-032/033). The encryption story reuses
+ * PrivacyExplainer so onboarding says the same. */
+export default function HelpPage({ onBack, userId, onRestored }: Props) {
   return (
     <Box component="main" aria-label="help">
       <Container size={560} px="md" py="xl">
@@ -53,6 +59,17 @@ export default function HelpPage({ onBack }: Props) {
               Privacy and encryption
             </Text>
             <PrivacyExplainer />
+          </Card>
+
+          <Card withBorder padding="lg">
+            <Text size="sm" fw={600} c="gray.7" mb="sm">
+              Data and safety
+            </Text>
+            <Stack gap="sm">
+              <BackupCard />
+              <Divider />
+              <ImportCard mode="help" userId={userId} onRestored={onRestored} />
+            </Stack>
           </Card>
 
           <Card withBorder padding="lg">
