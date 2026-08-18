@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-007 |
-| Status | Blocked at push gate — 3 slices built + gated, HELD for push approval |
+| Status | Deployed — awaiting human manual verification |
 | Active project | buckie |
 | Request class | Increment to live product |
 | Current stage | Integration |
-| Next owner | Human (push approval) |
+| Next owner | Human (manual verification) |
 | Updated | 2026-08-19 |
 
 ## 1. Request and Route
@@ -33,7 +33,7 @@ Developer (slice direction) -> Developer. UX folded inline; QA waived
 | Slice direction + tickets | Human | Approved | AskUser gate 2026-08-18: 3 slices — S1 049/050, S2 051, S3 052; react-router-dom exception accepted (start S1) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Slice pushes (production deploy) | Human | Pending | Push gate per package |
+| Slice pushes (production deploy) | Human | Approved | User "push" 2026-08-19; CI+Deploy green on 0f5f3a0 |
 
 ## 3. Stage Ledger
 
@@ -103,12 +103,16 @@ build green. gray.5 -> gray.6 sweep applied to every small-text use
 tree); the accepted filled-button label trade-off is untouched.
 TICKET-001..015 statuses closed as Shipped (BR-TICK-DOC-1).
 
-### 4.4 Integration status (2026-08-19)
+### 4.4 Integration result (2026-08-19)
 
-All three slices committed and locally gated (2bcb0c6, f852ff0,
-5df9758). Push approval requested; AskUser gate went unanswered —
-HELD, nothing deployed (standing rule: push = production deploy and
-needs explicit approval). Resume by asking whether to push.
+Push approved ("push"). CI + Deploy green on 0f5f3a0. Operator-verified
+on production: /health 200 "ok"; the SPA fallback answers /expenses
+with 200 (deep link serves the app); deployed bundle index-DBA7VjJg.js
+contains the WORK-007 markers (Display currency, Lock after
+inactivity, previous month arrows, Settings nav, router). The single
+remaining gray-5 in CSS is Mantine's internal placeholder variable,
+outside the small-text sweep (source has zero c="gray.5"). Remaining:
+human manual checks (§4 checklist).
 
 ## 5. Blocker and Restart
 
