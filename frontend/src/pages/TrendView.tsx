@@ -83,7 +83,7 @@ export default function TrendView({
         />
         {figures.length < 3 ? (
           <Card withBorder padding="lg">
-            <Text size="xs" c="gray.5" aria-label="projection">
+            <Text size="xs" c="gray.6" aria-label="projection">
               Need at least 3 months of history to project.
             </Text>
           </Card>
@@ -95,7 +95,7 @@ export default function TrendView({
                   Avg spending {formatMoney(view.averages.avgSpend)}/mo · Avg
                   saving {formatMoney(view.averages.avgSaving)}/mo
                 </Text>
-                <Text size="xs" c="gray.5" fs="italic">
+                <Text size="xs" c="gray.6" fs="italic">
                   Last {view.averages.months} months. Saving = income −
                   spending.
                 </Text>
@@ -121,7 +121,7 @@ export default function TrendView({
                 gridAxis="y"
                 valueFormatter={(v) => `€${v}`}
               />
-              <Text size="xs" c="gray.5" fs="italic" mt="xs">
+              <Text size="xs" c="gray.6" fs="italic" mt="xs">
                 Projection continues the average saving of{' '}
                 {formatMoney(view.averages.avgSaving)}/mo
                 {startingBalance !== 0

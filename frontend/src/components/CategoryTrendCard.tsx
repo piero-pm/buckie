@@ -78,11 +78,11 @@ export default function CategoryTrendCard({
             valueFormatter={(v) => formatMoney(Number(v))}
           />
         ) : (
-          <Text size="sm" c="gray.5" py="xs">
+          <Text size="sm" c="gray.6" py="xs">
             Record expenses to see trends.
           </Text>
         )}
-        <Text size="xs" c="gray.5" fs="italic">
+        <Text size="xs" c="gray.6" fs="italic">
           Buckets roll old categories in; months without data count as zero.
         </Text>
       </Stack>

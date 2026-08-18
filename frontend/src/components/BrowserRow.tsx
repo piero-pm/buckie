@@ -35,7 +35,7 @@ export default function BrowserRow({
             </Badge>
           )}
         </Group>
-        <Text size="xs" c="gray.5">
+        <Text size="xs" c="gray.6">
           {e.date}
           {e.note ? ` · ${e.note}` : ''}
         </Text>

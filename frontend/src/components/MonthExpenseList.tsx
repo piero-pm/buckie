@@ -14,7 +14,7 @@ export default function MonthExpenseList({ items }: { items: Expense[] }) {
           This month's expenses
         </Text>
         {sorted.length === 0 ? (
-          <Text size="sm" c="gray.5" py="xs">
+          <Text size="sm" c="gray.6" py="xs">
             Nothing recorded this month yet.
           </Text>
         ) : (
@@ -44,7 +44,7 @@ function Row({ expense: e }: { expense: Expense }) {
             </Badge>
           )}
         </Group>
-        <Text size="xs" c="gray.5">
+        <Text size="xs" c="gray.6">
           {e.date}
           {e.note ? ` · ${e.note}` : ''}
         </Text>

@@ -123,7 +123,7 @@ export default function ExpensesPage({
           />
         </Stack>
         {rows.length === 0 && (
-          <Text size="sm" c="gray.5">
+          <Text size="sm" c="gray.6">
             No expenses match.
           </Text>
         )}

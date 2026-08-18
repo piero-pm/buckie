@@ -44,7 +44,7 @@ export default function IncomePage({
     >
       <Box component="main" aria-label="income sources">
         {items.length === 0 && (
-          <Text size="sm" c="gray.5">
+          <Text size="sm" c="gray.6">
             No income sources yet.
           </Text>
         )}
@@ -105,7 +105,7 @@ function SourceRow({
             {INCOME_LABELS[s.kind]}
           </Text>
           {s.label && (
-            <Text size="xs" c="gray.5">
+            <Text size="xs" c="gray.6">
               {s.label}
             </Text>
           )}
@@ -115,7 +115,7 @@ function SourceRow({
             </Badge>
           )}
         </Group>
-        <Text size="xs" c="gray.5">
+        <Text size="xs" c="gray.6">
           {frequency}
           {s.dayOfMonth ? `, day ${s.dayOfMonth}` : ''}
         </Text>

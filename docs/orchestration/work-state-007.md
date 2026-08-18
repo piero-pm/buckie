@@ -95,6 +95,14 @@ active currency is display-only module state set by useWorkspace on
 load/save. Settings record: fixed-id encrypted kind (whitelist +
 round-trip test), exported in backups via listAll.
 
+### 4.3 Slice 3 gate evidence (2026-08-19, local ZCode/GLM-5.2)
+
+Frontend + docs only: eslint + prettier clean; 161/161 vitest; tsc +
+build green. gray.5 -> gray.6 sweep applied to every small-text use
+(grep confirms zero c="gray.5" remain; 42 c="gray.6" uses across the
+tree); the accepted filled-button label trade-off is untouched.
+TICKET-001..015 statuses closed as Shipped (BR-TICK-DOC-1).
+
 ## 5. Blocker and Restart
 
 None. Router choice (react-router vs hash) is delegated to the Lead

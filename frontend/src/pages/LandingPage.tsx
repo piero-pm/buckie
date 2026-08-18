@@ -133,7 +133,7 @@ function Footer() {
     <Box style={{ borderTop: '1px solid #e9ecef' }}>
       <Container size={860} px="md" py="lg">
         <Group justify="space-between">
-          <Text size="xs" c="gray.5">
+          <Text size="xs" c="gray.6">
             myBuckie — built open-source.
           </Text>
           <Text

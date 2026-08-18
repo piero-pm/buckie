@@ -23,7 +23,7 @@ export default function MonthBenchmark({ expected, total }: Props) {
         <Text size="xl" fw={700} c="gray.9">
           {formatMoney(expected)}
         </Text>
-        <Text size="xs" c="gray.5">
+        <Text size="xs" c="gray.6">
           You're {formatMoney(Math.abs(delta))} {pace} that pace this month.
         </Text>
       </Stack>

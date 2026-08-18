@@ -80,7 +80,7 @@ export default function IncomeEvents({ events, onSave, onDelete }: Props) {
           One-off events (bonus, gift, refund)
         </Text>
         {sorted.length === 0 && (
-          <Text size="sm" c="gray.5">
+          <Text size="sm" c="gray.6">
             No one-off events recorded.
           </Text>
         )}
@@ -101,7 +101,7 @@ export default function IncomeEvents({ events, onSave, onDelete }: Props) {
                     {EVENT_LABELS[v.eventKind]}
                   </Text>
                 </Group>
-                <Text size="xs" c="gray.5">
+                <Text size="xs" c="gray.6">
                   {v.date}
                   {v.note ? ` · ${v.note}` : ''}
                 </Text>

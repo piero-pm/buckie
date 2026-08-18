@@ -77,7 +77,7 @@ export default function HeatmapCard({
             </svg>
           </Box>
         ) : (
-          <Text size="sm" c="gray.5" py="xs">
+          <Text size="sm" c="gray.6" py="xs">
             Record expenses to see your calendar fill in.
           </Text>
         )}

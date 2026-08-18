@@ -37,7 +37,7 @@ export default function CategoryDonut({
         By category
       </Text>
       {donutData.length === 0 ? (
-        <Text size="sm" c="gray.5">
+        <Text size="sm" c="gray.6">
           No spend recorded this month.
         </Text>
       ) : (

@@ -17,7 +17,7 @@ export default function SankeyFlow({ flows }: { flows: MonthFlows }) {
   if (flows.links.length === 0) {
     return (
       <Card withBorder padding="lg">
-        <Text size="sm" c="gray.5" aria-label="sankey">
+        <Text size="sm" c="gray.6" aria-label="sankey">
           Nothing to show yet for this month.
         </Text>
       </Card>

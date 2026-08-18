@@ -1,6 +1,5 @@
 # TICKET-010: Register a recurring monthly expense
-
-Status: recommendation; human approval pending
+Status: Shipped (WORK-001..005; closed as shipped WORK-007, 2026-08-19)
 
 | Field | Value |
 | --- | --- |

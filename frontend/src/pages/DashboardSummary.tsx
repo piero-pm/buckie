@@ -16,7 +16,7 @@ export default function DashboardSummary({
     <Card withBorder padding="lg">
       <Stack gap="xs">
         <div>
-          <Text size="xs" c="gray.5" tt="uppercase" fw={600}>
+          <Text size="xs" c="gray.6" tt="uppercase" fw={600}>
             Total this month
           </Text>
           <Text size="2rem" fw={700} c="gray.9" mt={4} aria-label="month total">

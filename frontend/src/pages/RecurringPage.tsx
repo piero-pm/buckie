@@ -81,7 +81,7 @@ export default function RecurringPage({
     >
       <Box component="main" aria-label="recurring expenses">
         {items.length === 0 && (
-          <Text size="sm" c="gray.5">
+          <Text size="sm" c="gray.6">
             No recurring expenses yet.
           </Text>
         )}
@@ -107,7 +107,7 @@ export default function RecurringPage({
                     </Badge>
                   )}
                 </Group>
-                <Text size="xs" c="gray.5">
+                <Text size="xs" c="gray.6">
                   day {r.dayOfMonth} of each month
                 </Text>
               </Stack>
