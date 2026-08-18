@@ -113,6 +113,17 @@ Mon-first weeks) — no new dependency, BR-HMAP-1 intact. Sizes: all
 DashboardPage 189). Cards append after the month expense list;
 BR-DASH-1 order untouched.
 
+### 4.4 Integration result (2026-08-18)
+
+Push approved ("Push all 3"). CI + Deploy green on 58258e8 (no runner
+flake this time). Operator-verified on production: /health 200 "ok";
+deployed bundle index-lPtwnX7e.js contains the WORK-006 markers (When
+the money leaves, Category trends, One-off events, income_event kind,
+Paid on weekday select, browser empty state). Remaining: human manual
+checks — browser filters/search, heatmap + trends with real history,
+bonus event in saved bar/sankey, weekly occurrence math, recurring end
+keeping history, income edit, note edit, iPhone Safari.
+
 ## 5. Blocker and Restart
 
 None. Displaced-scope ledger: items 3–5 of the kickoff scope may shift to
