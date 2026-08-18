@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Box, Card, Select, Stack, Text } from '@mantine/core'
+import { Box, Card, Stack, Text } from '@mantine/core'
 import { BarChart } from '@mantine/charts'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
@@ -26,6 +26,7 @@ import SavedBar from '../components/SavedBar'
 import MonthExpenseList from '../components/MonthExpenseList'
 import SankeyFlow from '../components/SankeyFlow'
 import HeatmapCard from '../components/HeatmapCard'
+import MonthStepper from '../components/MonthStepper'
 import CategoryTrendCard from '../components/CategoryTrendCard'
 
 interface Props {
@@ -136,12 +137,10 @@ export default function DashboardPage({
           Month view
         </Text>
 
-        <Select
-          label="Month"
-          id="month"
-          data={monthOptions}
-          value={selected}
-          onChange={(v) => v && setSelected(v)}
+        <MonthStepper
+          options={monthOptions}
+          selected={selected}
+          onSelect={setSelected}
         />
 
         <DashboardSummary total={total} income={income} net={net} />

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"buckie/internal/auth"
 	"buckie/internal/db"
@@ -28,11 +29,31 @@ func main() {
 	mux.Handle("/api/records/", records.NewMux(store))
 
 	staticDir := envOr("STATIC_DIR", "frontend/dist")
-	mux.Handle("/", http.FileServer(http.Dir(staticDir)))
+	mux.Handle("/", spaFallback(http.Dir(staticDir)))
 
 	addr := envOr("ADDR", ":8080")
 	log.Printf("listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
+}
+
+// spaFallback serves static files, falling back to index.html for unknown
+// non-/api paths so client-side routes (e.g. /expenses) survive refresh and
+// deep links (WORK-007 BR-ROUTE-1).
+func spaFallback(root http.FileSystem) http.Handler {
+	files := http.FileServer(root)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, "/")
+		if path != "" {
+			if f, err := root.Open(path); err == nil {
+				f.Close()
+				files.ServeHTTP(w, r)
+				return
+			}
+		}
+		index := r.Clone(r.Context())
+		index.URL.Path = "/"
+		files.ServeHTTP(w, index)
+	})
 }
 
 func envOr(key, def string) string {

@@ -1,18 +1,21 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
+import { MemoryRouter } from 'react-router-dom'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import 'fake-indexeddb/auto'
 import App from './App'
-import { loadCachedKey } from './crypto'
+import { clearKey, loadCachedKey } from './crypto'
 import { theme } from './theme'
 
-function renderWithMantine(ui: React.ReactElement) {
+function renderWithMantine(ui: React.ReactElement, initial = ['/']) {
   return render(
-    <MantineProvider theme={theme} defaultColorScheme="light">
-      <Notifications />
-      {ui}
-    </MantineProvider>
+    <MemoryRouter initialEntries={initial}>
+      <MantineProvider theme={theme} defaultColorScheme="light">
+        <Notifications />
+        {ui}
+      </MantineProvider>
+    </MemoryRouter>
   )
 }
 
@@ -358,3 +361,41 @@ async function seedCachedKey(userId: number) {
   })
   db.close()
 }
+
+describe('URL routing (BA-DS-012, TICKET-049)', () => {
+  beforeEach(() => {
+    mockFetch.mockReset()
+    localStorage.clear()
+  })
+
+  // EX-NU-1: a deep link while signed out shows login first.
+  it('redirects a signed-out deep link to login', async () => {
+    mockFetch.mockResolvedValueOnce(me401)
+    renderWithMantine(<App />, ['/expenses'])
+    await waitFor(() => screen.getByLabelText(/email/i))
+    expect(screen.queryByRole('main', { name: 'expense browser' })).toBeNull()
+  })
+
+  // EX-NU-3: refreshing a workspace route while locked shows unlock.
+  it('sends a locked refresh on a workspace route to unlock', async () => {
+    await clearKey(1) // ensure no cached key survives earlier tests
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+    renderWithMantine(<App />, ['/income'])
+    await waitFor(() => screen.getByRole('form', { name: 'unlock workspace' }))
+  })
+
+  // EX-NU-2: refresh on a view while unlocked reloads the view.
+  it('reloads the workspace view on refresh', async () => {
+    mockFetch
+      .mockResolvedValueOnce(meOk)
+      .mockResolvedValueOnce(vaultWithPassphrase)
+      .mockResolvedValue(emptyRecords) // all record lists
+    await seedCachedKey(1)
+    renderWithMantine(<App />, ['/recurring'])
+    await waitFor(() =>
+      screen.getByRole('main', { name: 'recurring expenses' })
+    )
+  })
+})

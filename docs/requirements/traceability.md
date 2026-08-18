@@ -28,6 +28,7 @@ Status: recommendation; human approval pending
 | BA-DS-009 | Delivery spec (data safety) | [delivery-spec-data-safety.md](delivery-spec-data-safety.md) | Approved (WORK-004) | None |
 | BA-DS-010 | Delivery spec (expected vs actual) | [delivery-spec-expected-actual.md](delivery-spec-expected-actual.md) | Approved (WORK-005) | None |
 | BA-DS-011 | Delivery spec (insights + capture) | [delivery-spec-insights-capture.md](delivery-spec-insights-capture.md) | Approved (WORK-006) | None |
+| BA-DS-012 | Delivery spec (navigation & UX) | [delivery-spec-navigation-ux.md](delivery-spec-navigation-ux.md) | Approved (WORK-007) | None |
 
 ## 2. Coverage
 
@@ -66,6 +67,9 @@ Status: recommendation; human approval pending
 | WORK-006 Insights | REQ-31 Expense browsing (month/category/text search) | BA-DS-011 / BR-LST-1 | EX-IC-1 | TICKET-044 |
 | WORK-006 Insights | REQ-32 Spend-calendar heatmap + per-category 12-month trends | BA-DS-011 / BR-HMAP-1, BR-TRD-1 | EX-IC-1 | TICKET-047, 048 |
 | WORK-006 Insights | REQ-33 One-off income events + frequency occurrences + edit UIs | BA-DS-011 / BR-IOFF-1, BR-INC-FREQ-1, BR-REC-END-1, BR-EDIT-1 | EX-IC-2..5 | TICKET-042, 043, 045, 046 |
+| WORK-007 Nav & UX | REQ-34 URL routing + month arrows | BA-DS-012 / BR-ROUTE-1, BR-MTH-1 | EX-NU-1..4 | TICKET-049, 050 |
+| WORK-007 Nav & UX | REQ-35 Settings (currency + idle auto-lock) | BA-DS-012 / BR-CUR-1, BR-LOCK-IDLE-1 | EX-NU-5, 6 | TICKET-051 |
+| WORK-007 Nav & UX | REQ-36 gray.5 contrast sweep + WORK-001 ticket closure | BA-DS-012 / BR-CONT-1, BR-TICK-DOC-1 | EX-NU-5 | TICKET-052 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -89,6 +93,9 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-17 | WORK-005 / BA-DS-010 | Remaining material rules (16-category table, legacy values, onboarding shape) | Human | Approved (gate: soft legacy, separate third stage) |
 | 2026-08-18 | WORK-006 / BA-DS-011 | Insights + capture completeness increment; user-originated intake from WORK-005 §5 displaced scope | Human | Approved (direction) |
 | 2026-08-18 | WORK-006 / BA-DS-011 | Material rules (proration, event shape, legacy ended-recurring, trend default) | Human | Approved (gate: actual occurrences, typed eventKind, legacy ends invisible, old list removed) |
+| 2026-08-18 | WORK-006 completed / BA-DS-011 | Delivered + verified on production (all 9 manual checks pass) | Human | Approved |
+| 2026-08-18 | WORK-007 / BA-DS-012 | Navigation & UX increment; user-originated intake | Human | Approved (direction) |
+| 2026-08-18 | WORK-007 / BA-DS-012 | Material rules (currency storage, idle default, arrow bounds) | Human | Approved (gate: encrypted settings record, idle default Never, data-bounded arrows) |
 
 ## 4. Link Integrity
 
