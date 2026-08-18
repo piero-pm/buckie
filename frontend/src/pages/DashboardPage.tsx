@@ -3,16 +3,17 @@ import { Box, Card, Select, Stack, Text } from '@mantine/core'
 import { BarChart } from '@mantine/charts'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
+import type { IncomeEvent } from '../domain/incomeEvent'
 import type { Expectations } from '../domain/expectations'
 import { compareBuckets } from '../domain/comparison'
 import {
   expandRecurring,
   monthlyExpenses,
   monthTotal,
-  monthIncome,
   withCurrentMonth,
   ym,
 } from '../domain/aggregation'
+import { monthIncome } from '../domain/income-month'
 import { expectedSpend, monthlyFigures } from '../domain/prediction'
 import { monthFlows } from '../domain/flows'
 import DashboardSummary from './DashboardSummary'
@@ -28,6 +29,7 @@ interface Props {
   expenses: Expense[]
   recurring: Recurring[]
   incomes: IncomeSource[]
+  incomeEvents: IncomeEvent[]
   expectations: Expectations | null
 }
 
@@ -49,13 +51,21 @@ export default function DashboardPage({
   expenses,
   recurring,
   incomes,
+  incomeEvents,
   expectations,
 }: Props) {
   const [selected, setSelected] = useState(currentMonth())
 
   const figures = useMemo(
-    () => monthlyFigures(expenses, recurring, incomes, currentMonth()),
-    [expenses, recurring, incomes]
+    () =>
+      monthlyFigures(
+        expenses,
+        recurring,
+        incomes,
+        currentMonth(),
+        incomeEvents
+      ),
+    [expenses, recurring, incomes, incomeEvents]
   )
 
   const months = useMemo(
@@ -86,7 +96,7 @@ export default function DashboardPage({
     [expenses, expandedForSelected, selected]
   )
   const total = monthTotal(monthItems)
-  const income = monthIncome(incomes, selected)
+  const income = monthIncome(incomes, selected, incomeEvents)
   const net = income - total
   const expected = useMemo(
     () => expectedSpend(figures, selected),

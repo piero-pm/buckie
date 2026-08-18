@@ -1,10 +1,11 @@
 import { encrypt, decrypt, loadCachedKey } from '../crypto'
 import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
+import type { IncomeEvent } from '../domain/incomeEvent'
 import type { IncomeSource } from '../domain/income'
 
 /** Record kinds the server stores (records table `kind` column). */
-type Kind = 'expense' | 'recurring' | 'income' | 'expectations'
+type Kind = 'expense' | 'recurring' | 'income' | 'expectations' | 'income_event'
 
 /**
  * Encrypts a domain record with the user's cached key and stores it on the
@@ -14,7 +15,7 @@ type Kind = 'expense' | 'recurring' | 'income' | 'expectations'
 async function putRecord(
   userId: number,
   kind: Kind,
-  record: Expense | Recurring | IncomeSource | Expectations
+  record: Expense | Recurring | IncomeSource | Expectations | IncomeEvent
 ): Promise<void> {
   const key = await requireKey(userId)
   const plaintext = new TextEncoder().encode(JSON.stringify(record))
@@ -78,7 +79,15 @@ async function putRaw(r: RawRecord): Promise<void> {
 /** Raw-record API for backup export/import; payloads stay server-blind. */
 export const raw = {
   listAll: async (): Promise<RawRecord[]> => {
-    const kinds: Kind[] = ['expense', 'recurring', 'income']
+    // Defect fix (WORK-006 S1): 'expectations' was missing since WORK-005 —
+    // backups silently skipped the plan record; income_event joins here too.
+    const kinds: Kind[] = [
+      'expense',
+      'recurring',
+      'income',
+      'expectations',
+      'income_event',
+    ]
     const lists = await Promise.all(kinds.map((k) => listRaw(k)))
     return lists.flat()
   },
@@ -100,6 +109,13 @@ export const recurring = {
 export const incomes = {
   list: (userId: number) => listRecords<IncomeSource>(userId, 'income'),
   save: (userId: number, s: IncomeSource) => putRecord(userId, 'income', s),
+  remove: (id: string) => deleteRecord(id),
+}
+
+export const incomeEvents = {
+  list: (userId: number) => listRecords<IncomeEvent>(userId, 'income_event'),
+  save: (userId: number, e: IncomeEvent) =>
+    putRecord(userId, 'income_event', e),
   remove: (id: string) => deleteRecord(id),
 }
 

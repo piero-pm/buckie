@@ -27,6 +27,7 @@ Status: recommendation; human approval pending
 | BA-DS-008 | Delivery spec (home + prediction) | [delivery-spec-home-prediction.md](delivery-spec-home-prediction.md) | Approved (WORK-003) | None |
 | BA-DS-009 | Delivery spec (data safety) | [delivery-spec-data-safety.md](delivery-spec-data-safety.md) | Approved (WORK-004) | None |
 | BA-DS-010 | Delivery spec (expected vs actual) | [delivery-spec-expected-actual.md](delivery-spec-expected-actual.md) | Approved (WORK-005) | None |
+| BA-DS-011 | Delivery spec (insights + capture) | [delivery-spec-insights-capture.md](delivery-spec-insights-capture.md) | Approved (WORK-006) | None |
 
 ## 2. Coverage
 
@@ -62,6 +63,9 @@ Status: recommendation; human approval pending
 | WORK-005 Expected | REQ-28 Buckets taxonomy 16 + expectations record + Expected view | BA-DS-010 / BR-TAX-2..3, BR-EXP-SET-1..2 | EX-EA-1, 2, 4 | TICKET-036, 037 |
 | WORK-005 Expected | REQ-29 Expected-vs-actual + saved bar + dashboard order + month list | BA-DS-010 / BR-CMP-1, BR-DASH-1..2 | EX-EA-1, 3 | TICKET-038, 039 |
 | WORK-005 Expected | REQ-30 Sankey + anchored projection | BA-DS-010 / BR-SANK-1, BR-PRJ-2 | EX-EA-5, 6 | TICKET-040, 041 |
+| WORK-006 Insights | REQ-31 Expense browsing (month/category/text search) | BA-DS-011 / BR-LST-1 | EX-IC-1 | TICKET-044 |
+| WORK-006 Insights | REQ-32 Spend-calendar heatmap + per-category 12-month trends | BA-DS-011 / BR-HMAP-1, BR-TRD-1 | EX-IC-1 | TICKET-047, 048 |
+| WORK-006 Insights | REQ-33 One-off income events + frequency occurrences + edit UIs | BA-DS-011 / BR-IOFF-1, BR-INC-FREQ-1, BR-REC-END-1, BR-EDIT-1 | EX-IC-2..5 | TICKET-042, 043, 045, 046 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
@@ -83,6 +87,8 @@ downward to acceptance examples and a ticket. No orphan requirements.
 | 2026-08-16 | WORK-004 / BA-DS-009 / TICKET-030..035 | Data-safety increment (lock, backup, passphrase change); user-originated intake, 3-slice plan | Human | Approved (gate) |
 | 2026-08-17 | WORK-005 direction: expected vs actual + dashboard v2; buckets taxonomy 16 (groceries/restaurants split); rent/bills/subs expectations manual; sankey (recharts exception) | User intake reshaping the roadmap; merchant/payment/tags dropped as "generic tracker" | Human | Approved |
 | 2026-08-17 | WORK-005 / BA-DS-010 | Remaining material rules (16-category table, legacy values, onboarding shape) | Human | Approved (gate: soft legacy, separate third stage) |
+| 2026-08-18 | WORK-006 / BA-DS-011 | Insights + capture completeness increment; user-originated intake from WORK-005 §5 displaced scope | Human | Approved (direction) |
+| 2026-08-18 | WORK-006 / BA-DS-011 | Material rules (proration, event shape, legacy ended-recurring, trend default) | Human | Approved (gate: actual occurrences, typed eventKind, legacy ends invisible, old list removed) |
 
 ## 4. Link Integrity
 

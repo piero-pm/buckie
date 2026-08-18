@@ -1,6 +1,8 @@
 import type { Expense, Recurring } from './expense'
 import type { IncomeSource } from './income'
-import { expandRecurring, monthIncome, nextMonth, ym } from './aggregation'
+import type { IncomeEvent } from './incomeEvent'
+import { expandRecurring, nextMonth, ym } from './aggregation'
+import { monthIncome } from './income-month'
 
 export interface MonthlyFigure {
   month: string
@@ -10,12 +12,14 @@ export interface MonthlyFigure {
 }
 
 /** Every month that has spend or income, ascending: spend = one-off +
- * expanded recurring, income = monthIncome, net = income − spend. */
+ * expanded recurring, income = monthIncome (sources + events), net =
+ * income − spend. */
 export function monthlyFigures(
   expenses: Expense[],
   recurring: Recurring[],
   incomes: IncomeSource[],
-  throughMonth: string
+  throughMonth: string,
+  events: IncomeEvent[] = []
 ): MonthlyFigure[] {
   const expanded = expandRecurring(recurring, throughMonth)
   const spend = new Map<string, number>()
@@ -32,8 +36,9 @@ export function monthlyFigures(
       cursor = nextMonth(cursor)
     }
   }
+  for (const v of events) months.add(ym(v.date))
   return [...months].sort().map((month) => {
-    const income = monthIncome(incomes, month)
+    const income = monthIncome(incomes, month, events)
     const sp = spend.get(month) ?? 0
     return { month, spend: sp, income, net: income - sp }
   })

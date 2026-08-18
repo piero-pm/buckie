@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   expenses as expenseApi,
+  incomeEvents as incomeEventApi,
   incomes as incomeApi,
   recurring as recurringApi,
   expectationsApi,
 } from '../api/records'
 import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
+import type { IncomeEvent } from '../domain/incomeEvent'
 import type { IncomeSource } from '../domain/income'
 
 /** Loads the decrypted workspace once per user and owns the local CRUD state
@@ -17,6 +19,7 @@ export function useWorkspace(userId: number) {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [recurring, setRecurring] = useState<Recurring[]>([])
   const [incomes, setIncomes] = useState<IncomeSource[]>([])
+  const [incomeEvents, setIncomeEvents] = useState<IncomeEvent[]>([])
   const [expectations, setExpectations] = useState<Expectations | null>(null)
   const [loadError, setLoadError] = useState('')
 
@@ -24,15 +27,17 @@ export function useWorkspace(userId: number) {
   const reload = useCallback(async () => {
     setLoadError('')
     try {
-      const [e, r, i, x] = await Promise.all([
+      const [e, r, i, v, x] = await Promise.all([
         expenseApi.list(userId),
         recurringApi.list(userId),
         incomeApi.list(userId),
+        incomeEventApi.list(userId),
         expectationsApi.list(userId),
       ])
       setExpenses(e)
       setRecurring(r)
       setIncomes(i)
+      setIncomeEvents(v)
       setExpectations(x[0] ?? null)
     } catch {
       setLoadError('Could not load your data. Try unlocking again.')
@@ -85,6 +90,17 @@ export function useWorkspace(userId: number) {
     await incomeApi.remove(id)
     setIncomes((prev) => prev.filter((x) => x.id !== id))
   }, [])
+  const saveIncomeEvent = useCallback(
+    async (v: IncomeEvent) => {
+      await incomeEventApi.save(userId, v)
+      setIncomeEvents((prev) => upsert(prev, v))
+    },
+    [userId]
+  )
+  const removeIncomeEvent = useCallback(async (id: string) => {
+    await incomeEventApi.remove(id)
+    setIncomeEvents((prev) => prev.filter((x) => x.id !== id))
+  }, [])
 
   const saveExpectations = useCallback(
     async (x: Expectations) => {
@@ -98,6 +114,7 @@ export function useWorkspace(userId: number) {
     expenses,
     recurring,
     incomes,
+    incomeEvents,
     expectations,
     loadError,
     reload,
@@ -109,6 +126,8 @@ export function useWorkspace(userId: number) {
     removeRecurring,
     saveIncome,
     removeIncome,
+    saveIncomeEvent,
+    removeIncomeEvent,
   }
 }
 

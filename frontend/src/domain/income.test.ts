@@ -45,3 +45,40 @@ describe('income source validation (BR-INC-1/2, TICKET-020)', () => {
     ).toBe(false)
   })
 })
+
+describe('frequency validation (BR-INC-FREQ-1, TICKET-043)', () => {
+  it('accepts all frequencies and defaults to none', () => {
+    for (const frequency of ['monthly', 'weekly', 'quarterly', 'yearly']) {
+      expect(
+        validateIncomeSource({ amount: 10, kind: 'salary', frequency }).ok
+      ).toBe(true)
+    }
+    expect(validateIncomeSource({ amount: 10, kind: 'salary' }).ok).toBe(true)
+  })
+
+  it('rejects unknown frequencies and bad weekdays', () => {
+    expect(
+      validateIncomeSource({
+        amount: 10,
+        kind: 'salary',
+        frequency: 'daily',
+      }).ok
+    ).toBe(false)
+    expect(
+      validateIncomeSource({
+        amount: 10,
+        kind: 'salary',
+        frequency: 'weekly',
+        payWeekday: 7,
+      }).ok
+    ).toBe(false)
+    expect(
+      validateIncomeSource({
+        amount: 10,
+        kind: 'salary',
+        frequency: 'weekly',
+        payWeekday: -1,
+      }).ok
+    ).toBe(false)
+  })
+})

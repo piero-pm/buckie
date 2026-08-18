@@ -77,7 +77,9 @@ describe('changePassphrase (BA-DS-009 BR-PASS-1..3)', () => {
         ok: true,
         json: async () => ({ records: [recordB] }),
       })
-      .mockResolvedValueOnce(empty) // third kind list
+      .mockResolvedValueOnce(empty) // remaining kind lists (recurring etc.)
+      .mockResolvedValueOnce(empty)
+      .mockResolvedValueOnce(empty)
       .mockResolvedValue({ ok: true, json: async () => ({}) }) // PUTs
 
     await changePassphrase(userId, OLD, NEW)

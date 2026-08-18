@@ -196,6 +196,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // income events list
       .mockResolvedValueOnce(emptyRecords) // expectations list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
@@ -227,6 +228,7 @@ describe('Persistent header (BA-DS-005)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // income events list
       .mockResolvedValueOnce(emptyRecords) // expectations list
       .mockResolvedValueOnce(signOutOk) // sign out
     await seedCachedKey(1)
@@ -257,6 +259,7 @@ describe('Two-stage onboarding (BA-DS-006, TICKET-021)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // income events list
       .mockResolvedValueOnce(emptyRecords) // expectations list
     await seedCachedKey(1)
     renderWithMantine(<App />)
@@ -300,6 +303,7 @@ describe('Two-stage onboarding (BA-DS-006, TICKET-021)', () => {
       .mockResolvedValueOnce(emptyRecords) // expenses list
       .mockResolvedValueOnce(emptyRecords) // recurring list
       .mockResolvedValueOnce(emptyRecords) // incomes list
+      .mockResolvedValueOnce(emptyRecords) // income events list
       .mockResolvedValueOnce(emptyRecords) // expectations list
       .mockResolvedValueOnce({ ok: true, json: async () => ({}) }) // save
     await seedCachedKey(1)

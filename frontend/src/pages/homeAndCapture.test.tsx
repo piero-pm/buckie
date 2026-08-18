@@ -47,6 +47,7 @@ describe('Returning home scroll (BA-DS-010 BR-DASH-1, TICKET-039)', () => {
           expenses={spends}
           recurring={[]}
           incomes={[]}
+          incomeEvents={[]}
           expectations={null}
         />
       </HubView>

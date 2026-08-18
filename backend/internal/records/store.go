@@ -12,6 +12,7 @@ const (
 	KindRecurring   = "recurring"
 	KindIncome      = "income"       // income sources (TICKET-020); payload stays opaque
 	KindExpectation = "expectations" // the single plan record (WORK-005); opaque payload
+	KindIncomeEvent = "income_event" // one-off events (WORK-006); opaque payload
 )
 
 // Record is one opaque encrypted blob. Ciphertext is produced by the client's
@@ -66,7 +67,7 @@ func Delete(db *sql.DB, userID int64, id string) error {
 // validKind reports whether kind is one of the known record types.
 func validKind(kind string) bool {
 	return kind == KindExpense || kind == KindRecurring || kind == KindIncome ||
-		kind == KindExpectation
+		kind == KindExpectation || kind == KindIncomeEvent
 }
 
 // isUniqueConstraint reports whether err is a SQLite UNIQUE/PK violation.

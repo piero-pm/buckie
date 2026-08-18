@@ -152,10 +152,13 @@ describe('Mutation failures are visible (BR-ERR-4, TICKET-025)', () => {
     renderWithMantine(
       <IncomePage
         items={[income]}
+        events={[]}
         onSave={vi.fn(async () => {
           throw new Error('offline')
         })}
         onDelete={vi.fn(async () => {})}
+        onSaveEvent={vi.fn(async () => {})}
+        onDeleteEvent={vi.fn(async () => {})}
         onBack={() => {}}
       />
     )

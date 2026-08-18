@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   expandRecurring,
   monthlyExpenses,
-  monthIncome,
   monthTotal,
   byCategory,
   projectSavings,
@@ -11,7 +10,6 @@ import {
   ym,
 } from './aggregation'
 import type { Expense, Recurring } from './expense'
-import type { IncomeSource } from './income'
 
 const expense = (
   id: string,
@@ -114,46 +112,8 @@ describe('category breakdown (TICKET-014)', () => {
   })
 })
 
-describe('income aggregation (TICKET-020/022)', () => {
-  const sources: IncomeSource[] = [
-    {
-      id: 's1',
-      amount: 2500,
-      kind: 'salary',
-      active: true,
-      createdAt: '2026-01-05',
-    },
-    {
-      id: 's2',
-      amount: 300,
-      kind: 'savings',
-      active: false,
-      endedAt: '2026-06-20T10:00:00.000Z',
-      createdAt: '2026-02-01',
-    },
-  ]
-
-  it('counts active sources from their creation month onward', () => {
-    expect(monthIncome(sources, '2026-08')).toBe(2500)
-    expect(monthIncome(sources, '2025-12')).toBe(0)
-  })
-
-  it('keeps ended sources in past months only (EX-INC-3)', () => {
-    expect(monthIncome(sources, '2026-06')).toBe(2800)
-    expect(monthIncome(sources, '2026-07')).toBe(2500)
-  })
-
-  it('handles full-ISO createdAt (ym regression, recurring had it too)', () => {
-    const iso: IncomeSource[] = [
-      {
-        id: 's3',
-        amount: 100,
-        kind: 'investment',
-        active: true,
-        createdAt: '2026-03-01T09:15:00.000Z',
-      },
-    ]
-    expect(monthIncome(iso, '2026-03')).toBe(100)
+describe('income createdAt handling (ym regression, recurring had it too)', () => {
+  it('handles full-ISO createdAt', () => {
     expect(
       expandRecurring(
         [

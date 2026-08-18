@@ -63,8 +63,11 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
     return (
       <IncomePage
         items={ws.incomes}
+        events={ws.incomeEvents}
         onSave={ws.saveIncome}
         onDelete={ws.removeIncome}
+        onSaveEvent={ws.saveIncomeEvent}
+        onDeleteEvent={ws.removeIncomeEvent}
         onBack={() => onNavigate('hub')}
       />
     )
@@ -116,6 +119,7 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
         expenses={ws.expenses}
         recurring={ws.recurring}
         incomes={ws.incomes}
+        incomeEvents={ws.incomeEvents}
         expectations={ws.expectations}
       />
     </HubView>
