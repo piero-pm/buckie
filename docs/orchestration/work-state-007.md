@@ -3,12 +3,12 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-007 |
-| Status | Running — Developer (S1) |
+| Status | Blocked at push gate — 3 slices built + gated, HELD for push approval |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Developer |
-| Next owner | Developer (Slice 1) |
-| Updated | 2026-08-18 |
+| Current stage | Integration |
+| Next owner | Human (push approval) |
+| Updated | 2026-08-19 |
 
 ## 1. Request and Route
 
@@ -43,7 +43,7 @@ Developer (slice direction) -> Developer. UX folded inline; QA waived
 | Business Analyst | Passed | BA-DS-005/009/010 + intake | BA-DS-012 approved; traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Approved BA-DS-012 | Slice direction + TICKET-049..052 approved | Developer starts S1 |
-| Developer | Running | Tickets 049-052 | S1 in progress | Green gates per slice |
+| Developer | Passed | Tickets 049-052 | S1 2bcb0c6, S2 f852ff0, S3 5df9758 — all gates green | Push approval |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -102,6 +102,13 @@ build green. gray.5 -> gray.6 sweep applied to every small-text use
 (grep confirms zero c="gray.5" remain; 42 c="gray.6" uses across the
 tree); the accepted filled-button label trade-off is untouched.
 TICKET-001..015 statuses closed as Shipped (BR-TICK-DOC-1).
+
+### 4.4 Integration status (2026-08-19)
+
+All three slices committed and locally gated (2bcb0c6, f852ff0,
+5df9758). Push approval requested; AskUser gate went unanswered —
+HELD, nothing deployed (standing rule: push = production deploy and
+needs explicit approval). Resume by asking whether to push.
 
 ## 5. Blocker and Restart
 
