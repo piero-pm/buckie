@@ -16,6 +16,7 @@ import {
   formatEUR,
   type Category,
 } from '../domain/taxonomy'
+import { ym } from '../domain/aggregation'
 import { validateRecurring, type Recurring } from '../domain/expense'
 import { newId } from '../domain/ids'
 import { failToast } from '../components/failToast'
@@ -73,6 +74,8 @@ export default function RecurringPage({
     }
   }
 
+  const endMonth = ym(new Date()) // history-preserving end (BR-REC-END-1)
+
   return (
     <PageShell
       title="Recurring monthly"
@@ -103,7 +106,7 @@ export default function RecurringPage({
                   </Text>
                   {!r.active && (
                     <Badge size="xs" color="gray" variant="light">
-                      ended
+                      ended{r.endedAt ? ` ${r.endedAt}` : ''}
                     </Badge>
                   )}
                 </Group>
@@ -116,7 +119,8 @@ export default function RecurringPage({
                 color={r.active ? 'gray' : 'red'}
                 onClick={async () => {
                   try {
-                    if (r.active) await onSave({ ...r, active: false })
+                    if (r.active)
+                      await onSave({ ...r, active: false, endedAt: endMonth })
                     else await onDelete(r.id)
                   } catch {
                     failToast(r.active ? 'end' : 'remove')

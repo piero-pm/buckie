@@ -87,6 +87,18 @@ aggregation.ts to domain/income-month.ts (frequency-aware, events
 param); KDF/vault tests gained 30s timeouts (36728ef rationale) —
 they time out locally under whole-suite load without them.
 
+### 4.2 Slice 2 gate evidence (2026-08-18, local ZCode/GLM-5.2)
+
+Frontend only (backend untouched): eslint + prettier clean; 145/145
+vitest incl. 10 new (expenseFilter compose x4 + months x2: recurring
+included, current reachable; expandRecurring endedAt keeps history +
+legacy stays invisible x2; browser filter UI + note edit round-trip
+x2); tsc + build green. Sizes: all <=200 (ExpensesPage 159, BrowserRow
+65, expenseFilter 61, EditExpense 105, RecurringPage 200). Old flat
+"Recent expenses" removed — the browser replaces it; recurring rows
+render read-only in the browser (synthetic ids), editing stays on the
+recurring page (end/remove).
+
 ## 5. Blocker and Restart
 
 None. Displaced-scope ledger: items 3–5 of the kickoff scope may shift to

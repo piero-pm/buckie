@@ -18,10 +18,12 @@ export function withCurrentMonth(months: string[], current: string): string[] {
 }
 
 /**
- * Expands active recurring templates into synthetic expenses for every month
- * from each template's creation month through the current month (TICKET-011).
- * dayOfMonth is clamped to each month's last day (EX-REC-2). Recurring amounts
- * are combined with one-off expenses when a month is totalled.
+ * Expands recurring templates into synthetic expenses for every month from
+ * each template's creation month (TICKET-011). dayOfMonth is clamped to each
+ * month's last day (EX-REC-2). An ended template (BR-REC-END-1, WORK-006)
+ * still generates through its endedAt month; legacy records ended the old
+ * way (active:false, no endedAt) stay invisible — their true end month is
+ * unknowable and history is not fabricated (gate 2026-08-18).
  */
 export function expandRecurring(
   templates: Recurring[],
@@ -29,9 +31,10 @@ export function expandRecurring(
 ): Expense[] {
   const out: Expense[] = []
   for (const t of templates) {
-    if (!t.active) continue
+    if (!t.active && !t.endedAt) continue
+    const last = t.active ? throughMonth : minMonth(throughMonth, t.endedAt!)
     let cursor = ym(t.createdAt)
-    while (cursor <= throughMonth) {
+    while (cursor <= last) {
       out.push({
         id: `${t.id}:${cursor}`,
         amount: t.amount,
@@ -44,6 +47,10 @@ export function expandRecurring(
     }
   }
   return out
+}
+
+function minMonth(a: string, b: string): string {
+  return a < b ? a : b
 }
 
 /** Combines one-off expenses with expanded recurring items for a month. */

@@ -22,6 +22,9 @@ export interface Recurring {
   dayOfMonth: number // 1..31; clamped to month's last day (EX-REC-2)
   note?: string
   active: boolean
+  /** End month (yyyy-mm); history through it stays (BR-REC-END-1). Legacy
+   * records ended before this field exist carry active:false without it. */
+  endedAt?: string
   createdAt: string
 }
 

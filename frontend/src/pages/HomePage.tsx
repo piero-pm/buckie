@@ -43,6 +43,7 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
     return (
       <ExpensesPage
         expenses={ws.expenses}
+        recurring={ws.recurring}
         onUpdate={ws.updateExpense}
         onDelete={ws.removeExpense}
         onBack={() => onNavigate('hub')}

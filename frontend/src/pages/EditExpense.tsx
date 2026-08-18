@@ -6,8 +6,9 @@ import PageShell from '../components/PageShell'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
-/** Inline edit sub-form (TICKET-009/025): re-applies BR-DQ-1..4 and shows a
- * visible error when the encrypted save fails (BR-ERR-4). */
+/** Inline edit sub-form (TICKET-009/025 + note editing BR-EDIT-1, WORK-006):
+ * re-applies BR-DQ-1..4 and shows a visible error when the encrypted save
+ * fails (BR-ERR-4). */
 export default function EditExpense({
   expense,
   onSave,
@@ -20,6 +21,7 @@ export default function EditExpense({
   const [amount, setAmount] = useState(String(expense.amount))
   const [category, setCategory] = useState<Category>(expense.category)
   const [date, setDate] = useState(expense.date)
+  const [note, setNote] = useState(expense.note ?? '')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -32,7 +34,13 @@ export default function EditExpense({
     }
     setBusy(true)
     try {
-      await onSave({ ...expense, amount: Number(amount), category, date })
+      await onSave({
+        ...expense,
+        amount: Number(amount),
+        category,
+        date,
+        note: note || undefined,
+      })
     } catch {
       setError('Could not save. Try again.')
     } finally {
@@ -68,6 +76,14 @@ export default function EditExpense({
             value={date}
             max={today()}
             onChange={(e) => setDate(e.target.value)}
+          />
+          <TextInput
+            label="Note (optional)"
+            id="note"
+            type="text"
+            placeholder="e.g. weekly shop"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           />
           <Group grow>
             <Button variant="default" onClick={onCancel}>

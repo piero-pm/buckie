@@ -56,6 +56,29 @@ describe('recurring expansion (TICKET-010/011)', () => {
     const inactive: Recurring = { ...template, active: false }
     expect(expandRecurring([inactive], '2026-03')).toHaveLength(0)
   })
+
+  // BR-REC-END-1 (WORK-006): ending keeps history through endedAt.
+  it('expands an ended template through its endedAt month (EX-IC-4)', () => {
+    const ended: Recurring = {
+      ...template,
+      active: false,
+      endedAt: '2026-07',
+      createdAt: '2026-03-01',
+    }
+    const months = expandRecurring([ended], '2026-09').map((e) => ym(e.date))
+    expect(months).toEqual([
+      '2026-03',
+      '2026-04',
+      '2026-05',
+      '2026-06',
+      '2026-07',
+    ])
+  })
+
+  it('keeps legacy ends (active:false, no endedAt) invisible', () => {
+    const legacy: Recurring = { ...template, active: false }
+    expect(expandRecurring([legacy], '2026-09')).toHaveLength(0)
+  })
 })
 
 describe('monthly totals (TICKET-013)', () => {

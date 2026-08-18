@@ -117,6 +117,7 @@ describe('Mutation failures are visible (BR-ERR-4, TICKET-025)', () => {
     renderWithMantine(
       <ExpensesPage
         expenses={[expense]}
+        recurring={[]}
         onUpdate={vi.fn(async () => {})}
         onDelete={vi.fn(async () => {
           throw new Error('offline')
@@ -128,7 +129,8 @@ describe('Mutation failures are visible (BR-ERR-4, TICKET-025)', () => {
     await waitFor(() => {
       expect(screen.getByText(/could not delete — try again/i)).toBeDefined()
     })
-    expect(screen.getByText('Groceries')).toBeDefined() // row remains
+    // Row remains (category also appears in the filter's option list).
+    expect(screen.getAllByText('Groceries').length).toBeGreaterThan(1)
   })
 
   it('shows a toast when ending a recurring item fails', async () => {
@@ -172,6 +174,7 @@ describe('Mutation failures are visible (BR-ERR-4, TICKET-025)', () => {
     renderWithMantine(
       <ExpensesPage
         expenses={[expense]}
+        recurring={[]}
         onUpdate={vi.fn(async () => {
           throw new Error('offline')
         })}
