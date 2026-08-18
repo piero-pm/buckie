@@ -14,6 +14,7 @@ import {
   ym,
 } from '../domain/aggregation'
 import { monthIncome } from '../domain/income-month'
+import { categoryTrends, dailyTotals } from '../domain/insights'
 import { expectedSpend, monthlyFigures } from '../domain/prediction'
 import { monthFlows } from '../domain/flows'
 import DashboardSummary from './DashboardSummary'
@@ -24,6 +25,8 @@ import ExpectedVsActual from '../components/ExpectedVsActual'
 import SavedBar from '../components/SavedBar'
 import MonthExpenseList from '../components/MonthExpenseList'
 import SankeyFlow from '../components/SankeyFlow'
+import HeatmapCard from '../components/HeatmapCard'
+import CategoryTrendCard from '../components/CategoryTrendCard'
 
 interface Props {
   expenses: Expense[]
@@ -107,6 +110,16 @@ export default function DashboardPage({
     () => compareBuckets(monthItems, expectations?.expected ?? {}),
     [monthItems, expectations]
   )
+  // Insights (WORK-006 S3): trailing-year calendar + category trends run on
+  // all history through the current month, not the selected month.
+  const heatmapData = useMemo(
+    () => dailyTotals(expenses, recurring, currentMonth()),
+    [expenses, recurring]
+  )
+  const trendRows = useMemo(
+    () => categoryTrends(expenses, recurring, currentMonth()),
+    [expenses, recurring]
+  )
 
   const barData = [...months]
     .reverse()
@@ -166,6 +179,10 @@ export default function DashboardPage({
         />
 
         <MonthExpenseList items={monthItems} />
+
+        <HeatmapCard data={heatmapData} />
+
+        <CategoryTrendCard rows={trendRows} />
       </Stack>
     </Box>
   )

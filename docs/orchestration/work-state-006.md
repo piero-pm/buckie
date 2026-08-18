@@ -99,6 +99,20 @@ x2); tsc + build green. Sizes: all <=200 (ExpensesPage 159, BrowserRow
 render read-only in the browser (synthetic ids), editing stays on the
 recurring page (end/remove).
 
+### 4.3 Slice 3 gate evidence (2026-08-18, local ZCode/GLM-5.2)
+
+Frontend only: eslint + prettier clean; 150/150 vitest incl. 5 new
+(insights: dailyTotals sums one-off+recurring per day + empty;
+categoryTrends bucket roll-up w/ zero months, legacy Food->Everyday,
+12-month window slice); tsc + build green. Lead call recorded:
+@mantine/charts 7.17.8 ships no public Heatmap export (lib/Heatmap is
+dead code, blocked by package exports), so the spend calendar is a
+direct SVG component (HeatmapCard, orange theme shades, title-tooltips,
+Mon-first weeks) — no new dependency, BR-HMAP-1 intact. Sizes: all
+<=200 (HeatmapCard 139, CategoryTrendCard 90, insights.ts 60,
+DashboardPage 189). Cards append after the month expense list;
+BR-DASH-1 order untouched.
+
 ## 5. Blocker and Restart
 
 None. Displaced-scope ledger: items 3–5 of the kickoff scope may shift to
