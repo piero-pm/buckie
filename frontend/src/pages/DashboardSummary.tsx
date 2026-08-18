@@ -1,5 +1,5 @@
 import { Card, Group, Stack, Text } from '@mantine/core'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 /** Month summary figures (TICKET-022): spend total, income total, and net
  * (income − expenses). Income comes from monthIncome over active sources. */
@@ -20,7 +20,7 @@ export default function DashboardSummary({
             Total this month
           </Text>
           <Text size="2rem" fw={700} c="gray.9" mt={4} aria-label="month total">
-            {formatEUR(total)}
+            {formatMoney(total)}
           </Text>
         </div>
         <Group justify="space-between">
@@ -28,7 +28,7 @@ export default function DashboardSummary({
             Income
           </Text>
           <Text size="sm" fw={600} c="gray.9" aria-label="month income">
-            {formatEUR(income)}
+            {formatMoney(income)}
           </Text>
         </Group>
         <Group justify="space-between">
@@ -50,5 +50,5 @@ export default function DashboardSummary({
 }
 
 function netText(net: number): string {
-  return net < 0 ? `−${formatEUR(-net)}` : formatEUR(net)
+  return net < 0 ? `−${formatMoney(-net)}` : formatMoney(net)
 }

@@ -3,9 +3,16 @@ import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeEvent } from '../domain/incomeEvent'
 import type { IncomeSource } from '../domain/income'
+import type { Settings } from '../domain/settings'
 
 /** Record kinds the server stores (records table `kind` column). */
-type Kind = 'expense' | 'recurring' | 'income' | 'expectations' | 'income_event'
+type Kind =
+  | 'expense'
+  | 'recurring'
+  | 'income'
+  | 'expectations'
+  | 'income_event'
+  | 'settings'
 
 /**
  * Encrypts a domain record with the user's cached key and stores it on the
@@ -15,7 +22,8 @@ type Kind = 'expense' | 'recurring' | 'income' | 'expectations' | 'income_event'
 async function putRecord(
   userId: number,
   kind: Kind,
-  record: Expense | Recurring | IncomeSource | Expectations | IncomeEvent
+  record:
+    Expense | Recurring | IncomeSource | Expectations | IncomeEvent | Settings
 ): Promise<void> {
   const key = await requireKey(userId)
   const plaintext = new TextEncoder().encode(JSON.stringify(record))
@@ -87,6 +95,7 @@ export const raw = {
       'income',
       'expectations',
       'income_event',
+      'settings',
     ]
     const lists = await Promise.all(kinds.map((k) => listRaw(k)))
     return lists.flat()
@@ -123,6 +132,11 @@ export const expectationsApi = {
   list: (userId: number) => listRecords<Expectations>(userId, 'expectations'),
   save: (userId: number, x: Expectations) =>
     putRecord(userId, 'expectations', x),
+}
+
+export const settingsApi = {
+  list: (userId: number) => listRecords<Settings>(userId, 'settings'),
+  save: (userId: number, s: Settings) => putRecord(userId, 'settings', s),
 }
 
 async function requireKey(userId: number): Promise<CryptoKey> {

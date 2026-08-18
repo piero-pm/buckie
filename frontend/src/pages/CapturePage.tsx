@@ -10,11 +10,8 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowLeft } from '@tabler/icons-react'
-import {
-  categoriesByBucket,
-  formatEUR,
-  type Category,
-} from '../domain/taxonomy'
+import { categoriesByBucket, type Category } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 import { validateExpense, type Expense } from '../domain/expense'
 import { topCategories } from '../domain/aggregation'
 import { newId } from '../domain/ids'
@@ -154,7 +151,7 @@ export default function CapturePage({ existing, onSave, onBack }: Props) {
           />
           {dup && (
             <Text role="alert" c="yellow.9" size="sm">
-              You already have a {formatEUR(dup.amount)} {dup.category} on{' '}
+              You already have a {formatMoney(dup.amount)} {dup.category} on{' '}
               {dup.date}. Save again to keep both.
             </Text>
           )}

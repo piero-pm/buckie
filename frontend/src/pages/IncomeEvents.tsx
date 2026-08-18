@@ -10,7 +10,7 @@ import {
   TextInput,
 } from '@mantine/core'
 import { IconTrash } from '@tabler/icons-react'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 import {
   EVENT_KINDS,
   EVENT_LABELS,
@@ -95,7 +95,7 @@ export default function IncomeEvents({ events, onSave, onDelete }: Props) {
               <Stack gap={2}>
                 <Group gap="xs">
                   <Text size="sm" fw={600} c="gray.9">
-                    {formatEUR(v.amount)}
+                    {formatMoney(v.amount)}
                   </Text>
                   <Text size="sm" c="gray.7">
                     {EVENT_LABELS[v.eventKind]}

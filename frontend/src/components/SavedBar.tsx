@@ -1,6 +1,6 @@
 import { Card, Group, Progress, Stack, Text } from '@mantine/core'
 import { savedThisMonth } from '../domain/comparison'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 /** The green saved bar (BR-DASH-2, TICKET-038): income minus spend for the
  * month; an over-spend shows a red callout instead. */
@@ -22,11 +22,11 @@ export default function SavedBar({
           </Text>
           {overspent > 0 ? (
             <Text size="sm" fw={600} c="red.7" aria-label="overspent">
-              Over-spent {formatEUR(overspent)}
+              Over-spent {formatMoney(overspent)}
             </Text>
           ) : (
             <Text size="sm" fw={600} c="green.7" aria-label="saved">
-              {formatEUR(saved)}
+              {formatMoney(saved)}
             </Text>
           )}
         </Group>

@@ -82,6 +82,19 @@ Dev note: sign-out sets a signingOut ref before clearing userId — the
 workspace login-redirect otherwise races the navigation in
 non-batched renders.
 
+### 4.2 Slice 2 gate evidence (2026-08-19, local ZCode/GLM-5.2)
+
+Backend: go build/vet/gofmt clean; records tests green incl. new
+settings-kind round-trip. Frontend: eslint + prettier clean; 161/161
+vitest incl. 8 new (settings validation x3, formatMoney currencies
+x2, idle lock: disabled/locks-after-window/activity-refresh x3); tsc
++ build green. Sizes: all <=200 (settings.ts 67, SettingsPage 104,
+useIdleLock 49, useWorkspace 161, records.ts 159, HomePage 147).
+formatEUR migrated to formatMoney(currency) across 16 call sites;
+active currency is display-only module state set by useWorkspace on
+load/save. Settings record: fixed-id encrypted kind (whitelist +
+round-trip test), exported in backups via listAll.
+
 ## 5. Blocker and Restart
 
 None. Router choice (react-router vs hash) is delegated to the Lead

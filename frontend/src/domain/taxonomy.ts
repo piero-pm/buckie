@@ -95,11 +95,6 @@ export function editableCategories(current: string): {
   return groups
 }
 
-/** Phase-1 display currency (BR-DQ-2, approved 2026-08-11: EUR). */
+/** Phase-1 default display currency (BR-DQ-2, approved 2026-08-11: EUR);
+ * user-configurable since WORK-007 — see domain/settings.ts. */
 export const CURRENCY = 'EUR'
-const CURRENCY_SYMBOL = '€'
-
-/** Formats an amount in EUR for display. */
-export function formatEUR(amount: number): string {
-  return `${CURRENCY_SYMBOL}${amount.toFixed(2)}`
-}

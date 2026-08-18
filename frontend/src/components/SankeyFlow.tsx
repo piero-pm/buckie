@@ -7,7 +7,7 @@ import {
   Rectangle,
 } from 'recharts'
 import type { MonthFlows } from '../domain/flows'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 /** Sankey month flow (BR-SANK-1, TICKET-040): income splitting into fixed
  * costs, the expected buckets, other spend, and saved — replacing the old
@@ -45,7 +45,7 @@ export default function SankeyFlow({ flows }: { flows: MonthFlows }) {
                 node={(props: NodeProps) => <FlowNode {...props} />}
                 margin={{ top: 4, right: 120, bottom: 4, left: 8 }}
               >
-                <Tooltip formatter={(v: number) => formatEUR(v)} />
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
               </RechartsSankey>
             </ResponsiveContainer>
           </div>

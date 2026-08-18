@@ -3,7 +3,7 @@ import { Box, Card, SegmentedControl, Stack, Text } from '@mantine/core'
 import { LineChart } from '@mantine/charts'
 import type { MonthlyFigure } from '../domain/prediction'
 import { cumulativeNet, windowAverages } from '../domain/prediction'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 const monthLabel = (ym: string) => {
   const [y, m] = ym.split('-').map(Number)
@@ -92,8 +92,8 @@ export default function TrendView({
             <Card withBorder padding="lg">
               <Stack gap={4}>
                 <Text size="sm" c="gray.7">
-                  Avg spending {formatEUR(view.averages.avgSpend)}/mo · Avg
-                  saving {formatEUR(view.averages.avgSaving)}/mo
+                  Avg spending {formatMoney(view.averages.avgSpend)}/mo · Avg
+                  saving {formatMoney(view.averages.avgSaving)}/mo
                 </Text>
                 <Text size="xs" c="gray.5" fs="italic">
                   Last {view.averages.months} months. Saving = income −
@@ -123,9 +123,9 @@ export default function TrendView({
               />
               <Text size="xs" c="gray.5" fs="italic" mt="xs">
                 Projection continues the average saving of{' '}
-                {formatEUR(view.averages.avgSaving)}/mo
+                {formatMoney(view.averages.avgSaving)}/mo
                 {startingBalance !== 0
-                  ? `, starting from your ${formatEUR(startingBalance)} balance`
+                  ? `, starting from your ${formatMoney(startingBalance)} balance`
                   : ''}
                 .
               </Text>

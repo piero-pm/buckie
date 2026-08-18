@@ -80,6 +80,7 @@ describe('changePassphrase (BA-DS-009 BR-PASS-1..3)', () => {
       .mockResolvedValueOnce(empty) // remaining kind lists (recurring etc.)
       .mockResolvedValueOnce(empty)
       .mockResolvedValueOnce(empty)
+      .mockResolvedValueOnce(empty) // settings list (WORK-007)
       .mockResolvedValue({ ok: true, json: async () => ({}) }) // PUTs
 
     await changePassphrase(userId, OLD, NEW)

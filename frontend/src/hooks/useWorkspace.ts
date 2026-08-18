@@ -5,11 +5,17 @@ import {
   incomes as incomeApi,
   recurring as recurringApi,
   expectationsApi,
+  settingsApi,
 } from '../api/records'
 import type { Expectations } from '../domain/expectations'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeEvent } from '../domain/incomeEvent'
 import type { IncomeSource } from '../domain/income'
+import {
+  DEFAULT_SETTINGS,
+  setActiveCurrency,
+  type Settings,
+} from '../domain/settings'
 
 /** Loads the decrypted workspace once per user and owns the local CRUD state
  * (extracted from HomePage for clean-artifacts sizes, TICKET-020). Every
@@ -21,24 +27,29 @@ export function useWorkspace(userId: number) {
   const [incomes, setIncomes] = useState<IncomeSource[]>([])
   const [incomeEvents, setIncomeEvents] = useState<IncomeEvent[]>([])
   const [expectations, setExpectations] = useState<Expectations | null>(null)
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS)
   const [loadError, setLoadError] = useState('')
 
   /** Loads (or reloads, e.g. after a backup import) all registers. */
   const reload = useCallback(async () => {
     setLoadError('')
     try {
-      const [e, r, i, v, x] = await Promise.all([
+      const [e, r, i, v, x, s] = await Promise.all([
         expenseApi.list(userId),
         recurringApi.list(userId),
         incomeApi.list(userId),
         incomeEventApi.list(userId),
         expectationsApi.list(userId),
+        settingsApi.list(userId),
       ])
       setExpenses(e)
       setRecurring(r)
       setIncomes(i)
       setIncomeEvents(v)
       setExpectations(x[0] ?? null)
+      const loaded = s[0] ?? DEFAULT_SETTINGS
+      setSettings(loaded)
+      setActiveCurrency(loaded.currency)
     } catch {
       setLoadError('Could not load your data. Try unlocking again.')
     }
@@ -110,15 +121,26 @@ export function useWorkspace(userId: number) {
     [userId]
   )
 
+  const saveSettings = useCallback(
+    async (s: Settings) => {
+      await settingsApi.save(userId, s)
+      setSettings(s)
+      setActiveCurrency(s.currency) // display-only module state (BR-CUR-1)
+    },
+    [userId]
+  )
+
   return {
     expenses,
     recurring,
     incomes,
     incomeEvents,
     expectations,
+    settings,
     loadError,
     reload,
     saveExpectations,
+    saveSettings,
     saveExpense,
     updateExpense,
     removeExpense,

@@ -11,11 +11,8 @@ import {
   TextInput,
 } from '@mantine/core'
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react'
-import {
-  categoriesByBucket,
-  formatEUR,
-  type Category,
-} from '../domain/taxonomy'
+import { categoriesByBucket, type Category } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 import { ym } from '../domain/aggregation'
 import { validateRecurring, type Recurring } from '../domain/expense'
 import { newId } from '../domain/ids'
@@ -99,7 +96,7 @@ export default function RecurringPage({
               <Stack gap={2}>
                 <Group gap="xs">
                   <Text size="sm" fw={600} c="gray.9">
-                    {formatEUR(r.amount)}
+                    {formatMoney(r.amount)}
                   </Text>
                   <Text size="sm" c="gray.7">
                     {r.category}

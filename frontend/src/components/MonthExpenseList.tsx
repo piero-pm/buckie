@@ -1,6 +1,6 @@
 import { Badge, Card, Group, Stack, Text } from '@mantine/core'
 import type { Expense } from '../domain/expense'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 /** This month's expense list (BR-DASH-1, TICKET-039): one-off plus
  * recurring-generated items, date-desc, recurring marked. Synthetic ids are
@@ -50,7 +50,7 @@ function Row({ expense: e }: { expense: Expense }) {
         </Text>
       </Stack>
       <Text size="sm" fw={600} c="gray.9">
-        {formatEUR(e.amount)}
+        {formatMoney(e.amount)}
       </Text>
     </Group>
   )

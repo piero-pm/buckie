@@ -1,5 +1,5 @@
 import { Box, Card, Stack, Text } from '@mantine/core'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 const SHADES = ['#fff7ed', '#fed7aa', '#fb923c', '#ea580c'] as const
 const CELL = 12
@@ -57,7 +57,7 @@ export default function HeatmapCard({
                 >
                   <title>
                     {c.date}
-                    {c.value !== null ? ` · ${formatEUR(c.value)}` : ''}
+                    {c.value !== null ? ` · ${formatMoney(c.value)}` : ''}
                   </title>
                 </rect>
               ))}

@@ -1,5 +1,5 @@
 import { Card, Group, Progress, Stack, Text } from '@mantine/core'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 import type { BucketCompare } from '../domain/comparison'
 
 /** Expected vs actual per bucket (BR-CMP-1, TICKET-038): over renders red
@@ -30,7 +30,7 @@ function Row({ row }: { row: BucketCompare }) {
           {row.label}
         </Text>
         <Text size="sm" c="gray.6">
-          {formatEUR(row.actual)} — no expectation
+          {formatMoney(row.actual)} — no expectation
         </Text>
       </Group>
     )
@@ -49,10 +49,10 @@ function Row({ row }: { row: BucketCompare }) {
           c={over ? 'red.7' : 'green.7'}
           aria-label={`${row.label} delta`}
         >
-          {formatEUR(row.actual)} / {formatEUR(row.expected)}
+          {formatMoney(row.actual)} / {formatMoney(row.expected)}
           {over
-            ? ` (+${formatEUR(row.delta ?? 0)} over)`
-            : ` (${formatEUR(-(row.delta ?? 0))} left)`}
+            ? ` (+${formatMoney(row.delta ?? 0)} over)`
+            : ` (${formatMoney(-(row.delta ?? 0))} left)`}
         </Text>
       </Group>
       <Progress value={pct} color={over ? 'red.6' : 'green.6'} size="sm" />

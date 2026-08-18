@@ -11,3 +11,6 @@ export function newId(): string {
 /** Fixed record id for the single expectations record (WORK-005): one
  * record per user, upserted in place. */
 export const EXPECTATIONS_ID = 'expectations'
+
+/** Fixed record id for the single settings record (WORK-007). */
+export const SETTINGS_ID = 'settings'

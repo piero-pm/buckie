@@ -10,6 +10,7 @@ export const VIEW_PATHS: Record<View, string> = {
   income: '/income',
   expected: '/expected',
   help: '/help',
+  settings: '/settings',
 }
 
 /** Inverse map: the view owning a path, or null outside the workspace. */

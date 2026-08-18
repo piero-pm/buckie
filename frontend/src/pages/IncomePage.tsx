@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ActionIcon, Badge, Box, Group, Stack, Text } from '@mantine/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 import {
   FREQUENCY_LABELS,
   INCOME_LABELS,
@@ -99,7 +99,7 @@ function SourceRow({
       <Stack gap={2}>
         <Group gap="xs">
           <Text size="sm" fw={600} c="gray.9">
-            {formatEUR(s.amount)}
+            {formatMoney(s.amount)}
           </Text>
           <Text size="sm" c="gray.7">
             {INCOME_LABELS[s.kind]}

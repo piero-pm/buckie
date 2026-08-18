@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useWorkspace } from '../hooks/useWorkspace'
+import { useIdleLock } from '../hooks/useIdleLock'
 import {
   hasSkippedOnboarding,
   markOnboardingSkipped,
@@ -11,6 +12,7 @@ import IncomePage from './IncomePage'
 import DashboardPage from './DashboardPage'
 import ExpectedPage from './ExpectedPage'
 import HelpPage from './HelpPage'
+import SettingsPage from './SettingsPage'
 import HubView from './HubView'
 import OnboardingPage from './OnboardingPage'
 import type { View } from './views'
@@ -29,6 +31,14 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
   const ws = useWorkspace(userId)
   const [onboardingClosed, setOnboardingClosed] = useState(false)
   const [incomeCardHidden, setIncomeCardHidden] = useState(false)
+
+  // Idle auto-lock (BR-LOCK-IDLE-1): clears the key, then a hard reload
+  // lands on the unlock page via the post-auth routing.
+  useIdleLock({
+    userId,
+    minutes: ws.settings.idleLockMinutes,
+    onLock: () => window.location.assign('/passphrase-unlock'),
+  })
 
   if (view === 'capture') {
     return (
@@ -88,6 +98,15 @@ export default function HomePage({ userId, view, onNavigate }: Props) {
         onBack={() => onNavigate('hub')}
         userId={userId}
         onRestored={() => void ws.reload()}
+      />
+    )
+  }
+  if (view === 'settings') {
+    return (
+      <SettingsPage
+        settings={ws.settings}
+        onSave={ws.saveSettings}
+        onBack={() => onNavigate('hub')}
       />
     )
   }

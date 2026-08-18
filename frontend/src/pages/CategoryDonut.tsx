@@ -2,7 +2,7 @@ import { Box, Card, Group, Stack, Text } from '@mantine/core'
 import { DonutChart } from '@mantine/charts'
 import type { Expense } from '../domain/expense'
 import { byCategory } from '../domain/aggregation'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 // Stable category colours so the donut is consistent across months
 // (orange/amber identity, TICKET-017).
@@ -51,7 +51,7 @@ export default function CategoryDonut({
                   {d.name}
                 </Text>
                 <Text size="xs" fw={600} c="gray.9">
-                  {formatEUR(d.value)}
+                  {formatMoney(d.value)}
                 </Text>
               </Group>
             ))}

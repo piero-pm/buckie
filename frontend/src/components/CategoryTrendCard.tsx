@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Card, MultiSelect, Stack, Text } from '@mantine/core'
 import { LineChart } from '@mantine/charts'
-import { BUCKETS, CATEGORIES, formatEUR } from '../domain/taxonomy'
+import { BUCKETS, CATEGORIES } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 const BUCKET_KEYS = BUCKETS.map((b) => `b:${b}`)
 const LINE_COLORS = [
@@ -74,7 +75,7 @@ export default function CategoryTrendCard({
             series={series}
             tickLine="y"
             gridAxis="y"
-            valueFormatter={(v) => formatEUR(Number(v))}
+            valueFormatter={(v) => formatMoney(Number(v))}
           />
         ) : (
           <Text size="sm" c="gray.5" py="xs">

@@ -1,5 +1,5 @@
 import { Card, Stack, Text } from '@mantine/core'
-import { formatEUR } from '../domain/taxonomy'
+import { formatMoney } from '../domain/settings'
 
 interface Props {
   /** BR-PRJ-1 benchmark: average spend over the last up to 3 months;
@@ -21,10 +21,10 @@ export default function MonthBenchmark({ expected, total }: Props) {
           Expected spend (3-month average)
         </Text>
         <Text size="xl" fw={700} c="gray.9">
-          {formatEUR(expected)}
+          {formatMoney(expected)}
         </Text>
         <Text size="xs" c="gray.5">
-          You're {formatEUR(Math.abs(delta))} {pace} that pace this month.
+          You're {formatMoney(Math.abs(delta))} {pace} that pace this month.
         </Text>
       </Stack>
     </Card>
