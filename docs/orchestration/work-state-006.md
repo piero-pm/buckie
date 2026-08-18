@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-006 |
-| Status | Running — Developer (S1) |
+| Status | Completed 2026-08-18 — deployed, verified (manual checks passed), §6 recorded |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Developer |
-| Next owner | Developer (Slice 1) |
+| Current stage | Completed |
+| Next owner | n/a |
 | Updated | 2026-08-18 |
 
 ## 1. Request and Route
@@ -36,7 +36,8 @@ Developer (slice direction) -> Developer. UX folded inline; QA waived
 | Slice direction + tickets | Human | Approved | AskUser gate 2026-08-18: 3 slices — S1 042/043, S2 044/045/046, S3 047/048 (start S1) |
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Slice pushes (production deploy) | Human | Pending | Push gate per package |
+| Slice pushes (production deploy) | Human | Approved | AskUser "Push all 3" 2026-08-18; CI+Deploy green on 58258e8 |
+| Manual verification (production) | Human | Passed | User confirmation 2026-08-18: all 9 checks pass (browser, heatmap, trends, events, weekly math, recurring end, edits, iPhone Safari) |
 
 ## 3. Stage Ledger
 
@@ -46,7 +47,7 @@ Developer (slice direction) -> Developer. UX folded inline; QA waived
 | Business Analyst | Passed | BA-DS-006/008/010 + intake | BA-DS-011 approved; traceability updated | Lead direction |
 | UX Designer | Excluded | n/a | Waived: UX inline (WORK-001) | n/a |
 | Lead Developer | Passed | Approved BA-DS-011 | Slice direction + TICKET-042..048 approved | Developer starts S1 |
-| Developer | Running | Tickets 042-048 | S1 in progress | Green gates per slice |
+| Developer | Passed | Tickets 042-048 | S1 04a9308, S2 abedc95, S3 58258e8 — all gates green | Push approval |
 | Quality Assurance | Excluded | n/a | Waived: human verifies manually | n/a |
 
 ## 4. Integration Gates
@@ -126,10 +127,23 @@ keeping history, income edit, note edit, iPhone Safari.
 
 ## 5. Blocker and Restart
 
-None. Displaced-scope ledger: items 3–5 of the kickoff scope may shift to
-a later package if the Lead judges the package too heavy (kickoff note
-2026-08-18); that trim happens at the direction gate, recorded here.
+None. Displaced-scope trim was not needed — all five kickoff items
+shipped across three slices.
 
 ## 6. Completion
 
-Pending.
+Delivered and verified 2026-08-18: the Expenses view browses by month,
+category, and text with composable filters and replaced the flat recent
+list (BR-LST-1); the dashboard gained a trailing-year spend-calendar
+heatmap and per-category 12-month trend lines (BR-HMAP-1, BR-TRD-1);
+one-off income events record as a new encrypted kind and count in their
+month everywhere income appears (BR-IOFF-1); income sources support
+weekly/quarterly/yearly frequencies counted by actual occurrences and
+are editable (BR-INC-FREQ-1, BR-EDIT-1); recurring ends preserve
+history through endedAt with legacy ends left invisible (BR-REC-END-1);
+expense notes are editable (BR-EDIT-1). Defect fixed en route: backup
+export now includes the expectations + income_event kinds. Verification:
+QA waived; human verified manually on production 2026-08-18 — all checks
+pass. Integration: 04a9308, abedc95, 58258e8; CI/Deploy green; bundle
+markers confirmed. Remaining approved risk: none open; WORK-007
+(navigation & UX) follows per roadmap.
