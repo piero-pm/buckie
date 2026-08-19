@@ -1,6 +1,6 @@
 # TICKET-055: Lists, semantic colors, sweep, contrast record
 
-Status: built (11c6c10), awaiting production verification — 2026-08-19
+Status: deployed 2026-08-19 (dd9e347) — awaiting production manual checks
 
 | Field | Value |
 | --- | --- |

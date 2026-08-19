@@ -1,6 +1,6 @@
 # TICKET-053: Design tokens, fonts, landing rebuild
 
-Status: built (82711fc), awaiting production verification — 2026-08-19
+Status: deployed 2026-08-19 (dd9e347) — awaiting production manual checks
 
 | Field | Value |
 | --- | --- |

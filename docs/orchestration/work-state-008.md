@@ -37,7 +37,7 @@ QA waived (human verifies manually, WORK-001).
 | Copy change "Access your space"→"Get started free", "Log in"→"Sign in" | Human | Approved | Plan approval 2026-08-19 |
 | UX stage | Human | Waived | Standing waiver WORK-001 |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
-| Push (production deploy) | Human | Pending | Local verification first, per human instruction |
+| Push (production deploy) | Human | Approved | User "Push and deploy" 2026-08-19; deploy green dd9e347 after one trunk repair |
 
 ## 3. Stage Ledger
 
@@ -94,7 +94,15 @@ amber pills, heatmap rust ramp, bucket-colored trends; expenses/income/
 settings/help inherit the paper theme; mobile no overflow (sankey
 scrolls horizontally by design). Category-trend 12-month range renders
 fully; only ~4 months carry seed data (sparsity, not truncation).
-Integration: awaiting human push approval (deploy = production).
+
+Integration (2026-08-19): first deploy on b1dbf52 failed CI at the
+whole-tree prettier gate — the 2a88315 seed chore was committed
+unformatted (same class as 22b290d); repaired by formatting only
+(dd9e347). CI + Deploy green on dd9e347. Operator-verified on
+production: /health 200 "ok"; bundle index-BHpxvWmJ.js contains the
+WORK-008 markers (Get started free, example-data caption, encrypted
+client-side, your-vault.local, Sign in) and the old CTA is gone; CSS
+carries the paper token; Fraunces woff2 self-hosted asset serves 200.
 
 ## 5. Blocker and Restart
 
@@ -103,5 +111,12 @@ The filled-button label trade-off is resolved (4.97:1, TICKET-055).
 
 ## 6. Completion
 
-Built and locally verified 2026-08-19; pending: human manual checks
-(§4 draft list) and push approval → deploy → live verification.
+Deployed live 2026-08-19 (dd9e347): one unified paper/ink/rust/vault
+identity across landing and app (BR-VI-1..13, REQ-37) — CTA hierarchy
+fixed, encryption shown not claimed, ledger features, clearly-labeled
+example dashboard preview, stable category/bucket colors across every
+chart, readable sankey with values, labeled month bars, projection band
+with a single boundary tick, semantic rust/green/amber throughout, all
+contrast pairs AA. Verification: QA waived; human manual checks on
+production pending (landing + login + dashboard + other pages, iPhone
+Safari, keyboard focus, reduced motion — §4 draft list).

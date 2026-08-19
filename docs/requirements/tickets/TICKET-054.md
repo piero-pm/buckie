@@ -1,6 +1,6 @@
 # TICKET-054: One chart palette across dashboard charts
 
-Status: built (7e9c67f), awaiting production verification — 2026-08-19
+Status: deployed 2026-08-19 (dd9e347) — awaiting production manual checks
 
 | Field | Value |
 | --- | --- |
