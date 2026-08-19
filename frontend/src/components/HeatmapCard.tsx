@@ -1,7 +1,9 @@
 import { Box, Card, Stack, Text } from '@mantine/core'
 import { formatMoney } from '../domain/settings'
 
-const SHADES = ['#fff7ed', '#fed7aa', '#fb923c', '#ea580c'] as const
+// Rust ramp on paper shades (BR-VI-13 identity): none/low spend reads as
+// paper, heavy days darken toward rust-deep.
+const SHADES = ['#F1E6D3', '#E0B78C', '#D06324', '#8F3B15'] as const
 const CELL = 12
 const GAP = 2
 const LABEL_H = 14
@@ -69,7 +71,7 @@ export default function HeatmapCard({
                     x={c.col * (CELL + GAP) + 1}
                     y={LABEL_H - 3}
                     fontSize={9}
-                    fill="#868e96"
+                    fill="var(--ink-soft)"
                   >
                     {c.monthLabel}
                   </text>

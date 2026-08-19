@@ -65,3 +65,15 @@ export function formatMoney(
     ? `${fixed} ${SYMBOLS.PLN}`
     : `${SYMBOLS[currency]}${fixed}`
 }
+
+/** Whole-unit variant for chart labels and axes (BR-VI-10) — same symbol
+ * rules, no cents, so dense labels stay readable. */
+export function formatMoneyCompact(
+  amount: number,
+  currency: CurrencyCode = active
+): string {
+  const rounded = String(Math.round(amount))
+  return currency === 'PLN'
+    ? `${rounded} ${SYMBOLS.PLN}`
+    : `${SYMBOLS[currency]}${rounded}`
+}

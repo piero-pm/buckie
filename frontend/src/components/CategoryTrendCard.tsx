@@ -3,16 +3,16 @@ import { Card, MultiSelect, Stack, Text } from '@mantine/core'
 import { LineChart } from '@mantine/charts'
 import { BUCKETS, CATEGORIES } from '../domain/taxonomy'
 import { formatMoney } from '../domain/settings'
+import { BUCKET_COLORS, categoryColor } from '../theme/palette'
 
 const BUCKET_KEYS = BUCKETS.map((b) => `b:${b}`)
-const LINE_COLORS = [
-  '#ea580c',
-  '#0d9488',
-  '#7c3aed',
-  '#2563eb',
-  '#dc2626',
-  '#65a30d',
-]
+
+// Fixed identity colors (BR-VI-13): buckets and categories keep their
+// color regardless of selection order or view.
+const colorFor = (key: string) =>
+  key.startsWith('b:')
+    ? BUCKET_COLORS[key.slice(2) as (typeof BUCKETS)[number]]
+    : categoryColor(key)
 
 const monthLabel = (key: string) => {
   const [y, m] = key.split('-').map(Number)
@@ -35,9 +35,9 @@ export default function CategoryTrendCard({
     () => rows.map((r) => ({ ...r, label: monthLabel(String(r.month)) })),
     [rows]
   )
-  const series = selected.map((key, i) => ({
+  const series = selected.map((key) => ({
     name: key,
-    color: LINE_COLORS[i % LINE_COLORS.length],
+    color: colorFor(key),
     label: key.replace(/^b:/, ''),
   }))
 
@@ -65,7 +65,6 @@ export default function CategoryTrendCard({
           ]}
           value={selected}
           onChange={setSelected}
-          maxValues={LINE_COLORS.length}
         />
         {series.length > 0 && rows.length > 0 ? (
           <LineChart

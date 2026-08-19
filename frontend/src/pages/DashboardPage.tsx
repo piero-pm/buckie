@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { Box, Card, Stack, Text } from '@mantine/core'
-import { BarChart } from '@mantine/charts'
 import type { Expense, Recurring } from '../domain/expense'
 import type { IncomeSource } from '../domain/income'
 import type { IncomeEvent } from '../domain/incomeEvent'
@@ -25,6 +24,7 @@ import ExpectedVsActual from '../components/ExpectedVsActual'
 import SavedBar from '../components/SavedBar'
 import MonthExpenseList from '../components/MonthExpenseList'
 import SankeyFlow from '../components/SankeyFlow'
+import MonthBars from '../components/MonthBars'
 import HeatmapCard from '../components/HeatmapCard'
 import MonthStepper from '../components/MonthStepper'
 import CategoryTrendCard from '../components/CategoryTrendCard'
@@ -160,15 +160,7 @@ export default function DashboardPage({
             <Text size="sm" fw={600} c="gray.7" mb="sm">
               Month-on-month
             </Text>
-            <BarChart
-              h={160}
-              data={barData}
-              dataKey="month"
-              series={[{ name: 'total', color: '#ea580c' }]}
-              tickLine="y"
-              gridAxis="y"
-              valueFormatter={(v) => `€${v}`}
-            />
+            <MonthBars data={barData} />
           </Card>
         )}
 

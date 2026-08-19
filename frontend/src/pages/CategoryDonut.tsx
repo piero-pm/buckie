@@ -3,33 +3,23 @@ import { DonutChart } from '@mantine/charts'
 import type { Expense } from '../domain/expense'
 import { byCategory } from '../domain/aggregation'
 import { formatMoney } from '../domain/settings'
+import { categoryColor } from '../theme/palette'
 
-// Stable category colours so the donut is consistent across months
-// (orange/amber identity, TICKET-017).
-const COLORS = [
-  '#c2410c',
-  '#9a3412',
-  '#ea580c',
-  '#f97316',
-  '#7c2d12',
-  '#fb923c',
-  '#b45309',
-  '#fdba74',
-]
-
-/** Spend-by-category donut + synced legend (TICKET-014). Pure client-side
- * aggregation over the month's items. */
+/** Spend-by-category donut + synced legend (TICKET-014). Colors come from
+ * the stable palette (BR-VI-8): a category keeps its color in every month
+ * and view, and list swatches map 1:1 to segments. */
 export default function CategoryDonut({
   monthItems,
 }: {
   monthItems: Expense[]
 }) {
   const breakdown = byCategory(monthItems).filter((c) => c.total > 0)
-  const donutData = breakdown.map((c, i) => ({
+  const donutData = breakdown.map((c) => ({
     name: c.category,
     value: Math.round(c.total * 100) / 100,
-    color: COLORS[i % COLORS.length],
+    color: categoryColor(c.category),
   }))
+  const grand = donutData.reduce((s, d) => s + d.value, 0)
 
   return (
     <Card withBorder padding="lg">
@@ -45,12 +35,15 @@ export default function CategoryDonut({
           <DonutChart data={donutData} strokeWidth={1} size={160} />
           <Stack gap={6}>
             {donutData.map((d) => (
-              <Group key={d.name} gap="xs">
+              <Group key={d.name} gap="xs" wrap="nowrap">
                 <Box w={10} h={10} bg={d.color} style={{ borderRadius: 2 }} />
                 <Text size="xs" c="gray.7" flex={1}>
                   {d.name}
                 </Text>
-                <Text size="xs" fw={600} c="gray.9">
+                <Text size="xs" c="gray.6" ff="var(--font-mono)">
+                  {grand > 0 ? Math.round((d.value / grand) * 100) : 0}%
+                </Text>
+                <Text size="xs" fw={600} c="gray.9" ff="var(--font-mono)">
                   {formatMoney(d.value)}
                 </Text>
               </Group>
