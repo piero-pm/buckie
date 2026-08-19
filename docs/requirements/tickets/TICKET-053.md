@@ -1,6 +1,6 @@
 # TICKET-053: Design tokens, fonts, landing rebuild
 
-Status: approved with WORK-008 direction 2026-08-19
+Status: built (82711fc), awaiting production verification — 2026-08-19
 
 | Field | Value |
 | --- | --- |

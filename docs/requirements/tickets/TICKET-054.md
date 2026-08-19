@@ -1,6 +1,6 @@
 # TICKET-054: One chart palette across dashboard charts
 
-Status: approved with WORK-008 direction 2026-08-19
+Status: built (7e9c67f), awaiting production verification — 2026-08-19
 
 | Field | Value |
 | --- | --- |

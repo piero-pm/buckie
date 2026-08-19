@@ -64,17 +64,44 @@ Manual production verification (draft): landing (EX-VI-1..5), dashboard
 re-theme (EX-VI-6), other pages inherit paper theme, iPhone Safari,
 keyboard focus, reduced motion.
 
-### 4.1..4.4 Slice gate evidence + integration result
+### 4.1..4.4 Slice gate evidence + integration result (2026-08-19)
 
-(pending per slice; recorded as each lands)
+All three slices landed on the trunk, each gate-green before its commit
+(tsc + eslint + prettier + vitest + build; backend untouched):
+
+- S1 `82711fc` (TICKET-053): tokens + @fontsource fonts + rust/warm-gray/
+  paper Mantine tuples + landing rebuild (Hero/VaultCard/FeatureLedger/
+  DashboardPreview/LandingFooter) + AppHeader (Fraunces brand, "Sign in"
+  text link) + rust favicon. 166/166 vitest (5 new landing tests).
+- S2 `7e9c67f` (TICKET-054): stable category/bucket palette across donut
+  (% of total, 1:1 swatches), sankey (target-colored flows at 0.65,
+  Saved green, values on nodes), MonthBars + TrendView on direct
+  recharts (approved exceptions) with data labels, niceTicks, projection
+  band, and the duplicate "Aug 26" boundary tick fixed (buildTrendRows,
+  unit-tested). Two hardcoded € formatters fixed. 171/171 vitest.
+- S3 `11c6c10` (TICKET-055): ledger-style expense rows (category icons,
+  amber mono RECURRING pill, mono amounts), moss/amber tuples, semantic
+  colors (SavedBar/ExpectedVsActual/DashboardSummary), Fraunces hero
+  total, #e9ecef sweep complete (zero remain), contrast table in
+  TICKET-055 — all pairs AA; filled-button label now 4.97:1 (old ≈3.5:1
+  trade-off resolved). 171/171 vitest.
+
+Local verification (:8090, seeded test123 account, screenshots desktop
++ mobile 390px): landing all five sections render (EX-VI-1..5); dashboard
+(EX-VI-6) — serif hero total, moss net/saved, donut %, sankey colors +
+values, bar labels + even ticks, solid/dashed balance with band, icons +
+amber pills, heatmap rust ramp, bucket-colored trends; expenses/income/
+settings/help inherit the paper theme; mobile no overflow (sankey
+scrolls horizontally by design). Category-trend 12-month range renders
+fully; only ~4 months carry seed data (sparsity, not truncation).
+Integration: awaiting human push approval (deploy = production).
 
 ## 5. Blocker and Restart
 
 None. Rollback = revert slice commits (restores white/orange face).
-Known accepted trade-off to re-verify: filled-button label contrast
-(previously accepted ≈3.5:1 on orange; paper-on-rust re-measured in
-S3 and reported).
+The filled-button label trade-off is resolved (4.97:1, TICKET-055).
 
 ## 6. Completion
 
-(pending)
+Built and locally verified 2026-08-19; pending: human manual checks
+(§4 draft list) and push approval → deploy → live verification.
