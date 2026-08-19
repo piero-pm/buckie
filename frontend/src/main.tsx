@@ -8,6 +8,14 @@ import { theme } from './theme'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import '@mantine/charts/styles.css'
+// Self-hosted identity fonts (BA-DS-013): Fraunces (display, incl. italic),
+// Inter (body), IBM Plex Mono (data). No third-party font requests.
+import '@fontsource-variable/fraunces/standard.css'
+import '@fontsource-variable/fraunces/standard-italic.css'
+import '@fontsource-variable/inter'
+import '@fontsource/ibm-plex-mono/400.css'
+import '@fontsource/ibm-plex-mono/500.css'
+import '@fontsource/ibm-plex-mono/600.css'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

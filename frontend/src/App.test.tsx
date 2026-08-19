@@ -52,7 +52,7 @@ describe('Landing + login + vault routing', () => {
     renderWithMantine(<App />)
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /access your space/i })
+        screen.getByRole('link', { name: /get started free/i })
       ).toBeDefined()
     })
   })
@@ -61,10 +61,8 @@ describe('Landing + login + vault routing', () => {
   it('routes from landing to login on CTA click', async () => {
     mockFetch.mockResolvedValueOnce(me401)
     renderWithMantine(<App />)
-    await waitFor(() =>
-      screen.getByRole('button', { name: /access your space/i })
-    )
-    fireEvent.click(screen.getByRole('button', { name: /access your space/i }))
+    await waitFor(() => screen.getByRole('link', { name: /get started free/i }))
+    fireEvent.click(screen.getByRole('link', { name: /get started free/i }))
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeDefined()
     })
@@ -146,10 +144,8 @@ describe('Landing + login + vault routing', () => {
 
 // Helper: click the landing CTA and wait for the login form to appear.
 async function openLoginFromLanding() {
-  await waitFor(() =>
-    screen.getByRole('button', { name: /access your space/i })
-  )
-  fireEvent.click(screen.getByRole('button', { name: /access your space/i }))
+  await waitFor(() => screen.getByRole('link', { name: /get started free/i }))
+  fireEvent.click(screen.getByRole('link', { name: /get started free/i }))
   await waitFor(() => screen.getByLabelText(/email/i))
 }
 
@@ -171,21 +167,21 @@ describe('Persistent header (BA-DS-005)', () => {
     mockFetch.mockReset()
   })
 
-  // EX-NAV-1: signed-out screens show brand + Log in in the header.
-  it('shows header Log in when signed out', async () => {
+  // EX-NAV-1: signed-out screens show brand + Sign in in the header.
+  it('shows header Sign in when signed out', async () => {
     mockFetch.mockResolvedValueOnce(me401)
     renderWithMantine(<App />)
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /^log in$/i })).toBeDefined()
+      expect(screen.getByRole('button', { name: /^sign in$/i })).toBeDefined()
     })
   })
 
-  // EX-NAV-1: header Log in opens the email-code login flow.
+  // EX-NAV-1: header Sign in opens the email-code login flow.
   it('opens the login flow from the header', async () => {
     mockFetch.mockResolvedValueOnce(me401)
     renderWithMantine(<App />)
-    await waitFor(() => screen.getByRole('button', { name: /^log in$/i }))
-    fireEvent.click(screen.getByRole('button', { name: /^log in$/i }))
+    await waitFor(() => screen.getByRole('button', { name: /^sign in$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeDefined()
     })
@@ -218,7 +214,7 @@ describe('Persistent header (BA-DS-005)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'sign out' }))
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /access your space/i })
+        screen.getByRole('link', { name: /get started free/i })
       ).toBeDefined()
     })
   })
@@ -243,7 +239,7 @@ describe('Persistent header (BA-DS-005)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'sign out' }))
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /access your space/i })
+        screen.getByRole('link', { name: /get started free/i })
       ).toBeDefined()
     })
     expect(await loadCachedKey(1)).toBeUndefined()

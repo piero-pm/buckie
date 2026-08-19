@@ -6,7 +6,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
-import LandingPage from './pages/LandingPage'
+import LandingPage from './pages/landing/LandingPage'
 import LoginPage from './pages/LoginPage'
 import CodePage from './pages/CodePage'
 import HomePage from './pages/HomePage'
@@ -89,9 +89,7 @@ export default function App() {
               authed={false}
               onLogin={() => navigate('/login', { state: { from } })}
             />
-            <LandingPage
-              onAccess={() => navigate('/login', { state: { from } })}
-            />
+            <LandingPage />
           </>
         }
       />

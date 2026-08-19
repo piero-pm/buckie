@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 import {
   ActionIcon,
   Box,
-  Button,
   Container,
   Group,
   Text,
@@ -41,8 +40,9 @@ const NAV: NavItem[] = [
 ]
 
 /** Persistent top banner (BA-DS-005, BR-NAV-1): one bar, no burger. Signed
- * in: brand + destinations + sign-out. Signed out: brand + Log in. Mid-flow
- * screens (login/code/passphrase): brand only — nothing to navigate yet. */
+ * in: brand + destinations + sign-out. Signed out: brand + Sign in (a text
+ * link, never a second filled button — BR-VI-1; auth is passwordless, so
+ * the label says sign in). Mid-flow screens: brand only. */
 export default function AppHeader({
   authed,
   active,
@@ -55,8 +55,8 @@ export default function AppHeader({
       component="header"
       pos="sticky"
       top={0}
-      bg="white"
-      style={{ zIndex: 100, borderBottom: '1px solid #e9ecef' }}
+      bg="var(--paper)"
+      style={{ zIndex: 100, borderBottom: '1px solid var(--line)' }}
     >
       <Container size={860} px="md">
         <Group justify="space-between" align="center" h={52} wrap="nowrap">
@@ -83,9 +83,9 @@ export default function AppHeader({
               </ActionIcon>
             ) : (
               onLogin && (
-                <Button size="sm" onClick={onLogin}>
-                  Log in
-                </Button>
+                <button className="header-signin" onClick={onLogin}>
+                  Sign in
+                </button>
               )
             )}
           </Group>
@@ -104,7 +104,13 @@ function Brand({
 }) {
   if (!authed) {
     return (
-      <Text fw={700} c="gray.9">
+      <Text
+        fw={700}
+        fz="1.15rem"
+        ff="var(--font-display)"
+        c="var(--ink)"
+        style={{ letterSpacing: '-0.01em' }}
+      >
         myBuckie
       </Text>
     )
@@ -112,10 +118,16 @@ function Brand({
   return (
     <UnstyledButton
       aria-label="myBuckie home"
-      c="gray.9"
+      c="var(--ink)"
       onClick={() => onNavigate?.('hub')}
     >
-      <Text span fw={700}>
+      <Text
+        span
+        fw={700}
+        fz="1.15rem"
+        ff="var(--font-display)"
+        style={{ letterSpacing: '-0.01em' }}
+      >
         myBuckie
       </Text>
     </UnstyledButton>
@@ -134,7 +146,7 @@ function Destination({
   return (
     <UnstyledButton
       aria-label={item.label}
-      c={active ? 'orange.7' : 'gray.7'}
+      c={active ? 'var(--rust)' : 'gray.7'}
       px={8}
       py={6}
       style={{ borderRadius: 4 }}
