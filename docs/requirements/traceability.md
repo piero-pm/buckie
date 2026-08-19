@@ -29,6 +29,7 @@ Status: recommendation; human approval pending
 | BA-DS-010 | Delivery spec (expected vs actual) | [delivery-spec-expected-actual.md](delivery-spec-expected-actual.md) | Approved (WORK-005) | None |
 | BA-DS-011 | Delivery spec (insights + capture) | [delivery-spec-insights-capture.md](delivery-spec-insights-capture.md) | Approved (WORK-006) | None |
 | BA-DS-012 | Delivery spec (navigation & UX) | [delivery-spec-navigation-ux.md](delivery-spec-navigation-ux.md) | Approved (WORK-007) | None |
+| BA-DS-013 | Delivery spec (visual identity, user-authored; BA waived) | [delivery-spec-visual-identity.md](delivery-spec-visual-identity.md) | Approved (WORK-008) | None |
 
 ## 2. Coverage
 
@@ -70,6 +71,7 @@ Status: recommendation; human approval pending
 | WORK-007 Nav & UX | REQ-34 URL routing + month arrows | BA-DS-012 / BR-ROUTE-1, BR-MTH-1 | EX-NU-1..4 | TICKET-049, 050 |
 | WORK-007 Nav & UX | REQ-35 Settings (currency + idle auto-lock) | BA-DS-012 / BR-CUR-1, BR-LOCK-IDLE-1 | EX-NU-5, 6 | TICKET-051 |
 | WORK-007 Nav & UX | REQ-36 gray.5 contrast sweep + WORK-001 ticket closure | BA-DS-012 / BR-CONT-1, BR-TICK-DOC-1 | EX-NU-5 | TICKET-052 |
+| WORK-008 Visual identity | REQ-37 unified visual identity (landing rebuild + dashboard re-theme) | BA-DS-013 / BR-VI-1..13 | EX-VI-1..6 | TICKET-053, 054, 055 |
 
 Every requirement traces upward to an approved-outcome recommendation and
 downward to acceptance examples and a ticket. No orphan requirements.
