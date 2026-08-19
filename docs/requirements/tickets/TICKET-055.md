@@ -42,3 +42,24 @@ tuple makes existing gray.6/7 text warm ink automatically (S1).
 
 Other pages inherit the theme via S1 Card/body defaults — spot-check
 only. Onboarding/auth pages same. No copy changes beyond S1.
+
+## Contrast record (WCAG 2.2 AA, computed 2026-08-19)
+
+| Pair | Ratio | AA (4.5 text / 3 non-text) |
+| --- | --- | --- |
+| ink #2A231C on paper #FAF3E7 | 14.04 | pass |
+| ink on paper-deep #F1E6D3 | 12.54 | pass |
+| ink-soft (gray.6) on paper | 5.55 | pass |
+| ink-soft on paper-deep | 4.96 | pass |
+| rust on paper (links/accents) | 4.51 | pass |
+| rust-deep (over) on paper-deep | 6.06 | pass |
+| vault-green (moss.6) on paper-deep | 6.17 | pass |
+| white label on rust button | 4.97 | pass (old trade-off resolved — was ≈3.5 on orange) |
+| vault-text on vault-bg | 12.56 | pass |
+| vault-amber on vault-bg | 6.56 | pass |
+| green-soft on vault-bg | 5.34 | pass |
+| amber pill text amber.8 on amber.1 | 4.86 | pass |
+| rust bar vs paper (non-text) | 4.51 | pass (≥3) |
+| moss bar vs paper-deep (non-text) | 6.17 | pass (≥3) |
+
+No deviations below AA remain in the re-themed pairs.

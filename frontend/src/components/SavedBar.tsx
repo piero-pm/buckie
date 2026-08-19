@@ -21,18 +21,18 @@ export default function SavedBar({
             Saved this month
           </Text>
           {overspent > 0 ? (
-            <Text size="sm" fw={600} c="red.7" aria-label="overspent">
+            <Text size="sm" fw={600} c="rust.7" aria-label="overspent">
               Over-spent {formatMoney(overspent)}
             </Text>
           ) : (
-            <Text size="sm" fw={600} c="green.7" aria-label="saved">
+            <Text size="sm" fw={600} c="moss.6" aria-label="saved">
               {formatMoney(saved)}
             </Text>
           )}
         </Group>
         <Progress
           value={pct}
-          color={overspent > 0 ? 'red.6' : 'green.6'}
+          color={overspent > 0 ? 'rust.6' : 'moss.6'}
           size="sm"
         />
       </Stack>

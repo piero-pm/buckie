@@ -2,9 +2,10 @@ import { Card, Group, Progress, Stack, Text } from '@mantine/core'
 import { formatMoney } from '../domain/settings'
 import type { BucketCompare } from '../domain/comparison'
 
-/** Expected vs actual per bucket (BR-CMP-1, TICKET-038): over renders red
- * with the delta, under/equal renders green with the remaining amount.
- * Buckets without an expectation show actual only. */
+/** Expected vs actual per bucket (BR-CMP-1, TICKET-038): over renders
+ * rust-deep with the delta, under/equal renders vault-green with the
+ * remaining amount (BR-VI-7 semantic colors). Buckets without an
+ * expectation show actual only. */
 export default function ExpectedVsActual({ rows }: { rows: BucketCompare[] }) {
   const withExpectation = rows.filter((r) => r.expected !== undefined)
   if (withExpectation.length === 0) return null
@@ -46,7 +47,7 @@ function Row({ row }: { row: BucketCompare }) {
         <Text
           size="sm"
           fw={600}
-          c={over ? 'red.7' : 'green.7'}
+          c={over ? 'rust.7' : 'moss.6'}
           aria-label={`${row.label} delta`}
         >
           {formatMoney(row.actual)} / {formatMoney(row.expected)}
@@ -55,7 +56,7 @@ function Row({ row }: { row: BucketCompare }) {
             : ` (${formatMoney(-(row.delta ?? 0))} left)`}
         </Text>
       </Group>
-      <Progress value={pct} color={over ? 'red.6' : 'green.6'} size="sm" />
+      <Progress value={pct} color={over ? 'rust.6' : 'moss.6'} size="sm" />
     </Stack>
   )
 }

@@ -44,10 +44,38 @@ const paper: MantineColorsTuple = [
   tokens.inkSoft,
 ]
 
+// Semantic green (BR-VI-7): shade 6 is vault-green — saved/positive amounts.
+const moss: MantineColorsTuple = [
+  '#EDF2ED',
+  '#D8E4D9',
+  '#B7CEBA',
+  '#96B79B',
+  '#78A37F',
+  tokens.vaultGreenSoft,
+  tokens.vaultGreen,
+  '#324A38',
+  '#26392C',
+  '#1B2920',
+]
+
+// Semantic amber (BR-VI-7): shade 6 is vault-amber — recurring/flagged pills.
+const amber: MantineColorsTuple = [
+  '#FDF4EA',
+  '#F7E2CB',
+  '#EFCBA4',
+  '#E9B57F',
+  '#E4A469',
+  '#E29A5B',
+  tokens.vaultAmber,
+  '#B96F35',
+  '#8F5327',
+  '#653A1B',
+]
+
 export const theme = createTheme({
   primaryColor: 'rust',
   primaryShade: { light: 6, dark: 6 },
-  colors: { rust, gray, paper },
+  colors: { rust, gray, paper, moss, amber },
   defaultRadius: 'sm',
   fontFamily: 'var(--font-body)',
   fontFamilyMonospace: 'IBM Plex Mono, ui-monospace, SFMono-Regular, monospace',

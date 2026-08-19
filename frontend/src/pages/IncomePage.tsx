@@ -94,7 +94,7 @@ function SourceRow({
     <Group
       justify="space-between"
       py="sm"
-      styles={{ root: { borderBottom: '1px solid #e9ecef' } }}
+      styles={{ root: { borderBottom: '1px solid var(--line)' } }}
     >
       <Stack gap={2}>
         <Group gap="xs">

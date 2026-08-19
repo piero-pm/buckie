@@ -9,7 +9,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts'
+} from 'recharts' // direct use approved (WORK-008 §2): band needs ReferenceArea
 import type { MonthlyFigure } from '../domain/prediction'
 import { cumulativeNet, windowAverages } from '../domain/prediction'
 import { formatMoney, formatMoneyCompact } from '../domain/settings'
@@ -27,21 +27,18 @@ const monthLabel = (ym: string) => {
 const nextMonthLabel = (ymStr: string, step: number) => {
   const [y, m] = ymStr.split('-').map(Number)
   const d = new Date(y, m - 1 + step, 1)
-  return monthLabel(
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-  )
+  const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+  return monthLabel(ym)
 }
 
 const round2 = (v: number) => Math.round(v * 100) / 100
 
 /** Trend + prediction (Dashboard B, TICKET-029 + WORK-005 anchor): a
- * selectable 3/12-month window with average spending, average saving
- * (income-aware — resolves TICKET-015), and a projected balance line
- * (BR-PRJ-2/3) anchored at the starting balance once set (BR-PRJ-2).
- * BR-VI-11 re-theme: solid actual line, dashed + dimmer projected line,
- * shaded projection band, single "today" boundary. recharts ComposedChart
- * used directly (human-approved interface exception, WORK-008 §2 — the
- * shaded band needs ReferenceArea). */
+ * selectable 3/12-month window with average spending, income-aware
+ * average saving (TICKET-015), and a projected balance line anchored at
+ * the starting balance (BR-PRJ-2/3). BR-VI-11 re-theme: solid actual
+ * line, dashed + dimmer projected, shaded projection band, single
+ * boundary tick. */
 export default function TrendView({
   figures,
   startingBalance = 0,
