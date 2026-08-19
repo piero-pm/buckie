@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | ID | WORK-007 |
-| Status | Deployed — awaiting human manual verification |
+| Status | Completed 2026-08-19 — deployed, verified (manual checks passed), §6 recorded |
 | Active project | buckie |
 | Request class | Increment to live product |
-| Current stage | Integration |
-| Next owner | Human (manual verification) |
+| Current stage | Completed |
+| Next owner | n/a |
 | Updated | 2026-08-19 |
 
 ## 1. Request and Route
@@ -34,6 +34,7 @@ Developer (slice direction) -> Developer. UX folded inline; QA waived
 | UX stage | Human | Waived | Standing waiver WORK-001 (UX inline) |
 | QA stage | Human | Waived | Standing waiver WORK-001 (manual verification) |
 | Slice pushes (production deploy) | Human | Approved | User "push" 2026-08-19; CI+Deploy green on 0f5f3a0 |
+| Manual verification (production) | Human | Passed | User confirmation 2026-08-19: all checks pass (deep link, refresh locked/unlocked, back/forward, arrows+bounds, currency, idle lock, contrast, iPhone Safari) |
 
 ## 3. Stage Ledger
 
@@ -122,4 +123,18 @@ through the direction gate.
 
 ## 6. Completion
 
-Pending.
+Delivered and verified 2026-08-19: every workspace view has a URL with
+working deep links, back/forward, and refresh-stable behavior, with a
+Go SPA fallback for client routes (BR-ROUTE-1); the dashboard month
+selector gains data-bounded prev/next arrows (BR-MTH-1); a Settings
+page stores display currency and an idle auto-lock window in a new
+fixed-id encrypted record — formatting switches everywhere without
+converting amounts, and inactivity clears the key and re-asks the
+passphrase, defaulting to Never (BR-CUR-1, BR-LOCK-IDLE-1); small
+gray.5 text is now AA-compliant gray.6 across the app (BR-CONT-1); and
+TICKET-001..015 are closed as Shipped in the docs (BR-TICK-DOC-1).
+Verification: QA waived; human verified manually on production
+2026-08-19 — all checks pass. Integration: 2bcb0c6, f852ff0, 5df9758;
+docs 0f5f3a0 + closure; CI/Deploy green; bundle markers confirmed.
+Remaining approved risk: none open. WORK-006 and WORK-007 complete the
+2026-08-18 kickoff roadmap; further work returns to intake.
