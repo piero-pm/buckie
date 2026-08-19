@@ -117,7 +117,8 @@ const income = (amount, kind, label, day) => ({
 })
 const day = (d, m) => `2026-${m}-${String(d).padStart(2, '0')}`
 const groceries = (d, m, a, n) => expense(a, 'Groceries', day(d, m), n)
-const goingOut = (d, m, a, n) => expense(a, 'Restaurants & drinks', day(d, m), n)
+const goingOut = (d, m, a, n) =>
+  expense(a, 'Restaurants & drinks', day(d, m), n)
 
 const SEED = [
   // The plan (expected-vs-actual): rent spot-on, bills over, rest under.
@@ -196,10 +197,7 @@ const SEED = [
   ['expense', groceries(16, '08', 14, 'top-up shop')],
   ['expense', goingOut(17, '08', 19.8, 'dinner with friends')],
   ['expense', expense(45, 'Transport & Travel', day(8, '08'))],
-  [
-    'expense',
-    expense(74.5, 'Shopping & clothes', day(11, '08')),
-  ],
+  ['expense', expense(74.5, 'Shopping & clothes', day(11, '08'))],
   ['expense', expense(28, 'Personal care', day(14, '08'))],
   ['expense', expense(12, 'Miscellaneous', day(15, '08'))],
 ]
